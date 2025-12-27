@@ -25,6 +25,7 @@ These files define scope, priorities, and filters. They override general knowled
 You are allowed to research:
 - Official product blogs, changelogs, docs, and announcements for companies listed in `context/companies.md`
 - Public posts from people listed in `context/people.md` (especially launch posts or reflections)
+- Recent blog posts from tracked people (use `tooling/check-recent-posts.py` to find recent posts)
 - Reputable product- and tech-focused news sources when tied to shipped products
 
 You should NOT:
@@ -32,6 +33,23 @@ You should NOT:
 - Summarize opinion-only content
 - Chase viral discourse
 - Include anything that violates the filters in `context/prefs.md`
+
+## Checking Recent Posts from Tracked People
+
+Before conducting research, check for recent posts from tracked people:
+
+1. Run the script: `python3 tooling/check-recent-posts.py --days 7 --format markdown`
+2. Review the output for recent posts (last 7 days by default)
+3. For each recent post that meets the quality bar:
+   - Read the full post content
+   - Evaluate if it provides PM-relevant signals
+   - Include in daily update if it meets all quality criteria
+
+The script will:
+- Parse `context/people.md` for RSS feeds and blog URLs
+- Check RSS feeds for recent posts
+- Attempt to find RSS feeds if not explicitly listed
+- Output recent posts in markdown format for review
 
 ## Output Requirements
 
@@ -158,12 +176,13 @@ Do not include anything from the "Ignore Completely" list in `context/prefs.md`:
 ## Execution Steps
 
 1. Read and understand all four context files (`companies.md`, `people.md`, `prefs.md`, `open-questions.md`)
-2. Research product changes from tracked companies
-3. Review posts from tracked people for PM-relevant signals
-4. Filter all findings through the quality bar in `prefs.md`
-5. Synthesize remaining items using the required format
-6. Create the daily markdown file at the specified path
-7. Ensure maximum 3-5 items (or "No meaningful PM-relevant updates today")
+2. Check recent posts from tracked people using `tooling/check-recent-posts.py`
+3. Research product changes from tracked companies
+4. Review recent posts from tracked people for PM-relevant signals
+5. Filter all findings through the quality bar in `prefs.md`
+6. Synthesize remaining items using the required format
+7. Create the daily markdown file at the specified path
+8. Ensure maximum 3-5 items (or "No meaningful PM-relevant updates today")
 
 Remember: Your goal is NOT to summarize AI news. Your goal is to surface product-relevant signals and translate them into actionable insights for product management.
 
