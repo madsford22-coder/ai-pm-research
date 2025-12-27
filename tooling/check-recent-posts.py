@@ -180,17 +180,17 @@ def check_recent_posts(people, days_back=7, output_format='json'):
                 elif posts:
                     recent_posts.extend(posts)
         
-        if recent_posts or errors:
-            results.append({
-                'name': name,
-                'posts': recent_posts,
-                'errors': errors,
-                'sources_checked': {
-                    'rss_feed': person.get('rss_feed'),
-                    'blog': person.get('blog'),
-                    'newsletter': person.get('newsletter'),
-                }
-            })
+        # Always include results, even if no posts found (to show what was checked)
+        results.append({
+            'name': name,
+            'posts': recent_posts,
+            'errors': errors,
+            'sources_checked': {
+                'rss_feed': person.get('rss_feed'),
+                'blog': person.get('blog'),
+                'newsletter': person.get('newsletter'),
+            }
+        })
     
     return results
 
