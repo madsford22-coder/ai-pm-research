@@ -16,7 +16,8 @@ This file defines whose public thinking and product commentary should be treated
 - Product strategy insights applicable to AI products
 **Primary platforms:**
 - Twitter/X: @shreyas
-- Blog: shreyas.io
+- Blog: https://shreyas.io
+- LinkedIn: https://www.linkedin.com/in/shreyasdoshi/
 
 ---
 
@@ -29,8 +30,8 @@ This file defines whose public thinking and product commentary should be treated
 - Metrics and measurement approaches
 - Product strategy case studies
 **Primary platforms:**
-- Blog: gibsonbiddle.com
-- LinkedIn
+- Blog: https://gibsonbiddle.com
+- LinkedIn: https://www.linkedin.com/in/gibsonbiddle/
 
 ---
 
@@ -43,8 +44,8 @@ This file defines whose public thinking and product commentary should be treated
 - Decision-making clarity
 - Product strategy insights
 **Primary platforms:**
-- Blog: ravi-mehta.com
-- LinkedIn
+- Blog: https://ravi-mehta.com
+- LinkedIn: https://www.linkedin.com/in/ravimehta/ (verify URL)
 
 ---
 
@@ -58,7 +59,8 @@ This file defines whose public thinking and product commentary should be treated
 - User behavior insights
 **Primary platforms:**
 - Twitter/X: @lennysan
-- Newsletter: lennysnewsletter.com
+- Newsletter: https://www.lennysnewsletter.com
+- LinkedIn: https://www.linkedin.com/in/lennyrachitsky/
 
 ---
 
@@ -71,8 +73,8 @@ This file defines whose public thinking and product commentary should be treated
 - Product-led growth insights
 - Growth and product dynamics
 **Primary platforms:**
-- Blog: andrewchen.com
-- LinkedIn
+- Blog: https://andrewchen.com
+- LinkedIn: https://www.linkedin.com/in/andrewchen/
 **Ignore unless:**
 - Pure investment/funding content
 
@@ -87,8 +89,8 @@ This file defines whose public thinking and product commentary should be treated
 - Growth strategy insights
 - Product growth patterns
 **Primary platforms:**
-- Blog: brianbalfour.com
-- LinkedIn
+- Blog: https://brianbalfour.com
+- LinkedIn: https://www.linkedin.com/in/bbalfour/
 
 ---
 
@@ -102,7 +104,8 @@ This file defines whose public thinking and product commentary should be treated
 - Real product decision stories
 **Primary platforms:**
 - Twitter/X: @joulee
-- Blog: medium.com/@joulee
+- Blog: https://medium.com/@joulee
+- LinkedIn: https://www.linkedin.com/in/juliezhuo/
 
 ---
 
@@ -115,8 +118,8 @@ This file defines whose public thinking and product commentary should be treated
 - Product leadership
 - Product execution patterns
 **Primary platforms:**
-- Blog: juliezhuo.com
-- LinkedIn
+- Blog: https://juliezhuo.com
+- LinkedIn: https://www.linkedin.com/in/juliezhuo/ (verify - may be different person)
 
 ---
 
@@ -129,7 +132,8 @@ This file defines whose public thinking and product commentary should be treated
 - Product team effectiveness
 - Product vs. output frameworks
 **Primary platforms:**
-- Blog: svpg.com
+- Blog: https://www.svpg.com
+- LinkedIn: https://www.linkedin.com/in/martycagan/
 - Talks and presentations
 **Ignore unless:**
 - Generic motivational content
@@ -145,8 +149,8 @@ This file defines whose public thinking and product commentary should be treated
 - Discovery practices applied to AI
 - Product discovery insights
 **Primary platforms:**
-- Blog: producttalk.org
-- LinkedIn
+- Blog: https://www.producttalk.org
+- LinkedIn: https://www.linkedin.com/in/teresatorres/
 
 ---
 
@@ -159,7 +163,8 @@ This file defines whose public thinking and product commentary should be treated
 - Product skills and practices
 - Real product stories
 **Primary platforms:**
-- Blog: kennethnorton.com
+- Blog: https://www.kennorton.com
+- LinkedIn: https://www.linkedin.com/in/kennorton/
 - Newsletter
 
 ---
@@ -173,8 +178,8 @@ This file defines whose public thinking and product commentary should be treated
 - Outcomes vs. outputs thinking
 - Product strategy insights
 **Primary platforms:**
-- Blog: melissaperri.com
-- LinkedIn
+- Blog: https://melissaperri.com
+- LinkedIn: https://www.linkedin.com/in/melissaperri/
 
 ---
 
@@ -187,7 +192,8 @@ This file defines whose public thinking and product commentary should be treated
 - Team effectiveness patterns
 - Leadership and team building
 **Primary platforms:**
-- Blog: larahogan.me
+- Blog: https://larahogan.me
+- LinkedIn: https://www.linkedin.com/in/larahogan/ (verify URL)
 - Talks and presentations
 
 ---
@@ -202,7 +208,8 @@ This file defines whose public thinking and product commentary should be treated
 - Major product direction announcements
 **Primary platforms:**
 - Twitter/X: @sama
-- Blog: blog.samaltman.com
+- Blog: https://blog.samaltman.com
+- LinkedIn: https://www.linkedin.com/in/samaltman/ (verify URL)
 **Ignore unless:**
 - Generic motivational content
 - Pure research announcements without product implications
@@ -280,7 +287,8 @@ This file defines whose public thinking and product commentary should be treated
 - Product decision frameworks
 **Primary platforms:**
 - Twitter/X: @danshipper
-- Newsletter: every.to
+- Newsletter: https://every.to
+- LinkedIn: https://www.linkedin.com/in/danshipper/ (verify URL)
 
 ---
 
@@ -294,7 +302,8 @@ This file defines whose public thinking and product commentary should be treated
 - Product announcements
 **Primary platforms:**
 - Twitter/X: @bentossell
-- Newsletter: bensbites.co
+- Newsletter: https://bensbites.co
+- LinkedIn: https://www.linkedin.com/in/bentossell/ (verify URL)
 **Ignore unless:**
 - Pure news aggregation without analysis
 
@@ -412,7 +421,8 @@ This file defines whose public thinking and product commentary should be treated
 - Building and shipping products
 **Primary platforms:**
 - Twitter/X: @geoffreylitt
-- Blog: geoffreylitt.com
+- Blog: https://geoffreylitt.com
+- LinkedIn: https://www.linkedin.com/in/geoffreylitt/ (verify URL)
 
 ---
 
@@ -502,7 +512,8 @@ This file defines whose public thinking and product commentary should be treated
 - Startup product decisions
 **Primary platforms:**
 - Twitter/X: @paulg
-- Blog: paulgraham.com
+- Blog: https://paulgraham.com
+- LinkedIn: https://www.linkedin.com/in/paulg/ (verify URL)
 **Ignore unless:**
 - Non-product essays
 
