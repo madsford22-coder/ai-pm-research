@@ -18,6 +18,7 @@ This file defines whose public thinking and product commentary should be treated
 - Twitter/X: @shreyas
 - Blog: https://shreyas.io
 - LinkedIn: https://www.linkedin.com/in/shreyasdoshi/
+- RSS Feed: https://shreyas.io/feed (verify URL)
 
 ---
 
@@ -32,6 +33,7 @@ This file defines whose public thinking and product commentary should be treated
 **Primary platforms:**
 - Blog: https://gibsonbiddle.com
 - LinkedIn: https://www.linkedin.com/in/gibsonbiddle/
+- RSS Feed: https://gibsonbiddle.com/feed (verify URL)
 
 ---
 
@@ -61,6 +63,7 @@ This file defines whose public thinking and product commentary should be treated
 - Twitter/X: @lennysan
 - Newsletter: https://www.lennysnewsletter.com
 - LinkedIn: https://www.linkedin.com/in/lennyrachitsky/
+- RSS Feed: https://www.lennysnewsletter.com/feed (verify URL)
 
 ---
 
@@ -75,6 +78,7 @@ This file defines whose public thinking and product commentary should be treated
 **Primary platforms:**
 - Blog: https://andrewchen.com
 - LinkedIn: https://www.linkedin.com/in/andrewchen/
+- RSS Feed: https://andrewchen.com/feed/ (verify URL)
 **Ignore unless:**
 - Pure investment/funding content
 
@@ -91,6 +95,7 @@ This file defines whose public thinking and product commentary should be treated
 **Primary platforms:**
 - Blog: https://brianbalfour.com
 - LinkedIn: https://www.linkedin.com/in/bbalfour/
+- RSS Feed: https://www.reforge.com/podcast/unsolicited-feedback (verify - may be podcast feed)
 
 ---
 
@@ -134,6 +139,7 @@ This file defines whose public thinking and product commentary should be treated
 **Primary platforms:**
 - Blog: https://www.svpg.com
 - LinkedIn: https://www.linkedin.com/in/martycagan/
+- RSS Feed: https://www.svpg.com/feed
 - Talks and presentations
 **Ignore unless:**
 - Generic motivational content
@@ -151,6 +157,7 @@ This file defines whose public thinking and product commentary should be treated
 **Primary platforms:**
 - Blog: https://www.producttalk.org
 - LinkedIn: https://www.linkedin.com/in/teresatorres/
+- RSS Feed: https://www.producttalk.org/rss/
 
 ---
 
@@ -165,6 +172,7 @@ This file defines whose public thinking and product commentary should be treated
 **Primary platforms:**
 - Blog: https://www.kennorton.com
 - LinkedIn: https://www.linkedin.com/in/kennorton/
+- RSS Feed: https://www.bringthedonuts.com/feed.xml
 - Newsletter
 
 ---
@@ -194,6 +202,7 @@ This file defines whose public thinking and product commentary should be treated
 **Primary platforms:**
 - Blog: https://larahogan.me
 - LinkedIn: https://www.linkedin.com/in/larahogan/ (verify URL)
+- RSS Feed: https://larahogan.me/feed.xml
 - Talks and presentations
 
 ---
@@ -210,6 +219,7 @@ This file defines whose public thinking and product commentary should be treated
 - Twitter/X: @sama
 - Blog: https://blog.samaltman.com
 - LinkedIn: https://www.linkedin.com/in/samaltman/ (verify URL)
+- RSS Feed: https://blog.samaltman.com/posts.atom
 **Ignore unless:**
 - Generic motivational content
 - Pure research announcements without product implications
@@ -423,6 +433,7 @@ This file defines whose public thinking and product commentary should be treated
 - Twitter/X: @geoffreylitt
 - Blog: https://geoffreylitt.com
 - LinkedIn: https://www.linkedin.com/in/geoffreylitt/ (verify URL)
+- RSS Feed: https://www.geoffreylitt.com/feed.xml
 
 ---
 
@@ -514,6 +525,7 @@ This file defines whose public thinking and product commentary should be treated
 - Twitter/X: @paulg
 - Blog: https://paulgraham.com
 - LinkedIn: https://www.linkedin.com/in/paulg/ (verify URL)
+- RSS Feed: http://www.aaronsw.com/2002/feeds/pgessays.rss
 **Ignore unless:**
 - Non-product essays
 
