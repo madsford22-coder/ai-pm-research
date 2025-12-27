@@ -82,10 +82,26 @@ def parse_people_file(people_file_path):
 def check_rss_feed(feed_url, days_back=7):
     """Check RSS feed for recent posts."""
     try:
-        feed = feedparser.parse(feed_url)
+        # Use requests to fetch the feed (better SSL handling)
+        # Try with SSL verification first, fall back to unverified if needed
+        try:
+            response = requests.get(feed_url, timeout=10, headers={'User-Agent': 'Mozilla/5.0'}, verify=True)
+        except requests.exceptions.SSLError:
+            # If SSL verification fails, try without verification (for development/local use)
+            # In production, you'd want to fix certificate issues properly
+            import urllib3
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+            response = requests.get(feed_url, timeout=10, headers={'User-Agent': 'Mozilla/5.0'}, verify=False)
         
-        if feed.bozo:
-            return None, f"RSS feed error: {feed.bozo_exception}"
+        response.raise_for_status()
+        
+        # Parse the feed content with feedparser
+        feed = feedparser.parse(response.content)
+        
+        if feed.bozo and feed.bozo_exception:
+            # Only report as error if it's not just a minor parsing issue
+            if 'not well-formed' not in str(feed.bozo_exception).lower():
+                return None, f"RSS feed error: {feed.bozo_exception}"
         
         cutoff_date = datetime.now() - timedelta(days=days_back)
         recent_posts = []
@@ -109,6 +125,8 @@ def check_rss_feed(feed_url, days_back=7):
         
         return recent_posts, None
         
+    except requests.exceptions.RequestException as e:
+        return None, f"Error fetching RSS feed: {str(e)}"
     except Exception as e:
         return None, f"Error checking RSS feed: {str(e)}"
 

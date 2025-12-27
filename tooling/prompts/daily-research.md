@@ -38,8 +38,8 @@ You should NOT:
 
 Before conducting research, check for recent posts from tracked people:
 
-1. Run the script: `python3 tooling/check-recent-posts.py --days 7 --format markdown`
-2. Review the output for recent posts (last 7 days by default)
+1. Run the script: `python3 tooling/check-recent-posts.py --days 14 --format markdown`
+2. Review the output for recent posts (last 14 days by default)
 3. For each recent post that meets the quality bar:
    - Read the full post content
    - Evaluate if it provides PM-relevant signals
