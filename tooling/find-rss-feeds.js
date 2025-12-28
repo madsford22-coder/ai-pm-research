@@ -113,11 +113,19 @@ async function tryCommonRSSPaths(page, baseUrl) {
     const testUrl = base + rssPath;
     try {
       const response = await page.goto(testUrl, { waitUntil: 'domcontentloaded', timeout: 5000 });
-      const contentType = response.headers()['content-type'] || '';
       
-      if (response.status() === 200 && 
-          (contentType.includes('xml') || contentType.includes('rss') || contentType.includes('atom'))) {
-        return testUrl;
+      if (response && response.status() === 200) {
+        const contentType = response.headers()['content-type'] || '';
+        
+        if (contentType.includes('xml') || contentType.includes('rss') || contentType.includes('atom')) {
+          return testUrl;
+        }
+        
+        // Also check page content for XML indicators if content-type check fails
+        const content = await page.content();
+        if (content.trim().startsWith('<?xml') || content.includes('<rss') || content.includes('<feed')) {
+          return testUrl;
+        }
       }
     } catch (error) {
       // Continue to next path
@@ -163,9 +171,22 @@ async function main() {
   const people = await parsePeopleFile();
   console.log(`Found ${people.length} people with blogs but no RSS feeds\n`);
   
+  // Use a temporary user data directory to avoid permission issues
+  const os = require('os');
+  const userDataDir = path.join(os.tmpdir(), 'puppeteer-user-data-' + Date.now());
+  
   const browser = await puppeteer.launch({
     headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    userDataDir: userDataDir, // Use a temporary user data directory
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-crash-reporter',
+      '--disable-breakpad',
+      '--no-first-run',
+      '--no-default-browser-check',
+    ]
   });
   
   const results = [];
@@ -185,6 +206,15 @@ async function main() {
   }
   
   await browser.close();
+  
+  // Clean up user data directory
+  try {
+    if (fs.existsSync(userDataDir)) {
+      fs.rmSync(userDataDir, { recursive: true, force: true });
+    }
+  } catch (e) {
+    // Ignore cleanup errors
+  }
   
   console.log('\n' + '='.repeat(60));
   console.log('\nFound RSS Feeds:\n');

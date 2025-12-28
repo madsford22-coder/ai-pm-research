@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Tools for AI PM Research Assistant",
   "scripts": {
-    "find-feeds": "node find-rss-feeds.js"
+    "find-feeds": "node find-rss-feeds.js",
+    "check-companies": "node check-company-updates.js"
   },
   "dependencies": {
     "puppeteer": "^24.34.0"

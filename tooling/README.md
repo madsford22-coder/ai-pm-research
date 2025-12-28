@@ -160,3 +160,109 @@ Example output:
 - Some blogs may not have RSS feeds (especially if they're primarily social media)
 - The script will skip blogs that already have RSS feeds listed
 
+---
+
+## check-company-updates.js
+
+Script to check recent product updates from tracked companies in `context/companies.md` using Puppeteer.
+
+### Setup
+
+Install Node.js dependencies (if not already installed):
+
+```bash
+cd tooling
+npm install
+```
+
+This will install Puppeteer and Chromium.
+
+### Usage
+
+Check recent updates from tracked companies (last 14 days, default):
+
+```bash
+cd tooling
+node check-company-updates.js
+```
+
+Or use npm script:
+
+```bash
+npm run check-companies
+```
+
+Check updates from last 7 days:
+
+```bash
+node check-company-updates.js --days 7
+```
+
+Output in JSON format:
+
+```bash
+node check-company-updates.js --format json
+```
+
+### How it works
+
+1. Parses `context/companies.md` to find companies and their primary sources
+2. For each company:
+   - Checks blog RSS feeds (finds RSS feeds automatically if not listed)
+   - Scrapes changelog pages for recent entries
+   - Extracts dates and content from recent updates
+3. Outputs recent updates in Markdown or JSON format
+
+### Output format
+
+**Markdown (default):**
+```markdown
+# Recent Company Updates
+
+## OpenAI
+*Category: Foundation models / AI platforms*
+
+### New GPT-4 Model Release
+**Link:** https://openai.com/blog/...
+**Published:** 2025-12-28T10:00:00
+**Source:** blog (https://openai.com/blog)
+**Summary:** OpenAI announced...
+```
+
+**JSON:**
+```json
+[
+  {
+    "company": "OpenAI",
+    "category": "Foundation models / AI platforms",
+    "title": "New GPT-4 Model Release",
+    "link": "https://openai.com/blog/...",
+    "published": "2025-12-28T10:00:00",
+    "source": "blog",
+    "sourceUrl": "https://openai.com/blog",
+    "description": "OpenAI announced..."
+  }
+]
+```
+
+### What it checks
+
+- **Blogs**: Automatically finds and checks RSS feeds from company blogs listed in `companies.md`
+- **Changelogs**: Scrapes changelog pages for recent entries (looks for date patterns)
+- **Primary sources**: Uses the "Primary sources" section from each company entry in `companies.md`
+
+### Notes
+
+- The script visits each source sequentially with delays to be respectful
+- Changelog scraping uses heuristics to find recent entries (may need tuning per site)
+- Some sites may require authentication or have anti-scraping measures
+- The script respects rate limits with delays between requests
+
+### Future enhancements
+
+Potential additions:
+- LinkedIn trending topics (requires LinkedIn API or scraping)
+- News search integration (via news APIs)
+- Twitter/X monitoring (requires API access)
+- More sophisticated changelog parsing per site
+
