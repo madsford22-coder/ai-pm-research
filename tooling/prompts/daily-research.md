@@ -113,9 +113,35 @@ Each daily update must follow this exact format:
 
 (Repeat for each item, maximum 5 items total)
 
+### Other Notable Updates Section
+
+After the main items, include a section titled "## Other Notable Updates" that lists:
+- All additional items found in today's research that were not included in the detailed analysis above
+- Items that were covered in detail in previous days should be marked with *(Note: Covered in detail on YYYY-MM-DD)*
+- Format: Bulleted list with title/description, date (if relevant), and URL
+- Purpose: Provide a complete record of all net-new items found, even if not covered in detail
+
+Example format:
+```markdown
+## Other Notable Updates
+
+Additional items found in today's research (not included in detailed analysis above):
+
+- **Author Name - Post Title** (Date): URL
+- **Company Name - Feature/Update** (Date): URL *(Note: Covered in detail on YYYY-MM-DD)*
+```
+
+### Avoiding Duplicates
+
+- **Check previous days' updates** before including an item in detailed analysis
+- If an item was covered in detail in a previous update, do NOT repeat it in the detailed analysis
+- Instead, list it in "Other Notable Updates" with a note indicating when it was covered
+- Only include items in detailed analysis that are net-new (not previously covered)
+
 ### Quantity Limits
 
-- **Maximum 3-5 items per day**
+- **Maximum 3-5 items per day** in detailed analysis
+- "Other Notable Updates" section should include all net-new items found, regardless of count
 - If there are fewer than 3 meaningful PM-relevant updates, include only what meets the quality bar
 - It is acceptable (and correct) to output "No meaningful PM-relevant updates today" if nothing meets the criteria
 
