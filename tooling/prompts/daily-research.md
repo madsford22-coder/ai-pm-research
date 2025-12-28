@@ -65,16 +65,8 @@ Where `YYYY` is the current year and `YYYY-MM-DD` is today's date (e.g., `2025-0
 
 Each daily update must follow this exact format:
 
+**For product changes:**
 ```markdown
-# Daily PM Research Update: YYYY-MM-DD
-
-## Summary
-(Brief 1-2 sentence overview of the day's signals, or "No meaningful PM-relevant updates today" if applicable)
-
----
-
-## Items
-
 ### [Company/Product Name] - [Brief Title]
 **Source:** [Link to source]
 **What changed:** [Concrete description of the product change]
@@ -93,11 +85,31 @@ Each daily update must follow this exact format:
 
 **Pattern to note:**
 [Any broader pattern or trend this represents, or "None" if isolated]
+```
 
----
+**For PM craft/leadership/productivity content:**
+```markdown
+### [Author/Person Name] - [Brief Title]
+**Source:** [Link to source]
+**What changed:** [Description of the insight, framework, or practice]
+
+**PM Takeaway:**
+[One sentence summary of why this matters to PMs]
+
+**PM problem addressed:**
+[What PM challenge, workflow, or effectiveness gap does this address]
+
+**How to apply:**
+[Concrete steps, frameworks, or practices PMs can use]
+
+**Decision this informs:**
+[What product decision, process, or approach does this inform]
+
+**Pattern to note:**
+[Any broader pattern or trend this represents, or "None" if isolated]
+```
 
 (Repeat for each item, maximum 5 items total)
-```
 
 ### Quantity Limits
 
@@ -109,27 +121,32 @@ Each daily update must follow this exact format:
 
 Every item you include must meet ALL criteria from `context/prefs.md`:
 
-1. **Product surface area**: The change affects a real product that users interact with
-2. **PM relevance**: The change informs a product decision, strategy, or pattern
-3. **Evidence-based**: The information comes from a reliable source
-4. **Actionable insight**: A PM could use this information to make a better decision
-5. **Completable synthesis**: All four required fields can be answered:
-   - User problem impacted
-   - Product surface area
-   - Decision this informs
-   - Pattern to note
+1. **PM relevance**: The content informs a product decision, strategy, pattern, or improves PM effectiveness
+2. **Evidence-based**: The information comes from a reliable source (official blog, changelog, verified post, or recognized expert)
+3. **Actionable insight**: A PM could use this information to make a better decision or improve their work
+4. **Completable synthesis**: All required fields can be answered (see synthesis format above)
+
+For product changes: Must affect a real product that users interact with.
+
+For PM craft/leadership/productivity content: Must provide concrete frameworks, practices, or insights that PMs can apply to their work.
 
 If any criterion is missing, do not include the item.
 
 ### Required Synthesis
 
-Every item must answer all four questions:
+**For product changes**, every item must answer:
 - **User problem impacted**: What user need does this address or change?
 - **Product surface area**: What part of the product ecosystem is affected?
 - **Decision this informs**: What product decision does this signal inform?
 - **Pattern to note**: Any broader pattern or trend this represents (or "None" if isolated)
 
-If you cannot answer all four, do not include the item.
+**For PM craft/leadership/productivity content**, every item must answer:
+- **PM problem addressed**: What PM challenge, workflow, or effectiveness gap does this address?
+- **How to apply**: Concrete steps, frameworks, or practices PMs can use
+- **Decision this informs**: What product decision, process, or approach does this inform?
+- **Pattern to note**: Any broader pattern or trend this represents (or "None" if isolated)
+
+If you cannot answer all required fields, do not include the item.
 
 ## When to Output "No meaningful PM-relevant updates today"
 
@@ -145,12 +162,13 @@ This is a valid and correct outcome. Do not force low-signal content to meet a q
 
 Follow the preferences in `context/prefs.md`:
 
-- Lead with the product change, not the company or person
-- Explain "what changed" before "why it matters"
-- Connect changes to user problems and product decisions explicitly
+- For product changes: Lead with the product change, not the company or person
+- For PM craft content: Lead with the insight or framework, then explain how to apply it
+- Explain "what changed" or "what the insight is" before "why it matters"
+- Connect content to user problems, product decisions, or PM effectiveness explicitly
 - Use concrete examples over abstract concepts
-- Frame insights as decision inputs, not predictions
-- Compare patterns across products when relevant
+- Frame insights as decision inputs or actionable practices, not predictions
+- Compare patterns across products or approaches when relevant
 - Acknowledge uncertainty when evidence is limited
 - Focus on implications for PM work, not general interest
 

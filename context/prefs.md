@@ -22,6 +22,10 @@ Surface product-relevant signals that help product managers make better decision
 - Product removals, deprecations, or pivots (often more instructive than launches)
 - Metrics, adoption patterns, or retention data when shared by companies
 - Product positioning changes that reveal market dynamics
+- PM craft and productivity insights (frameworks, practices, tools that improve PM effectiveness)
+- Leadership and team management insights relevant to product teams
+- User research methods, findings, and patterns that inform product decisions
+- Product strategy frameworks and decision-making approaches
 
 ---
 
@@ -55,12 +59,13 @@ Surface product-relevant signals that help product managers make better decision
 
 ## Preferred Framing
 
-- Lead with the product change, not the company or person
-- Explain "what changed" before "why it matters"
-- Connect changes to user problems and product decisions explicitly
+- For product changes: Lead with the product change, not the company or person
+- For PM craft content: Lead with the insight or framework, then explain how to apply it
+- Explain "what changed" or "what the insight is" before "why it matters"
+- Connect content to user problems, product decisions, or PM effectiveness explicitly
 - Use concrete examples over abstract concepts
-- Frame insights as decision inputs, not predictions
-- Compare patterns across products when relevant
+- Frame insights as decision inputs or actionable practices, not predictions
+- Compare patterns across products or approaches when relevant
 - Acknowledge uncertainty when evidence is limited
 - Focus on implications for PM work, not general interest
 
@@ -70,15 +75,14 @@ Surface product-relevant signals that help product managers make better decision
 
 An item must meet ALL of these criteria to be included:
 
-1. **Product surface area**: The change affects a real product that users interact with
-2. **PM relevance**: The change informs a product decision, strategy, or pattern
-3. **Evidence-based**: The information comes from a reliable source (official blog, changelog, verified post)
-4. **Actionable insight**: A PM could use this information to make a better decision
-5. **Completable synthesis**: All four required fields can be answered:
-   - User problem impacted
-   - Product surface area
-   - Decision this informs
-   - Pattern to note
+1. **PM relevance**: The content informs a product decision, strategy, pattern, or improves PM effectiveness
+2. **Evidence-based**: The information comes from a reliable source (official blog, changelog, verified post, or recognized expert)
+3. **Actionable insight**: A PM could use this information to make a better decision or improve their work
+4. **Completable synthesis**: All required fields can be answered (see synthesis format below)
+
+For product changes: Must affect a real product that users interact with.
+
+For PM craft/leadership/productivity content: Must provide concrete frameworks, practices, or insights that PMs can apply to their work.
 
 If any criterion is missing, do not include the item. It is acceptable (and correct) to output "No meaningful PM-relevant updates today" rather than force low-signal content.
 
