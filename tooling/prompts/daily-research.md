@@ -254,3 +254,57 @@ Do not include anything from the "Ignore Completely" list in `context/prefs.md`:
 
 Remember: Your goal is NOT to summarize AI news. Your goal is to surface product-relevant signals and translate them into actionable insights for product management.
 
+## Daily Product Reflection Challenge
+
+After completing the daily update, you MUST generate a reflection challenge at the end of the file.
+
+### Instructions
+
+1. Review the research items you included in today's update
+2. Select ONE specific, concrete product signal from the day's research—a decision, pattern, or insight that has clear product implications
+3. Generate a single reflection challenge that:
+   - Focuses on one specific item (not a summary of multiple items)
+   - Challenges product judgment and decision-making
+   - Requires the PM to evaluate a tradeoff, make a call, or assess an approach
+   - Can be answered in approximately 5 minutes
+   - Assumes the reader is an experienced PM (no foundational concepts)
+
+### Format
+
+Add this section at the very end of the daily update file:
+
+```markdown
+---
+
+## Daily Product Reflection Challenge
+
+### [Short Title - Max 8 Words]
+
+[One reflection question that challenges product judgment]
+
+Complete your reflection in `/reflections/daily/YYYY-MM-DD.md`
+```
+
+### Requirements
+
+The challenge must:
+- Have a short title (maximum 8 words)
+- Contain one reflection question (not multiple questions or a list)
+- Avoid asking for summaries, brainstorming, or abstract philosophy
+- Force a concrete judgment call or decision evaluation
+- Be based on a specific item from today's research (reference it briefly in the question)
+
+### Example
+
+```markdown
+---
+
+## Daily Product Reflection Challenge
+
+### When to Build Custom AI Tools vs. Buy
+
+Webflow's CPO built a custom AI chief-of-staff app for her own workflow instead of using off-the-shelf productivity tools. At what point does the time investment in building custom AI tools for your PM workflow justify the opportunity cost of not using existing solutions?
+
+Complete your reflection in `/reflections/daily/2025-12-29.md`
+```
+
