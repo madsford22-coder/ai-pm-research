@@ -6,12 +6,12 @@ This guide explains how to automatically check for product updates from tracked 
 
 We now have two scripts for checking company updates:
 
-1. **`check-company-updates.js`** - Checks official sources (blogs, changelogs)
-2. **`check-company-news.js`** - Searches for news mentions (web search)
+1. **`scripts/check-company-updates.js`** - Checks official sources (blogs, changelogs) - **NEW MODULAR VERSION**
+2. **`tooling/check-company-news.js`** - Searches for news mentions (web search) - *Legacy, to be migrated*
 
 ## Scripts
 
-### check-company-updates.js
+### check-company-updates.js (Modular Version)
 
 **What it does:**
 - Parses `context/companies.md` to find companies and their primary sources
@@ -21,6 +21,16 @@ We now have two scripts for checking company updates:
 
 **Usage:**
 ```bash
+# Using new modular script (recommended)
+node scripts/check-company-updates.js --days 14 --format markdown
+
+# Or using npm script
+cd tooling && npm run check-companies
+```
+
+**Legacy version (deprecated):**
+```bash
+# Old version in tooling/ (still works but deprecated)
 cd tooling
 node check-company-updates.js --days 14 --format markdown
 ```
@@ -66,11 +76,22 @@ Update your daily research workflow:
 
 2. **Check company updates:**
    ```bash
+   # Using new modular script (recommended)
+   node scripts/check-company-updates.js --days 14 --format markdown
+   
+   # Or legacy version
    node tooling/check-company-updates.js --days 14 --format markdown
    ```
 
 3. **Check news mentions (optional):**
    ```bash
+   # Using new modular script (recommended)
+   node scripts/check-company-news.js --days 7 --format markdown
+   
+   # Or using npm script
+   cd tooling && npm run check-news
+   
+   # Or legacy version
    node tooling/check-company-news.js --days 7 --format markdown
    ```
 

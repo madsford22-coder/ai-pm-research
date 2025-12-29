@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 /**
+ * @deprecated This script has been replaced by the modular version.
+ * Please use: node scripts/check-company-updates.js
+ * 
  * Check recent product updates from tracked companies
  * 
  * This script:

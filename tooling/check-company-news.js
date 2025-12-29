@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 /**
+ * @deprecated This script has been replaced by the modular version.
+ * Please use: node scripts/check-company-news.js
+ * 
  * Check news mentions and trending topics for tracked companies
  * 
  * This script:

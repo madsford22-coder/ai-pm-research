@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 /**
+ * @deprecated This script has been replaced by the modular version.
+ * Please use: node scripts/find-rss-feeds.js
+ * 
  * Find RSS feeds for people in context/people.md using Puppeteer
  * 
  * This script:

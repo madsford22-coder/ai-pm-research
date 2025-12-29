@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 /**
+ * @deprecated This script has been replaced by the modular version.
+ * Please use: node scripts/check-people-activity.js
+ * 
  * Check recent activity from tracked people across blogs, LinkedIn, and Twitter/X
  * Uses Puppeteer to scrape content when RSS feeds aren't available
  */

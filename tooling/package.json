@@ -6,6 +6,7 @@
     "find-feeds": "node ../scripts/find-rss-feeds.js",
     "check-companies": "node ../scripts/check-company-updates.js",
     "check-people": "node ../scripts/check-people-activity.js",
+    "check-news": "node ../scripts/check-company-news.js",
     "test": "jest --rootDir=..",
     "test:watch": "jest --rootDir=.. --watch",
     "test:coverage": "jest --rootDir=.. --coverage"
