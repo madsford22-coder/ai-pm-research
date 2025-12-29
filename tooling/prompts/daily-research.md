@@ -71,6 +71,9 @@ Each daily update must follow this exact format:
 ```markdown
 ### [Company/Product Name] - [Brief Title]
 **Source:** [Link to source]
+
+**tl;dr:** [2-3 sentence summary that captures the essence of the change and why it matters - should be understandable at a glance]
+
 **What changed:** [Concrete description of the product change]
 
 **PM Takeaway:**
@@ -93,6 +96,9 @@ Each daily update must follow this exact format:
 ```markdown
 ### [Author/Person Name] - [Brief Title]
 **Source:** [Link to source]
+
+**tl;dr:** [2-3 sentence summary that captures the essence of the insight and why it matters - should be understandable at a glance]
+
 **What changed:** [Description of the insight, framework, or practice]
 
 **PM Takeaway:**

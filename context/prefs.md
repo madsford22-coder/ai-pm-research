@@ -26,6 +26,7 @@ Surface product-relevant signals that help product managers make better decision
 - Leadership and team management insights relevant to product teams
 - User research methods, findings, and patterns that inform product decisions
 - Product strategy frameworks and decision-making approaches
+- New functions and capabilities for "vibe coding" or AI-assisted development workflows (tools, features, patterns that change how developers or PMs build products)
 
 ---
 
