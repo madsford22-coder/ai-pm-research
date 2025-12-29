@@ -118,7 +118,8 @@ async function checkPeopleActivityPipeline(options = {}) {
   // Setup browser
   const userDataDir = path.join(os.tmpdir(), 'puppeteer-people-activity-' + Date.now());
   
-  const browser = await puppeteer.launch({
+  // Launch options optimized for sandboxed environments
+  const launchOptions = {
     headless: true,
     userDataDir: userDataDir,
     args: [
@@ -139,8 +140,41 @@ async function checkPeopleActivityPipeline(options = {}) {
       '--no-default-browser-check',
       '--no-pings',
       '--no-zygote',
-    ]
-  });
+      // Additional flags for better compatibility in restricted environments
+      '--disable-extensions',
+      '--disable-plugins',
+      '--disable-default-apps',
+      '--disable-sync',
+      '--metrics-recording-only',
+      '--mute-audio',
+      '--no-crash-upload',
+      '--disable-background-downloads',
+      '--disable-client-side-phishing-detection',
+      '--disable-hang-monitor',
+      '--disable-popup-blocking',
+      '--disable-prompt-on-repost',
+      '--disable-translate',
+      '--disable-web-resources',
+      '--safebrowsing-disable-auto-update',
+    ],
+    ignoreHTTPSErrors: true,
+  };
+  
+  let browser;
+  try {
+    browser = await puppeteer.launch(launchOptions);
+  } catch (error) {
+    console.error('\n✗ Failed to launch browser. This may be due to:');
+    console.error('  1. Missing permissions (try running with elevated permissions)');
+    console.error('  2. Chrome/Chromium installation issues');
+    console.error('  3. Sandbox restrictions');
+    console.error(`\nError: ${error.message}\n`);
+    console.error('If running in a sandboxed environment, ensure the script has:');
+    console.error('  - Network access permissions');
+    console.error('  - File system write access to temp directory');
+    console.error('  - Ability to launch browser processes\n');
+    throw error;
+  }
   
   // Check all people
   const allActivity = [];
