@@ -95,6 +95,7 @@ Each daily update must follow this exact format:
 **For PM craft/leadership/productivity content:**
 ```markdown
 ### [Author/Person Name] - [Brief Title]
+**Author:** [Person Name] ([Role/Title/Background from people.md])
 **Source:** [Link to source]
 
 **tl;dr:** [2-3 sentence summary that captures the essence of the insight and why it matters - should be understandable at a glance]
@@ -127,22 +128,36 @@ After the main items, include a section titled "## Other Notable Updates" that l
 - Format: Bulleted list with title/description, date (if relevant), and URL
 - Purpose: Provide a complete record of all net-new items found, even if not covered in detail
 
+**Important: Deduplication and Prioritization**
+
+1. **Check for duplicates**: Before adding an item to "Other Notable Updates", check ALL previous days' "Other Notable Updates" sections. If an item was already listed in a previous day's "Other Notable Updates", DO NOT include it again. Only include items that are truly new (not previously listed in any "Other Notable Updates" section).
+
+2. **Prioritize by topic interest**: Order items in "Other Notable Updates" by priority based on `context/prefs.md`:
+   - **Highest priority** (list first): Items related to shipped product changes, vibe coding/AI-assisted development, PM craft/productivity insights, product strategy frameworks
+   - **Medium priority**: Leadership/team management insights, user research methods, product positioning changes
+   - **Lower priority** (list last): Conference lists, podcast episodes, general announcements, future-dated items
+
+3. **Mark previously covered items**: If an item was covered in detail in a previous day's main analysis, mark it with *(Note: Covered in detail on YYYY-MM-DD)*
+
 Example format:
 ```markdown
 ## Other Notable Updates
 
 Additional items found in today's research (not included in detailed analysis above):
 
-- **Author Name - Post Title** (Date): URL
-- **Company Name - Feature/Update** (Date): URL *(Note: Covered in detail on YYYY-MM-DD)*
+- **Author Name - High Priority Post** (Date): URL
+- **Company Name - Product Change** (Date): URL
+- **Author Name - Medium Priority Post** (Date): URL *(Note: Covered in detail on YYYY-MM-DD)*
+- **Author Name - Lower Priority Post** (Date): URL
 ```
 
 ### Avoiding Duplicates
 
-- **Check previous days' updates** before including an item in detailed analysis
+- **Check previous days' updates** before including an item in detailed analysis OR "Other Notable Updates"
 - If an item was covered in detail in a previous update, do NOT repeat it in the detailed analysis
-- Instead, list it in "Other Notable Updates" with a note indicating when it was covered
+- If an item was already listed in a previous day's "Other Notable Updates", do NOT include it again
 - Only include items in detailed analysis that are net-new (not previously covered)
+- Only include items in "Other Notable Updates" that are net-new (not previously listed in any "Other Notable Updates" section)
 
 ### Quantity Limits
 
