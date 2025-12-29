@@ -100,31 +100,22 @@ This file defines whose public thinking and product commentary should be treated
 ---
 
 ## Julie Zhuo
-**Role:** Former VP Product at Facebook; Author
-**Why they matter:** Product management fundamentals and team building. Practical advice on shipping products, managing teams, and product strategy.
+**Role:** Former VP Product at Facebook/Meta; Author
+**Why they matter:** Product management fundamentals, team building, product craft, and UX quality. Practical advice on shipping products, managing teams, product strategy, and building excellent products with high quality bars.
 **Signal types to watch for:**
 - Product management fundamentals
 - Team and process insights
 - Product strategy thinking
 - Real product decision stories
-**Primary platforms:**
-- Twitter/X: @joulee
-- Blog: https://medium.com/@joulee
-- RSS Feed: https://medium.com/feed/@joulee
-- LinkedIn: https://www.linkedin.com/in/juliezhuo/
-
----
-
-## Julie Zhou
-**Role:** Former Meta product leader
-**Why they matter:** Product craft, UX quality, and leadership. Shares insights on product quality bar, craft, and how to build excellent products.
-**Signal types to watch for:**
 - Product quality and craft
 - UX quality insights
 - Product leadership
 - Product execution patterns
 **Primary platforms:**
+- Twitter/X: @joulee
+- Blog: https://medium.com/@joulee
 - Blog: https://juliezhuo.com
+- RSS Feed: https://medium.com/feed/@joulee
 - LinkedIn: https://www.linkedin.com/in/juliezhuo/
 
 ---
