@@ -65,31 +65,31 @@ Where `YYYY` is the current year and `YYYY-MM-DD` is today's date (e.g., `2025-0
 
 ### Content Structure
 
-Each daily update must follow this exact format:
+Each daily update must follow this exact format with strict brevity requirements:
 
 **For product changes:**
 ```markdown
 ### [Company/Product Name] - [Brief Title]
 **Source:** [Link to source]
 
-**tl;dr:** [2-3 sentence summary that captures the essence of the change and why it matters - should be understandable at a glance]
+**tl;dr:** [Max 2 sentences, max 35 words total]
 
-**What changed:** [Concrete description of the product change]
+**What changed:** [Max 1 sentence, max 25 words]
 
 **PM Takeaway:**
-[One sentence summary of why this matters to PMs]
+[Max 1 sentence, max 25 words]
 
 **User problem impacted:**
-[What user need does this address or change]
+[Max 1 sentence, max 25 words]
 
 **Product surface area:**
-[What part of the product ecosystem is affected]
+[Max 1 sentence, max 25 words]
 
 **Decision this informs:**
-[What product decision does this signal inform]
+[Max 1 sentence, max 25 words]
 
 **Pattern to note:**
-[Any broader pattern or trend this represents, or "None" if isolated]
+[Max 1 sentence, max 30 words]
 ```
 
 **For PM craft/leadership/productivity content:**
@@ -98,25 +98,38 @@ Each daily update must follow this exact format:
 **Author:** [Person Name] ([Role/Title/Background from people.md])
 **Source:** [Link to source]
 
-**tl;dr:** [2-3 sentence summary that captures the essence of the insight and why it matters - should be understandable at a glance]
+**tl;dr:** [Max 2 sentences, max 35 words total]
 
-**What changed:** [Description of the insight, framework, or practice]
+**What changed:** [Max 1 sentence, max 25 words]
 
 **PM Takeaway:**
-[One sentence summary of why this matters to PMs]
+[Max 1 sentence, max 25 words]
 
 **PM problem addressed:**
-[What PM challenge, workflow, or effectiveness gap does this address]
+[Max 1 sentence, max 25 words]
 
 **How to apply:**
-[Concrete steps, frameworks, or practices PMs can use]
+[Max 2 bullets, max 15 words per bullet]
 
 **Decision this informs:**
-[What product decision, process, or approach does this inform]
+[Max 1 sentence, max 25 words]
 
 **Pattern to note:**
-[Any broader pattern or trend this represents, or "None" if isolated]
+[Max 1 sentence, max 30 words]
 ```
+
+**Brevity Requirements (Mandatory)**
+
+For each of the detailed item research sections:
+- **tl;dr:** max 2 sentences, max 35 words total
+- **What changed:** max 1 sentence, max 25 words
+- **PM Takeaway:** max 1 sentence, max 25 words
+- **PM problem addressed / User problem impacted:** max 1 sentence, max 25 words
+- **How to apply:** max 2 bullets, max 15 words per bullet
+- **Decision this informs:** max 1 sentence, max 25 words
+- **Pattern to note:** max 1 sentence, max 30 words
+
+If any section exceeds its limit, rewrite it until it fits. Do not remove sections to achieve brevity.
 
 (Repeat for each item, maximum 5 items total)
 
