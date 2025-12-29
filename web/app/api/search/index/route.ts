@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import { buildSearchIndex } from '@/lib/content/loader';
 
+// Force dynamic rendering to always get latest content
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   try {
     const index = buildSearchIndex();

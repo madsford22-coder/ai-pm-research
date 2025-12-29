@@ -7,6 +7,12 @@ interface PageProps {
   params: Promise<{ slug?: string[] }>;
 }
 
+// Force dynamic rendering to always check for new content
+export const dynamic = 'force-dynamic';
+export const revalidate = 0; // Always revalidate
+
+// Optional: Pre-generate known paths for better performance
+// But still allow dynamic routes for new content
 export async function generateStaticParams() {
   try {
     const paths = getAllContentPaths();

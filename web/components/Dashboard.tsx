@@ -6,6 +6,7 @@ import { ContentMetadata } from '@/lib/content/types';
 
 export default function Dashboard() {
   const [recentUpdates, setRecentUpdates] = useState<ContentMetadata[]>([]);
+  const [recentReflections, setRecentReflections] = useState<ContentMetadata[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,6 +23,18 @@ export default function Dashboard() {
           })
           .slice(0, 5);
         setRecentUpdates(updates);
+
+        // Filter for reflections and sort by date (newest first)
+        const reflections = data
+          .filter((item) => item.tags?.includes('reflection') || item.path.startsWith('reflections/'))
+          .sort((a, b) => {
+            const dateA = a.date ? new Date(a.date).getTime() : 0;
+            const dateB = b.date ? new Date(b.date).getTime() : 0;
+            return dateB - dateA;
+          })
+          .slice(0, 5);
+        setRecentReflections(reflections);
+
         setLoading(false);
       })
       .catch((err) => {
@@ -93,7 +106,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {recentUpdates.length > 0 ? (
+      {recentUpdates.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-semibold text-[#1a1a1a]">Recent Daily Updates</h2>
@@ -137,7 +150,55 @@ export default function Dashboard() {
             ))}
           </div>
         </div>
-      ) : (
+      )}
+
+      {recentReflections.length > 0 && (
+        <div className="mt-12">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl font-semibold text-[#1a1a1a]">Recent Reflections</h2>
+            <Link
+              href="/reflections/daily"
+              className="text-[#2563eb] hover:text-[#1d4ed8] font-medium text-sm hover:underline"
+            >
+              View all →
+            </Link>
+          </div>
+          <div className="space-y-4">
+            {recentReflections.map((reflection) => (
+              <Link
+                key={reflection.url}
+                href={reflection.url}
+                className="block border-b border-[#e5e7eb] pb-6 hover:border-[#d1d5db] transition-colors group"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-xl font-semibold text-[#1a1a1a] mb-2 group-hover:text-[#2563eb] transition-colors leading-tight">
+                      {reflection.title.replace(/^#+\s+/, '').trim()}
+                    </h3>
+                    {reflection.summary && (
+                      <p className="text-[#6b7280] text-base mb-3 line-clamp-2 leading-relaxed">
+                        {reflection.summary}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-4 text-sm text-[#9ca3af]">
+                      {reflection.date && (
+                        <time dateTime={reflection.date}>
+                          {formatDate(reflection.date)}
+                        </time>
+                      )}
+                    </div>
+                  </div>
+                  <svg className="w-5 h-5 text-[#9ca3af] group-hover:text-[#2563eb] flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {recentUpdates.length === 0 && recentReflections.length === 0 && (
         <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
           <p className="text-gray-500 mb-4">No daily updates yet.</p>
           <Link
