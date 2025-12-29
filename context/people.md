@@ -547,3 +547,51 @@ This file defines whose public thinking and product commentary should be treated
 - Pure investment/funding content
 
 ---
+
+## Simon Willison
+**Role:** Co-creator of Django; Creator of Datasette
+**Why they matter:** Practical AI tool development and product thinking. Shares real-world examples of building AI-powered tools, developer workflows, and product decisions for technical products.
+**Signal types to watch for:**
+- AI tool product decisions
+- Developer tool product patterns
+- Practical product development
+- Technical product insights
+**Primary platforms:**
+- Blog: https://simonwillison.net
+- RSS Feed: https://simonwillison.net/feeds/rss/
+- GitHub: https://github.com/simonw
+
+---
+
+## Steve Yegge
+**Role:** Former engineer at Google, Amazon
+**Why they matter:** Deep technical product thinking and engineering culture. Long-form essays on product development, engineering practices, and organizational dynamics that impact product outcomes.
+**Signal types to watch for:**
+- Engineering culture and product impact
+- Product development practices
+- Technical product strategy
+- Organizational dynamics affecting products
+**Primary platforms:**
+- Blog: https://steve-yegge.medium.com
+- RSS Feed: https://medium.com/feed/@steve.yegge
+- GitHub: https://github.com/steveyegge
+
+---
+
+## Gene Kim
+**Role:** DevOps thought leader; Author of "The Phoenix Project" and "The Unicorn Project"
+**Why they matter:** Engineering productivity and organizational effectiveness. Shares insights on how engineering practices, DevOps, and organizational design impact product delivery and quality.
+**Signal types to watch for:**
+- Engineering productivity patterns
+- Product delivery effectiveness
+- Organizational design for product teams
+- Engineering practices that impact products
+**Primary platforms:**
+- Blog: https://itrevolution.com
+- Twitter/X: @RealGeneKim
+- LinkedIn: https://www.linkedin.com/in/realgenekim/
+- RSS Feed: https://itrevolution.com/feed/
+**Ignore unless:**
+- Pure IT operations content without product implications
+
+---
