@@ -11,6 +11,13 @@ System of record and long-term memory for tracking AI product signals and transl
   - `open-questions.md` - Open questions to investigate
 - `updates/daily/YYYY/` - Daily research updates organized by year
   - Format: `YYYY-MM-DD.md`
+- `src/` - Modular, testable source code (see [src/README.md](src/README.md))
+  - `domain/` - Domain type definitions
+  - `adapters/` - I/O adapters (markdown, RSS, scraping)
+  - `transforms/` - Pure transform functions
+  - `pipelines/` - Orchestration pipelines
+- `scripts/` - Thin wrapper scripts (CLI entry points)
+- `tooling/` - Legacy scripts (deprecated, use `scripts/` instead)
 
 ## Operating Principles
 
@@ -33,4 +40,31 @@ Every item must answer:
 - Maximum 3–5 items per day
 - It is acceptable (and correct) to output "No meaningful PM-relevant updates today"
 - Never dump raw research—only curated, synthesized markdown
+
+## Development
+
+### Running Scripts
+
+```bash
+# Check people activity
+node scripts/check-people-activity.js --days 30
+
+# Check company updates
+node scripts/check-company-updates.js --days 14
+
+# Find RSS feeds
+node scripts/find-rss-feeds.js
+```
+
+### Testing
+
+```bash
+# JavaScript tests
+cd tooling && npm test
+
+# Python tests
+pytest tooling/
+```
+
+See [MIGRATION.md](MIGRATION.md) for details on the modular architecture.
 

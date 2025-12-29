@@ -3,13 +3,38 @@
   "version": "1.0.0",
   "description": "Tools for AI PM Research Assistant",
   "scripts": {
-    "find-feeds": "node find-rss-feeds.js",
-    "check-companies": "node check-company-updates.js"
+    "find-feeds": "node ../scripts/find-rss-feeds.js",
+    "check-companies": "node ../scripts/check-company-updates.js",
+    "check-people": "node ../scripts/check-people-activity.js",
+    "test": "jest --rootDir=..",
+    "test:watch": "jest --rootDir=.. --watch",
+    "test:coverage": "jest --rootDir=.. --coverage"
   },
   "dependencies": {
     "puppeteer": "^24.34.0"
   },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "jest": {
+    "rootDir": "..",
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/__tests__/**/*.test.js",
+      "**/?(*.)+(spec|test).js"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/**/*.test.js",
+      "!src/**/__tests__/**"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/__tests__/",
+      "/tooling/"
+    ]
   }
 }
