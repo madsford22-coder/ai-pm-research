@@ -1,0 +1,185 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { ContentMetadata } from '@/lib/content/types';
+
+interface TreeNode {
+  name: string;
+  path: string;
+  url: string;
+  title: string;
+  children: Map<string, TreeNode>;
+  isFile: boolean;
+}
+
+function buildTree(metadata: ContentMetadata[]): TreeNode {
+  const root: TreeNode = {
+    name: '',
+    path: '',
+    url: '/',
+    title: 'Home',
+    children: new Map(),
+    isFile: false,
+  };
+
+  for (const item of metadata) {
+    const parts = item.slug.split('/');
+    let current = root;
+
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      const isLast = i === parts.length - 1;
+
+      if (!current.children.has(part)) {
+        const path = parts.slice(0, i + 1).join('/');
+        current.children.set(part, {
+          name: part,
+          path,
+          url: item.url,
+          title: item.title,
+          children: new Map(),
+          isFile: isLast,
+        });
+      }
+
+      current = current.children.get(part)!;
+    }
+  }
+
+  return root;
+}
+
+function renderTree(node: TreeNode, pathname: string, level: number = 0): React.ReactNode {
+  if (node.name === '' && level === 0) {
+    // Root level - render children
+    return (
+      <ul className="space-y-1">
+        {Array.from(node.children.values())
+          .sort((a, b) => {
+            if (a.isFile && !b.isFile) return 1;
+            if (!a.isFile && b.isFile) return -1;
+            return a.name.localeCompare(b.name);
+          })
+          .map((child) => renderTree(child, pathname, level + 1))}
+      </ul>
+    );
+  }
+
+  const isActive = pathname === node.url || pathname.startsWith(node.url + '/');
+  const hasChildren = node.children.size > 0;
+
+  return (
+    <li key={node.path}>
+      {node.isFile ? (
+        <Link
+          href={node.url}
+          className={`block px-3 py-2 rounded-md text-sm transition-colors ${
+            isActive
+              ? 'bg-[#f3f4f6] text-[#1a1a1a] font-medium'
+              : 'text-[#6b7280] hover:bg-[#f9fafb] hover:text-[#1a1a1a]'
+          }`}
+        >
+          {node.title.replace(/^#+\s+/, '').trim()}
+        </Link>
+      ) : (
+        <>
+          <div className="px-3 py-2 text-xs font-semibold text-[#9ca3af] uppercase tracking-wider">
+            {node.name}
+          </div>
+          {hasChildren && (
+            <ul className="ml-4 space-y-1">
+              {Array.from(node.children.values())
+                .sort((a, b) => {
+                  if (a.isFile && !b.isFile) return 1;
+                  if (!a.isFile && b.isFile) return -1;
+                  return a.name.localeCompare(b.name);
+                })
+                .map((child) => renderTree(child, pathname, level + 1))}
+            </ul>
+          )}
+        </>
+      )}
+    </li>
+  );
+}
+
+export default function Sidebar() {
+  const pathname = usePathname();
+  const [tree, setTree] = useState<TreeNode | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    // Load metadata on client side
+    fetch('/api/content/metadata')
+      .then((res) => res.json())
+      .then((data: ContentMetadata[]) => {
+        const builtTree = buildTree(data);
+        setTree(builtTree);
+      })
+      .catch((err) => {
+        console.error('Failed to load content metadata:', err);
+      });
+  }, []);
+
+  return (
+    <>
+      {/* Mobile menu button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="lg:hidden fixed top-4 left-4 z-20 p-2 bg-white border border-[#e5e7eb] rounded-md shadow-sm"
+        aria-label="Toggle menu"
+      >
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          {isOpen ? (
+            <path d="M6 18L18 6M6 6l12 12" />
+          ) : (
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          )}
+        </svg>
+      </button>
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed left-0 top-0 h-full w-64 bg-white border-r border-[#e5e7eb] z-10 transform transition-transform duration-200 ease-in-out ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0`}
+      >
+        <div className="p-6">
+          <Link href="/" className="block mb-8">
+            <h1 className="text-lg font-semibold text-[#1a1a1a]">AI PM Research</h1>
+          </Link>
+          <nav className="overflow-y-auto max-h-[calc(100vh-8rem)]">
+            {tree ? (
+              renderTree(tree, pathname)
+            ) : (
+              <div className="space-y-2">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="h-8 bg-gray-200 rounded animate-pulse"></div>
+                ))}
+              </div>
+            )}
+          </nav>
+        </div>
+      </aside>
+
+      {/* Overlay for mobile */}
+      {isOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-0"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+    </>
+  );
+}
+

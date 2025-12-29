@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --accent: #2563eb;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Markdown content styles - Lenny's Newsletter inspired */
+.prose {
+  @apply text-[#1a1a1a] leading-7;
+  font-size: 18px;
+  max-width: none;
+}
+
+.prose h1 {
+  @apply text-4xl font-bold mt-0 mb-6 text-[#1a1a1a] leading-tight;
+  letter-spacing: -0.02em;
+}
+
+.prose h2 {
+  @apply text-2xl font-semibold mt-12 mb-6 text-[#1a1a1a] leading-tight;
+  letter-spacing: -0.01em;
+  border: none;
+  padding: 0;
+}
+
+.prose h3 {
+  @apply text-xl font-semibold mt-10 mb-4 text-[#1a1a1a] leading-tight;
+  letter-spacing: -0.01em;
+}
+
+.prose h4 {
+  @apply text-lg font-semibold mt-8 mb-3 text-[#1a1a1a];
+}
+
+.prose p {
+  @apply mb-6;
+  line-height: 1.75;
+}
+
+.prose ul,
+.prose ol {
+  @apply mb-4 ml-6;
+}
+
+.prose ul {
+  @apply list-disc;
+}
+
+.prose ol {
+  @apply list-decimal;
+}
+
+.prose li {
+  @apply mb-2;
+}
+
+.prose a {
+  @apply text-[#2563eb] hover:text-[#1d4ed8] underline transition-colors;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.prose code {
+  @apply bg-[#f3f4f6] px-1.5 py-0.5 rounded text-sm font-mono text-[#1a1a1a];
+  font-size: 0.9em;
+}
+
+.prose pre {
+  @apply bg-[#1a1a1a] text-[#f9fafb] p-5 rounded-lg overflow-x-auto mb-6;
+  border: 1px solid #e5e7eb;
+}
+
+.prose pre code {
+  @apply bg-transparent p-0 text-[#f9fafb];
+  font-size: 0.9em;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-[#e5e7eb] pl-6 italic my-6 text-[#4b5563];
+  font-size: 1.05em;
+}
+
+.prose table {
+  @apply w-full border-collapse mb-4;
+}
+
+.prose th,
+.prose td {
+  @apply border border-gray-300 px-4 py-2;
+}
+
+.prose th {
+  @apply bg-gray-100 font-semibold;
+}
+
+.prose hr {
+  @apply my-10 border-[#e5e7eb];
+}
+
+.prose .anchor-link {
+  @apply ml-2 text-[#9ca3af] hover:text-[#6b7280] no-underline;
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+
+.prose strong {
+  @apply font-semibold text-[#1a1a1a];
+}
+
+.prose em {
+  @apply italic;
+}
+
+.prose ul li::marker {
+  @apply text-[#6b7280];
+}
+
+.prose ol li::marker {
+  @apply text-[#6b7280];
+}
+

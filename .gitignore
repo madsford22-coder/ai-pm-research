@@ -16,4 +16,9 @@
 *.tmp
 *.log
 
+# Environment variables (never commit secrets!)
+.env
+.env.local
+.env.*.local
+
 tooling/node_modules/

@@ -66,5 +66,17 @@ cd tooling && npm test
 pytest tooling/
 ```
 
+### Web App
+
+The repository includes a Next.js web app for browsing markdown content:
+
+```bash
+cd web
+npm install
+npm run dev
+```
+
+See [web/README.md](web/README.md) for details. The web app reads markdown files from `/content` at the repository root. See [content/README.md](content/README.md) for information on migrating existing markdown files.
+
 See [MIGRATION.md](MIGRATION.md) for details on the modular architecture.
 
