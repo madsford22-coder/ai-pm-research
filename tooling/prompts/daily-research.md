@@ -295,7 +295,7 @@ Add this section at the very end of the daily update file:
 
 [One reflection question that challenges product judgment]
 
-Complete your reflection in `/reflections/daily/YYYY-MM-DD.md`
+Complete your reflection in `/content/reflections/daily/YYYY-MM-DD.md`
 ```
 
 ### Requirements
