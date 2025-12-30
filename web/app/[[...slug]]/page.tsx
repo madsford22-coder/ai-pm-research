@@ -33,8 +33,14 @@ export async function generateStaticParams() {
 
 export default async function ContentPage({ params }: PageProps) {
   const { slug } = await params;
-  const filePath = slug ? `${slug.join('/')}.md` : 'index.md';
   
+  // Handle root route - show dashboard
+  if (!slug || slug.length === 0) {
+    const Dashboard = (await import('@/components/Dashboard')).default;
+    return <Dashboard />;
+  }
+  
+  const filePath = `${slug.join('/')}.md`;
   const content = await getContentByPath(filePath);
   
   if (!content) {
