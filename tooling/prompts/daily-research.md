@@ -136,21 +136,25 @@ If any section exceeds its limit, rewrite it until it fits. Do not remove sectio
 ### Other Notable Updates Section
 
 After the main items, include a section titled "## Other Notable Updates" that lists:
-- All additional items found in today's research that were not included in the detailed analysis above
+- Additional items found in today's research that were not included in the detailed analysis above
 - Items that were covered in detail in previous days should be marked with *(Note: Covered in detail on YYYY-MM-DD)*
 - Format: Bulleted list with title/description, date (if relevant), and URL
-- Purpose: Provide a complete record of all net-new items found, even if not covered in detail
+- Purpose: Provide a concise record of the most important net-new items found, prioritizing quality over quantity
 
 **Important: Deduplication and Prioritization**
 
-1. **Check for duplicates**: Before adding an item to "Other Notable Updates", check ALL previous days' "Other Notable Updates" sections. If an item was already listed in a previous day's "Other Notable Updates", DO NOT include it again. Only include items that are truly new (not previously listed in any "Other Notable Updates" section).
+1. **Check for duplicates**: Before adding an item to "Other Notable Updates", check ALL previous days' "Other Notable Updates" sections for the past 14 days. If an item was already listed in a previous day's "Other Notable Updates", DO NOT include it again. Only include items that are truly new (not previously listed in any "Other Notable Updates" section within the past 14 days).
 
-2. **Prioritize by topic interest**: Order items in "Other Notable Updates" by priority based on `context/prefs.md`:
+2. **Remove items after 2 weeks**: If an item has been listed in "Other Notable Updates" for 2 consecutive weeks (14 days), remove it from future updates. Items should not persist indefinitely in this section.
+
+3. **Prioritize by topic interest**: Order items in "Other Notable Updates" by priority based on `context/prefs.md`:
    - **Highest priority** (list first): Items related to shipped product changes, vibe coding/AI-assisted development, PM craft/productivity insights, product strategy frameworks
    - **Medium priority**: Leadership/team management insights, user research methods, product positioning changes
    - **Lower priority** (list last): Conference lists, podcast episodes, general announcements, future-dated items
 
-3. **Mark previously covered items**: If an item was covered in detail in a previous day's main analysis, mark it with *(Note: Covered in detail on YYYY-MM-DD)*
+4. **Mark previously covered items**: If an item was covered in detail in a previous day's main analysis, mark it with *(Note: Covered in detail on YYYY-MM-DD)*
+
+5. **Maximum 5 items**: Limit "Other Notable Updates" to a maximum of 5 items total. Prioritize the highest-signal items that meet the quality bar. If you have more than 5 items, select only the top 5 by priority and signal quality.
 
 Example format:
 ```markdown
@@ -161,23 +165,24 @@ Additional items found in today's research (not included in detailed analysis ab
 - **Author Name - High Priority Post** (Date): URL
 - **Company Name - Product Change** (Date): URL
 - **Author Name - Medium Priority Post** (Date): URL *(Note: Covered in detail on YYYY-MM-DD)*
-- **Author Name - Lower Priority Post** (Date): URL
 ```
 
 ### Avoiding Duplicates
 
 - **Check previous days' updates** before including an item in detailed analysis OR "Other Notable Updates"
 - If an item was covered in detail in a previous update, do NOT repeat it in the detailed analysis
-- If an item was already listed in a previous day's "Other Notable Updates", do NOT include it again
+- If an item was already listed in a previous day's "Other Notable Updates" (within past 14 days), do NOT include it again
 - Only include items in detailed analysis that are net-new (not previously covered)
-- Only include items in "Other Notable Updates" that are net-new (not previously listed in any "Other Notable Updates" section)
+- Only include items in "Other Notable Updates" that are net-new (not previously listed in any "Other Notable Updates" section within the past 14 days)
+- Remove items that have been listed for 2 consecutive weeks (14 days)
 
 ### Quantity Limits
 
 - **Maximum 3-5 items per day** in detailed analysis
-- "Other Notable Updates" section should include all net-new items found, regardless of count
+- **Maximum 5 items** in "Other Notable Updates" section - prioritize highest-signal items only
 - If there are fewer than 3 meaningful PM-relevant updates, include only what meets the quality bar
 - It is acceptable (and correct) to output "No meaningful PM-relevant updates today" if nothing meets the criteria
+- If "Other Notable Updates" would be empty or only contain items already covered, you may omit the section entirely
 
 ### Quality Bar
 
