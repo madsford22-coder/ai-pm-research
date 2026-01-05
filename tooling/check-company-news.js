@@ -165,14 +165,21 @@ async function main() {
   
   for (const company of companies) {
     console.log(`Checking news for ${company.name}...`);
-    const news = await searchNewsForCompany(browser, company.name, daysBack);
-    
-    for (const item of news) {
-      allNews.push({
-        company: company.name,
-        category: company.category,
-        ...item
-      });
+    const page = await browser.newPage();
+    try {
+      const news = await searchNewsForCompany(page, company.name, daysBack);
+      
+      for (const item of news) {
+        allNews.push({
+          company: company.name,
+          category: company.category,
+          ...item
+        });
+      }
+    } catch (error) {
+      console.error(`  ✗ Error searching news for ${company.name}: ${error.message}`);
+    } finally {
+      await page.close();
     }
     
     // Delay between searches
