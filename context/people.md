@@ -248,6 +248,23 @@ This file defines whose public thinking and product commentary should be treated
 
 ---
 
+## Karri Saarinen
+**Role:** Co-founder and CEO, Linear; Former Principal Designer at Airbnb; Former Head of Design at Coinbase
+**Why they matter:** Building Linear, a modern project management tool. Shares product decisions, design thinking, and company building insights from both design and CEO perspectives. Active on X with strong product and design signal.
+**Signal types to watch for:**
+- Product development and iteration decisions
+- Design thinking applied to product management
+- Company building and team scaling insights
+- Product philosophy and decision-making frameworks
+- Developer tool and productivity product patterns
+**Primary platforms:**
+- Twitter/X: @karrisaarinen
+- Website: https://karrisaarinen.com
+**Ignore unless:**
+- Personal content unrelated to product or design
+
+---
+
 ## Ammaar Reshi
 **Role:** Product Manager, Midjourney
 **Why they matter:** Inside view of how Midjourney builds and ships AI products. Shares product decisions, user behavior, and creative tool development.
