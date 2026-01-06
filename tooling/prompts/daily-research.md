@@ -40,7 +40,7 @@ You should NOT:
 
 Before conducting research, check for recent posts from tracked people:
 
-1. Run the script: `python3 tooling/check-recent-posts.py --days 14 --format markdown`
+1. Run the script: `node scripts/check-people-activity.js --days 14 --format markdown`
 2. Review the output for recent posts (last 14 days by default)
 3. For each recent post that meets the quality bar:
    - Read the full post content
@@ -48,10 +48,14 @@ Before conducting research, check for recent posts from tracked people:
    - Include in daily update if it meets all quality criteria
 
 The script will:
-- Parse `context/people.md` for RSS feeds and blog URLs
-- Check RSS feeds for recent posts
-- Attempt to find RSS feeds if not explicitly listed
+- Parse `context/people.md` for RSS feeds, blog URLs, LinkedIn profiles, and Twitter/X handles
+- Check RSS feeds for recent posts (preferred method)
+- Scrape blogs if no RSS feed is available
+- Check LinkedIn profiles for recent posts (may be limited without authentication)
+- Check Twitter/X accounts for recent tweets (may be limited without authentication)
 - Output recent posts in markdown format for review
+
+**Note:** Twitter/X and LinkedIn scraping may be limited due to login requirements. The script will attempt to access public content but may show errors if authentication is required. RSS feeds and blogs are the most reliable sources.
 
 ## Output Requirements
 
@@ -261,9 +265,9 @@ Do not include anything from the "Ignore Completely" list in `context/prefs.md`:
 ## Execution Steps
 
 1. Read and understand all four context files (`companies.md`, `people.md`, `prefs.md`, `open-questions.md`)
-2. Check recent posts from tracked people using `tooling/check-recent-posts.py`
-3. Check recent product updates from tracked companies using `tooling/check-company-updates.js`
-4. Optionally check news mentions using `tooling/check-company-news.js`
+2. Check recent posts from tracked people using `scripts/check-people-activity.js --days 14 --format markdown` (checks RSS feeds, blogs, LinkedIn, and Twitter/X)
+3. Check recent product updates from tracked companies using `scripts/check-company-updates.js --days 14 --format markdown`
+4. Optionally check news mentions using `scripts/check-company-news.js --days 7 --format markdown`
 5. Review recent posts from tracked people for PM-relevant signals
 6. Filter all findings through the quality bar in `prefs.md`
 7. Synthesize remaining items using the required format
