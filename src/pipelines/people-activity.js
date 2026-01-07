@@ -115,8 +115,13 @@ async function checkPeopleActivityPipeline(options = {}) {
   const people = parsePeopleFile(peopleFile);
   console.log(`Found ${people.length} people to check\n`);
   
-  // Setup browser
-  const userDataDir = path.join(os.tmpdir(), 'puppeteer-people-activity-' + Date.now());
+  // Setup browser - use workspace directory instead of system temp to avoid permission issues
+  const fs = require('fs');
+  const puppeteerDataDir = path.join(__dirname, '../../.puppeteer-data');
+  if (!fs.existsSync(puppeteerDataDir)) {
+    fs.mkdirSync(puppeteerDataDir, { recursive: true });
+  }
+  const userDataDir = path.join(puppeteerDataDir, 'puppeteer-people-activity-' + Date.now());
   
   // Launch options optimized for sandboxed environments
   const launchOptions = {
@@ -188,7 +193,6 @@ async function checkPeopleActivityPipeline(options = {}) {
   
   // Clean up
   try {
-    const fs = require('fs');
     if (fs.existsSync(userDataDir)) {
       fs.rmSync(userDataDir, { recursive: true, force: true });
     }

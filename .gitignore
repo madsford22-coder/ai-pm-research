@@ -22,3 +22,6 @@
 .env.*.local
 
 tooling/node_modules/
+
+# Puppeteer data directory
+.puppeteer-data/

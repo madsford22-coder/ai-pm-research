@@ -153,8 +153,13 @@ async function findRSSFeedsPipeline(options = {}) {
   const peopleWithBlogs = people.filter(p => p.blog && !p.rss_feed);
   console.log(`Found ${peopleWithBlogs.length} people with blogs but no RSS feeds\n`);
   
-  // Setup browser
-  const userDataDir = path.join(os.tmpdir(), 'puppeteer-user-data-' + Date.now());
+  // Setup browser - use workspace directory instead of system temp to avoid permission issues
+  const fs = require('fs');
+  const puppeteerDataDir = path.join(__dirname, '../../.puppeteer-data');
+  if (!fs.existsSync(puppeteerDataDir)) {
+    fs.mkdirSync(puppeteerDataDir, { recursive: true });
+  }
+  const userDataDir = path.join(puppeteerDataDir, 'puppeteer-user-data-' + Date.now());
   
   // Launch options optimized for sandboxed environments
   const launchOptions = {
@@ -235,7 +240,6 @@ async function findRSSFeedsPipeline(options = {}) {
   
   // Clean up
   try {
-    const fs = require('fs');
     if (fs.existsSync(userDataDir)) {
       fs.rmSync(userDataDir, { recursive: true, force: true });
     }

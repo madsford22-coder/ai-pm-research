@@ -36,8 +36,13 @@ async function checkCompanyNewsPipeline(options = {}) {
   const companies = parseCompaniesFile(companiesFile);
   console.log(`Found ${companies.length} companies to check\n`);
   
-  // Setup browser
-  const userDataDir = path.join(os.tmpdir(), 'puppeteer-user-data-' + Date.now());
+  // Setup browser - use workspace directory instead of system temp to avoid permission issues
+  const fs = require('fs');
+  const puppeteerDataDir = path.join(__dirname, '../../.puppeteer-data');
+  if (!fs.existsSync(puppeteerDataDir)) {
+    fs.mkdirSync(puppeteerDataDir, { recursive: true });
+  }
+  const userDataDir = path.join(puppeteerDataDir, 'puppeteer-user-data-' + Date.now());
   
   // Launch options optimized for sandboxed environments
   const launchOptions = {
@@ -122,7 +127,6 @@ async function checkCompanyNewsPipeline(options = {}) {
   
   // Clean up
   try {
-    const fs = require('fs');
     if (fs.existsSync(userDataDir)) {
       fs.rmSync(userDataDir, { recursive: true, force: true });
     }
