@@ -35,12 +35,34 @@ npm start
 
 ## Content Location
 
-The app reads markdown files from `/content` at the repository root. See `/content/README.md` for details on file structure and frontmatter schema.
+The app reads markdown files from:
+- `/content` at the repository root (general content)
+- `/updates/daily/YYYY/` for daily research updates
+- `/updates/monthly/` for monthly research summaries
+
+See `/content/README.md` for details on file structure and frontmatter schema.
+
+### Monthly Summaries
+
+Monthly summaries are auto-generated using `scripts/generate-monthly-summary.js`. They include:
+- Overview and statistics for the month
+- Key themes extracted from daily updates
+- List of daily updates with summaries and links
+- Aggregated resources and links
+- Monthly statistics
+
+Generate or update monthly summaries:
+```bash
+node scripts/generate-monthly-summary.js  # All months
+node scripts/generate-monthly-summary.js 2026 1  # Specific month
+```
 
 ## Features
 
 - **Dynamic Routing**: Markdown files automatically become pages
-- **Sidebar Navigation**: Auto-generated from folder structure
+- **Monthly Navigation**: Sidebar organizes daily updates by month with monthly summaries
+- **Monthly Summaries**: Aggregate summaries with key themes, resources, and links to daily updates
+- **Sidebar Navigation**: Auto-generated from folder structure, grouped by months
 - **Search**: Client-side search with keyword matching
 - **Table of Contents**: Auto-generated from h2/h3 headings
 - **Responsive Design**: Mobile-friendly with collapsible sidebar

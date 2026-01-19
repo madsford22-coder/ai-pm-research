@@ -29,6 +29,10 @@
 ### Daily Updates
 - `updates/daily/YYYY/YYYY-MM-DD.md` - Daily research updates
 
+### Monthly Summaries
+- `updates/monthly/YYYY-MM.md` - Monthly research summaries (auto-generated)
+- Generate with: `node scripts/generate-monthly-summary.js`
+
 ---
 
 ## How to Use in a New Chat

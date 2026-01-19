@@ -24,7 +24,121 @@ function buildTree(metadata: ContentMetadata[]): TreeNode {
     isFile: false,
   };
 
-  for (const item of metadata) {
+  // Separate monthly summaries and daily updates
+  const monthlySummaries = metadata.filter(item => 
+    item.path.startsWith('updates/monthly/') || item.tags?.includes('monthly-summary')
+  );
+  const dailyUpdates = metadata.filter(item => 
+    item.path.startsWith('updates/daily/') && !item.tags?.includes('monthly-summary')
+  );
+  const otherContent = metadata.filter(item => 
+    !item.path.startsWith('updates/')
+  );
+
+  // Process monthly summaries first
+  const monthMap = new Map<string, ContentMetadata>();
+  for (const monthly of monthlySummaries) {
+    // Extract YYYY-MM from path or date
+    let monthKey = '';
+    if (monthly.date) {
+      const date = new Date(monthly.date);
+      monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    } else {
+      const match = monthly.path.match(/(\d{4}-\d{2})\.md$/);
+      if (match) {
+        monthKey = match[1];
+      }
+    }
+    
+    if (monthKey) {
+      monthMap.set(monthKey, monthly);
+    }
+  }
+
+  // Group daily updates by month
+  const dailyByMonth = new Map<string, ContentMetadata[]>();
+  for (const daily of dailyUpdates) {
+    let monthKey = '';
+    if (daily.date) {
+      const date = new Date(daily.date);
+      monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    } else {
+      // Try to extract from path: updates/daily/2026/2026-01-19.md
+      const match = daily.path.match(/(\d{4})\/(\d{4})-(\d{2})-(\d{2})\.md$/);
+      if (match) {
+        monthKey = `${match[1]}-${match[3]}`;
+      }
+    }
+    
+    if (monthKey) {
+      if (!dailyByMonth.has(monthKey)) {
+        dailyByMonth.set(monthKey, []);
+      }
+      dailyByMonth.get(monthKey)!.push(daily);
+    }
+  }
+
+  // Build tree with months as parent nodes
+  // Add months in reverse chronological order
+  const sortedMonths = Array.from(new Set([...monthMap.keys(), ...dailyByMonth.keys()]))
+    .sort()
+    .reverse();
+
+  for (const monthKey of sortedMonths) {
+    const monthDate = new Date(monthKey + '-01');
+    const monthName = monthDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    
+    // Create month node
+    const monthNode: TreeNode = {
+      name: monthName,
+      path: `updates/monthly/${monthKey}`,
+      url: monthMap.get(monthKey)?.url || `/updates/monthly/${monthKey}`,
+      title: monthMap.get(monthKey)?.title || `${monthName} Summary`,
+      children: new Map(),
+      isFile: false,
+    };
+
+    // Add monthly summary as first child (if exists)
+    const monthlySummary = monthMap.get(monthKey);
+    if (monthlySummary) {
+      monthNode.children.set('_summary', {
+        name: 'Summary',
+        path: monthlySummary.path.replace(/\.md$/, ''),
+        url: monthlySummary.url,
+        title: monthlySummary.title,
+        children: new Map(),
+        isFile: true,
+      });
+    }
+
+    // Add daily updates as children
+    const dailies = dailyByMonth.get(monthKey) || [];
+    dailies.sort((a, b) => {
+      const dateA = a.date ? new Date(a.date).getTime() : 0;
+      const dateB = b.date ? new Date(b.date).getTime() : 0;
+      return dateB - dateA; // Newest first
+    });
+
+    for (const daily of dailies) {
+      const dayName = daily.date 
+        ? new Date(daily.date).toLocaleDateString('en-US', { day: 'numeric' })
+        : daily.path.split('-').pop()?.replace('.md', '') || '';
+      
+      monthNode.children.set(dayName, {
+        name: daily.title.replace(/^#+\s+/, '').trim(),
+        path: daily.path.replace(/\.md$/, ''),
+        url: daily.url,
+        title: daily.title,
+        children: new Map(),
+        isFile: true,
+      });
+    }
+
+    root.children.set(monthKey, monthNode);
+  }
+
+  // Add other content (non-update content)
+  for (const item of otherContent) {
     const parts = item.slug.split('/');
     let current = root;
 
@@ -60,7 +174,7 @@ function renderTree(node: TreeNode, pathname: string, level: number = 0): React.
           .sort((a, b) => {
             if (a.isFile && !b.isFile) return 1;
             if (!a.isFile && b.isFile) return -1;
-            // Sort dates in reverse (newest first)
+            // Sort dates/months in reverse (newest first)
             return b.name.localeCompare(a.name);
           })
           .map((child) => renderTree(child, pathname, level + 1))}
@@ -70,6 +184,7 @@ function renderTree(node: TreeNode, pathname: string, level: number = 0): React.
 
   const isActive = pathname === node.url || pathname.startsWith(node.url + '/');
   const hasChildren = node.children.size > 0;
+  const isMonthNode = node.path.startsWith('updates/monthly/') && !node.isFile;
 
   return (
     <li key={node.path}>
@@ -86,20 +201,53 @@ function renderTree(node: TreeNode, pathname: string, level: number = 0): React.
         </Link>
       ) : (
         <>
-          <div className="px-3 py-2 text-xs font-semibold text-[#9ca3af] uppercase tracking-wider">
-            {node.name}
-          </div>
-          {hasChildren && (
-            <ul className="ml-4 space-y-1">
-              {Array.from(node.children.values())
-                .sort((a, b) => {
-                  if (a.isFile && !b.isFile) return 1;
-                  if (!a.isFile && b.isFile) return -1;
-                  // Sort dates in reverse (newest first)
-                  return b.name.localeCompare(a.name);
-                })
-                .map((child) => renderTree(child, pathname, level + 1))}
-            </ul>
+          {isMonthNode ? (
+            <>
+              <Link
+                href={node.url}
+                className={`block px-3 py-2 rounded-md text-sm font-semibold transition-colors ${
+                  isActive
+                    ? 'bg-[#e5e7eb] text-[#1a1a1a]'
+                    : 'text-[#374151] hover:bg-[#f3f4f6] hover:text-[#1a1a1a]'
+                }`}
+              >
+                {node.name}
+              </Link>
+              {hasChildren && (
+                <ul className="ml-2 mt-1 space-y-0.5 border-l-2 border-[#e5e7eb] pl-3">
+                  {Array.from(node.children.values())
+                    .sort((a, b) => {
+                      // Summary first, then daily updates
+                      if (a.name === '_summary') return -1;
+                      if (b.name === '_summary') return 1;
+                      // Sort dates in reverse (newest first)
+                      if (a.isFile && b.isFile) {
+                        return b.name.localeCompare(a.name, undefined, { numeric: true });
+                      }
+                      return 0;
+                    })
+                    .map((child) => renderTree(child, pathname, level + 1))}
+                </ul>
+              )}
+            </>
+          ) : (
+            <>
+              <div className="px-3 py-2 text-xs font-semibold text-[#9ca3af] uppercase tracking-wider">
+                {node.name}
+              </div>
+              {hasChildren && (
+                <ul className="ml-4 space-y-1">
+                  {Array.from(node.children.values())
+                    .sort((a, b) => {
+                      if (a.isFile && !b.isFile) return 1;
+                      if (!a.isFile && b.isFile) return -1;
+                      // Sort dates in reverse (newest first)
+                      return b.name.localeCompare(a.name);
+                    })
+                    .map((child) => renderTree(child, pathname, level + 1))}
+                </ul>
+              )}
+            </>
           )}
         </>
       )}

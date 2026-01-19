@@ -11,6 +11,9 @@ System of record and long-term memory for tracking AI product signals and transl
   - `open-questions.md` - Open questions to investigate
 - `updates/daily/YYYY/` - Daily research updates organized by year
   - Format: `YYYY-MM-DD.md`
+- `updates/monthly/` - Monthly research summaries
+  - Format: `YYYY-MM.md`
+  - Auto-generated from daily updates using `scripts/generate-monthly-summary.js`
 - `src/` - Modular, testable source code (see [src/README.md](src/README.md))
   - `domain/` - Domain type definitions
   - `adapters/` - I/O adapters (markdown, RSS, scraping)
@@ -54,6 +57,11 @@ node scripts/check-company-updates.js --days 14
 
 # Find RSS feeds
 node scripts/find-rss-feeds.js
+
+# Generate monthly summaries (from daily updates)
+node scripts/generate-monthly-summary.js
+# Or for a specific month:
+node scripts/generate-monthly-summary.js 2026 1
 ```
 
 ### Testing

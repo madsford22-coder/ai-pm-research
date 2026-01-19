@@ -9,9 +9,22 @@ import { ContentMetadata, SearchIndexItem } from './types';
 // In development, they're at ../updates
 const UPDATES_DIR_LOCAL = path.resolve(process.cwd(), '..', 'updates', 'daily');
 const UPDATES_DIR_PROD = path.resolve(process.cwd(), 'updates', 'daily');
+const MONTHLY_DIR_LOCAL = path.resolve(process.cwd(), '..', 'updates', 'monthly');
+const MONTHLY_DIR_PROD = path.resolve(process.cwd(), 'updates', 'monthly');
 const CONTENT_DIR = path.resolve(process.cwd(), '..', 'content');
 
 // Check production location first, then local, then fallback
+// For content loading, we need to merge daily updates and monthly summaries
+let UPDATES_ROOT = UPDATES_DIR_LOCAL;
+let MONTHLY_ROOT = MONTHLY_DIR_LOCAL;
+if (fs.existsSync(UPDATES_DIR_PROD)) {
+  UPDATES_ROOT = UPDATES_DIR_PROD;
+}
+if (fs.existsSync(MONTHLY_DIR_PROD)) {
+  MONTHLY_ROOT = MONTHLY_DIR_PROD;
+}
+
+// Primary content root (for backward compatibility)
 let CONTENT_ROOT = CONTENT_DIR;
 if (fs.existsSync(UPDATES_DIR_PROD)) {
   CONTENT_ROOT = UPDATES_DIR_PROD;
@@ -20,13 +33,11 @@ if (fs.existsSync(UPDATES_DIR_PROD)) {
 }
 
 export function getAllContentPaths(): string[] {
-  if (!fs.existsSync(CONTENT_ROOT)) {
-    return [];
-  }
-
   const paths: string[] = [];
 
   function walkDir(dir: string, basePath: string = '') {
+    if (!fs.existsSync(dir)) return;
+    
     const entries = fs.readdirSync(dir, { withFileTypes: true });
 
     for (const entry of entries) {
@@ -41,14 +52,33 @@ export function getAllContentPaths(): string[] {
     }
   }
 
-  walkDir(CONTENT_ROOT);
+  // Walk content directory
+  walkDir(CONTENT_DIR, '');
+  
+  // Walk daily updates
+  walkDir(UPDATES_ROOT, 'updates/daily');
+  
+  // Walk monthly summaries
+  walkDir(MONTHLY_ROOT, 'updates/monthly');
+  
   return paths;
 }
 
 export async function getContentByPath(filePath: string) {
-  const fullPath = path.join(CONTENT_ROOT, filePath);
+  let fullPath: string | null = null;
   
-  if (!fs.existsSync(fullPath)) {
+  // Try different possible locations
+  if (filePath.startsWith('updates/daily/')) {
+    const relPath = filePath.replace('updates/daily/', '');
+    fullPath = path.join(UPDATES_ROOT, relPath);
+  } else if (filePath.startsWith('updates/monthly/')) {
+    const relPath = filePath.replace('updates/monthly/', '');
+    fullPath = path.join(MONTHLY_ROOT, relPath);
+  } else {
+    fullPath = path.join(CONTENT_DIR, filePath);
+  }
+  
+  if (!fullPath || !fs.existsSync(fullPath)) {
     return null;
   }
 
@@ -63,7 +93,23 @@ export function getAllContentMetadata(): ContentMetadata[] {
   const paths = getAllContentPaths();
   
   return paths.map((filePath) => {
-    const fullPath = path.join(CONTENT_ROOT, filePath);
+    let fullPath: string | null = null;
+    
+    // Determine full path based on file location
+    if (filePath.startsWith('updates/daily/')) {
+      const relPath = filePath.replace('updates/daily/', '');
+      fullPath = path.join(UPDATES_ROOT, relPath);
+    } else if (filePath.startsWith('updates/monthly/')) {
+      const relPath = filePath.replace('updates/monthly/', '');
+      fullPath = path.join(MONTHLY_ROOT, relPath);
+    } else {
+      fullPath = path.join(CONTENT_DIR, filePath);
+    }
+    
+    if (!fullPath || !fs.existsSync(fullPath)) {
+      return null;
+    }
+    
     const content = fs.readFileSync(fullPath, 'utf-8');
     const { data } = matter(content);
     
@@ -87,14 +133,30 @@ export function getAllContentMetadata(): ContentMetadata[] {
       path: filePath,
       url,
     };
-  });
+  }).filter((item): item is ContentMetadata => item !== null);
 }
 
 export function buildSearchIndex(): SearchIndexItem[] {
   const paths = getAllContentPaths();
   
   return paths.map((filePath) => {
-    const fullPath = path.join(CONTENT_ROOT, filePath);
+    let fullPath: string | null = null;
+    
+    // Determine full path based on file location
+    if (filePath.startsWith('updates/daily/')) {
+      const relPath = filePath.replace('updates/daily/', '');
+      fullPath = path.join(UPDATES_ROOT, relPath);
+    } else if (filePath.startsWith('updates/monthly/')) {
+      const relPath = filePath.replace('updates/monthly/', '');
+      fullPath = path.join(MONTHLY_ROOT, relPath);
+    } else {
+      fullPath = path.join(CONTENT_DIR, filePath);
+    }
+    
+    if (!fullPath || !fs.existsSync(fullPath)) {
+      return null;
+    }
+    
     const content = fs.readFileSync(fullPath, 'utf-8');
     const { data, content: markdown } = matter(content);
     
@@ -127,7 +189,7 @@ export function buildSearchIndex(): SearchIndexItem[] {
       tags: Array.isArray(data.tags) ? data.tags : undefined,
       body,
     };
-  });
+  }).filter((item): item is SearchIndexItem => item !== null);
 }
 
 function slugToTitle(slug: string): string {
