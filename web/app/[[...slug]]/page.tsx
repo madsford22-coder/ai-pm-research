@@ -84,17 +84,17 @@ export default async function ContentPage({ params }: PageProps) {
   const formattedTitle = formatTitle(content.title);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {isDailyUpdate && content.date && availableDates.length > 0 && (
         <DateNavigator currentDate={content.date} availableDates={availableDates} />
       )}
-      <div className="flex gap-16">
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
         <article className="prose prose-lg flex-1 min-w-0 max-w-none">
-          <header className="mb-12 pb-8 border-b border-[#e5e7eb]">
-            <h1 className="text-5xl font-bold text-[#1a1a1a] leading-[1.1] mb-6 tracking-[-0.025em]">
+          <header className="mb-8 sm:mb-12 pb-6 sm:pb-8 border-b border-gray-200 dark:border-slate-700">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 leading-[1.1] mb-4 sm:mb-6 tracking-[-0.025em]">
               {formattedTitle}
             </h1>
-            <div className="flex items-center gap-3 text-sm text-[#6b7280] mb-4">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-sm text-gray-600 dark:text-gray-400 mb-4">
               {content.date && (
                 <time dateTime={content.date} className="font-medium">
                   {new Date(content.date).toLocaleDateString('en-US', {
@@ -107,12 +107,12 @@ export default async function ContentPage({ params }: PageProps) {
               )}
               {content.source_url && (
                 <>
-                  <span className="text-[#d1d5db]">•</span>
-                  <a 
-                    href={content.source_url} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="text-[#2563eb] hover:text-[#1d4ed8] transition-colors font-medium"
+                  <span className="text-gray-300 dark:text-slate-600">•</span>
+                  <a
+                    href={content.source_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors font-medium"
                   >
                     Source
                   </a>
@@ -124,7 +124,7 @@ export default async function ContentPage({ params }: PageProps) {
                 {content.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="px-3 py-1.5 bg-[#f9fafb] text-[#6b7280] text-xs font-medium rounded-md border border-[#e5e7eb]"
+                    className="px-3 py-1.5 bg-gray-50 dark:bg-slate-800 text-gray-600 dark:text-gray-400 text-xs font-medium rounded-md border border-gray-200 dark:border-slate-700"
                   >
                     {tag.replace(/-/g, ' ')}
                   </span>

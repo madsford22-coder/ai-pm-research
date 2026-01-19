@@ -58,13 +58,13 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
   }
 
   return (
-    <div className="bg-[#f9fafb] rounded-md border border-[#e5e7eb] p-4 mb-8">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
+    <div className="bg-gray-50 dark:bg-slate-800 rounded-md border border-gray-200 dark:border-slate-700 p-3 sm:p-4 mb-6 sm:mb-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           {prevDate ? (
             <Link
               href={`/updates/daily/${prevDate}`}
-              className="p-2 text-[#6b7280] hover:text-[#1a1a1a] hover:bg-[#f3f4f6] rounded transition-colors"
+              className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-700 rounded transition-colors"
               title={`Previous: ${formatDateForDisplay(prevDate)}`}
               aria-label={`Go to previous update: ${formatDateForDisplay(prevDate)}`}
             >
@@ -73,24 +73,24 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
               </svg>
             </Link>
           ) : (
-            <div className="p-2 text-gray-300 cursor-not-allowed" aria-label="No previous update">
+            <div className="p-2 text-gray-300 dark:text-slate-600 cursor-not-allowed" aria-label="No previous update">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </div>
           )}
-          
-          <div className="flex items-center gap-2">
+
+          <div className="flex items-center gap-2 flex-1 sm:flex-none">
             <input
               type="date"
               value={selectedDate}
               onChange={handleDateChange}
               min={availableDates[availableDates.length - 1]}
               max={availableDates[0]}
-              className="px-3 py-2 border border-[#e5e7eb] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb] focus:border-transparent bg-white"
+              className="px-3 py-2 border border-gray-200 dark:border-slate-600 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
             />
             {currentDate && (
-              <span className="text-sm text-gray-600">
+              <span className="hidden md:inline text-sm text-gray-600 dark:text-gray-400">
                 {formatDateForDisplay(currentDate)}
               </span>
             )}
@@ -99,7 +99,7 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
           {nextDate ? (
             <Link
               href={`/updates/daily/${nextDate}`}
-              className="p-2 text-[#6b7280] hover:text-[#1a1a1a] hover:bg-[#f3f4f6] rounded transition-colors"
+              className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-700 rounded transition-colors"
               title={`Next: ${formatDateForDisplay(nextDate)}`}
               aria-label={`Go to next update: ${formatDateForDisplay(nextDate)}`}
             >
@@ -108,7 +108,7 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
               </svg>
             </Link>
           ) : (
-            <div className="p-2 text-gray-300 cursor-not-allowed" aria-label="No next update">
+            <div className="p-2 text-gray-300 dark:text-slate-600 cursor-not-allowed" aria-label="No next update">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
@@ -118,7 +118,7 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
 
         <Link
           href="/updates/daily"
-          className="text-sm text-[#2563eb] hover:text-[#1d4ed8] font-medium hover:underline"
+          className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium hover:underline"
         >
           View All
         </Link>

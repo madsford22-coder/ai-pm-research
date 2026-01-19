@@ -232,8 +232,8 @@ function renderTree(node: TreeNode, pathname: string, level: number = 0): React.
           href={node.url}
           className={`block px-3 py-2 rounded-md text-sm transition-colors ${
             isActive
-              ? 'bg-[#f3f4f6] text-[#1a1a1a] font-medium'
-              : 'text-[#6b7280] hover:bg-[#f9fafb] hover:text-[#1a1a1a]'
+              ? 'bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-gray-100 font-medium'
+              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-gray-100'
           }`}
         >
           {node.title.replace(/^#+\s+/, '').trim()}
@@ -246,14 +246,14 @@ function renderTree(node: TreeNode, pathname: string, level: number = 0): React.
                 href={node.url}
                 className={`block px-3 py-2 rounded-md text-sm font-semibold transition-colors ${
                   isActive
-                    ? 'bg-[#e5e7eb] text-[#1a1a1a]'
-                    : 'text-[#374151] hover:bg-[#f3f4f6] hover:text-[#1a1a1a]'
+                    ? 'bg-gray-200 dark:bg-slate-700 text-gray-900 dark:text-gray-100'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-gray-100'
                 }`}
               >
                 {node.name}
               </Link>
               {hasChildren && (
-                <ul className="ml-2 mt-1 space-y-0.5 border-l-2 border-[#e5e7eb] pl-3">
+                <ul className="ml-2 mt-1 space-y-0.5 border-l-2 border-gray-200 dark:border-slate-700 pl-3">
                   {Array.from(node.children.values())
                     .sort((a, b) => {
                       // Summary first, then daily updates
@@ -271,7 +271,7 @@ function renderTree(node: TreeNode, pathname: string, level: number = 0): React.
             </>
           ) : (
             <>
-              <div className="px-3 py-2 text-xs font-semibold text-[#9ca3af] uppercase tracking-wider">
+              <div className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 {node.name}
               </div>
               {hasChildren && (
@@ -317,7 +317,7 @@ export default function Sidebar() {
       {/* Mobile menu button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-4 left-4 z-20 p-2 bg-white border border-[#e5e7eb] rounded-md shadow-sm"
+        className="lg:hidden fixed top-4 left-4 z-20 p-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-md shadow-sm text-gray-700 dark:text-gray-300"
         aria-label="Toggle menu"
       >
         <svg
@@ -339,13 +339,13 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-full w-64 bg-white border-r border-[#e5e7eb] z-10 transform transition-transform duration-200 ease-in-out ${
+        className={`fixed left-0 top-0 h-full w-64 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-700 z-10 transform transition-transform duration-200 ease-in-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } lg:translate-x-0`}
       >
         <div className="p-6">
           <Link href="/" className="block mb-8">
-            <h1 className="text-lg font-semibold text-[#1a1a1a]">AI PM Research Hub</h1>
+            <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">AI PM Research Hub</h1>
           </Link>
           <nav className="overflow-y-auto max-h-[calc(100vh-8rem)]">
             {tree ? (
@@ -353,7 +353,7 @@ export default function Sidebar() {
             ) : (
               <div className="space-y-2">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="h-8 bg-gray-200 rounded animate-pulse"></div>
+                  <div key={i} className="h-8 bg-gray-200 dark:bg-slate-700 rounded animate-pulse"></div>
                 ))}
               </div>
             )}
@@ -364,7 +364,7 @@ export default function Sidebar() {
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-0"
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 z-0"
           onClick={() => setIsOpen(false)}
         />
       )}

@@ -44,8 +44,8 @@ export default function TableOfContents({ html }: { html: string }) {
   return (
     <aside className="hidden xl:block w-64 flex-shrink-0">
       <div className="sticky top-28">
-        <div className="bg-white rounded-lg p-6 border border-[#e5e7eb] shadow-sm">
-          <h2 className="text-xs font-semibold text-[#9ca3af] mb-4 uppercase tracking-wider">
+        <div className="bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 shadow-sm">
+          <h2 className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-4 uppercase tracking-wider">
             Contents
           </h2>
           <nav>
@@ -54,7 +54,7 @@ export default function TableOfContents({ html }: { html: string }) {
                 <li key={heading.id}>
                   <a
                     href={`#${heading.id}`}
-                    className={`block text-sm text-[#6b7280] hover:text-[#1a1a1a] transition-colors duration-150 ${
+                    className={`block text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-150 ${
                       heading.level === 3 ? 'ml-4 text-[13px]' : ''
                     }`}
                   >
