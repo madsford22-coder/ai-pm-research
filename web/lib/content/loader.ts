@@ -4,14 +4,20 @@ import matter from 'gray-matter';
 import { parseMarkdown, processMarkdownSync } from './parser';
 import { ContentMetadata, SearchIndexItem } from './types';
 
-// Resolve content directory relative to repo root
-// When running from /web, go up one level to repo root, then into /updates/daily
-// Also support /content for backwards compatibility
-const UPDATES_DIR = path.resolve(process.cwd(), '..', 'updates', 'daily');
+// Resolve content directory
+// In production (Netlify), updates are copied to web/updates during build
+// In development, they're at ../updates
+const UPDATES_DIR_LOCAL = path.resolve(process.cwd(), '..', 'updates', 'daily');
+const UPDATES_DIR_PROD = path.resolve(process.cwd(), 'updates', 'daily');
 const CONTENT_DIR = path.resolve(process.cwd(), '..', 'content');
 
-// Use updates directory if it exists, otherwise fall back to content
-const CONTENT_ROOT = fs.existsSync(UPDATES_DIR) ? UPDATES_DIR : CONTENT_DIR;
+// Check production location first, then local, then fallback
+let CONTENT_ROOT = CONTENT_DIR;
+if (fs.existsSync(UPDATES_DIR_PROD)) {
+  CONTENT_ROOT = UPDATES_DIR_PROD;
+} else if (fs.existsSync(UPDATES_DIR_LOCAL)) {
+  CONTENT_ROOT = UPDATES_DIR_LOCAL;
+}
 
 export function getAllContentPaths(): string[] {
   if (!fs.existsSync(CONTENT_ROOT)) {
