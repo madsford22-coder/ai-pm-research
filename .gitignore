@@ -24,6 +24,7 @@
 # Gmail API credentials and tokens (never commit!)
 .gmail-credentials.json
 .gmail-token.json
+client_secret_*.json
 
 tooling/node_modules/
 node_modules/
