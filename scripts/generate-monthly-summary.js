@@ -275,11 +275,14 @@ tags:
 
 # ${monthTitle} Research Summary
 
-${executiveSummary.charAt(0).toUpperCase() + executiveSummary.slice(1)}
+${(executiveSummary.charAt(0).toUpperCase() + executiveSummary.slice(1)).replace(/\baI\b/gi, 'AI').replace(/\bai\b/g, 'AI')}
 
 ## What Matters
 
-${topThemes.length > 0 ? topThemes.map(theme => `- ${theme.charAt(0).toUpperCase() + theme.slice(1)}`).join('\n') : `- ${dailyFiles.length} daily updates tracked ${allItems.length} key items this month`}
+${topThemes.length > 0 ? topThemes.map(theme => {
+  const capitalized = theme.charAt(0).toUpperCase() + theme.slice(1);
+  return `- ${capitalized.replace(/\baI\b/gi, 'AI').replace(/\bai\b/g, 'AI')}`;
+}).join('\n') : `- ${dailyFiles.length} daily updates tracked ${allItems.length} key items this month`}
 
 ${topItems.length > 0 ? `\n## Essential Resources (${topItems.length})\n\n${topItems.map((item, idx) => {
   return `${idx + 1}. **${item.title}** — [${item.domain}](${item.source})`;
