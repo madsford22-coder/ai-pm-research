@@ -1,0 +1,17 @@
+{
+  "name": "ai-pm-research",
+  "version": "1.0.0",
+  "description": "Daily AI Product Management Research",
+  "private": true,
+  "scripts": {
+    "collect": "./scripts/run-daily-research-data-collection.sh",
+    "synthesize": "node scripts/synthesize-daily-update.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "googleapis": "^144.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

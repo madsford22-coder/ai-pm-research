@@ -10,6 +10,10 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
 cd "$PROJECT_ROOT"
 
+# Set environment variables to disable Chrome crashpad (avoids permission issues)
+export CHROME_CRASHPAD_HANDLER_PATH=""
+export GOOGLE_CHROME_CRASHPAD_HANDLER_PATH=""
+
 # Get today's date
 TODAY=$(date +%Y-%m-%d)
 OUTPUT_FILE="/tmp/daily-research-${TODAY}.txt"
@@ -105,9 +109,52 @@ echo ""
 echo "✅ Data collection complete!"
 echo "📄 Output saved to: ${OUTPUT_FILE}"
 echo ""
-echo "To view the file:"
-echo "  cat ${OUTPUT_FILE}"
+
+# Synthesize the daily update using Claude API
+echo "=========================================="
+echo "Synthesizing Daily Update with Claude"
+echo "=========================================="
 echo ""
-echo "To open in Cursor:"
-echo "  cursor ${OUTPUT_FILE}"
-echo ""
+
+if [ -z "$ANTHROPIC_API_KEY" ]; then
+    echo "⚠️  ANTHROPIC_API_KEY not set - skipping synthesis"
+    echo ""
+    echo "To enable automatic synthesis:"
+    echo "  1. Get your API key from https://console.anthropic.com/"
+    echo "  2. Export it: export ANTHROPIC_API_KEY='your-key-here'"
+    echo "  3. Or add to ~/.zshrc or ~/.bashrc for persistence"
+    echo ""
+    echo "Manual synthesis:"
+    echo "  cursor ${OUTPUT_FILE}"
+    echo ""
+else
+    # Run synthesis script
+    node "${SCRIPT_DIR}/synthesize-daily-update.js"
+    SYNTHESIS_EXIT_CODE=$?
+fi
+
+# Send email notification if configured
+if [ -n "$NOTIFICATION_EMAIL" ]; then
+    echo ""
+    echo "=========================================="
+    echo "Sending Email Notification"
+    echo "=========================================="
+    echo ""
+
+    if [ $SYNTHESIS_EXIT_CODE -eq 0 ] || [ -z "$ANTHROPIC_API_KEY" ]; then
+        node "${SCRIPT_DIR}/send-email-notification.js" \
+            --status=success \
+            --date="${TODAY}" \
+            --log="/tmp/daily-research-cron-${TODAY}.log"
+    else
+        node "${SCRIPT_DIR}/send-email-notification.js" \
+            --status=failed \
+            --date="${TODAY}" \
+            --log="/tmp/daily-research-cron-${TODAY}.log"
+    fi
+else
+    echo ""
+    echo "📧 Email notifications not configured"
+    echo "   Set NOTIFICATION_EMAIL to enable email notifications"
+    echo ""
+fi

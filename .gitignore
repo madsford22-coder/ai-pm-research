@@ -21,7 +21,13 @@
 .env.local
 .env.*.local
 
+# Gmail API credentials and tokens (never commit!)
+.gmail-credentials.json
+.gmail-token.json
+
 tooling/node_modules/
+node_modules/
+package-lock.json
 
 # Puppeteer data directory
 .puppeteer-data/

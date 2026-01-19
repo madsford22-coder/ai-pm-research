@@ -59,6 +59,8 @@ async function checkCompanyNewsPipeline(options = {}) {
       '--disable-background-timer-throttling',
       '--disable-backgrounding-occluded-windows',
       '--disable-breakpad',
+      '--disable-crashpad',
+      '--crashpad-handler=',
       '--disable-component-extensions-with-background-pages',
       '--disable-features=TranslateUI',
       '--disable-ipc-flooding-protection',
