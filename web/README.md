@@ -33,6 +33,8 @@ npm start
   - `parser.ts` - Markdown parsing and HTML conversion
   - `types.ts` - TypeScript type definitions
 
+See `DEVELOPMENT_NOTES.md` for important learnings and development patterns.
+
 ## Content Location
 
 The app reads markdown files from:

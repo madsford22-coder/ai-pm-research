@@ -87,5 +87,7 @@ npm run dev
 
 See [web/README.md](web/README.md) for details. The web app reads markdown files from `/content` at the repository root. See [content/README.md](content/README.md) for information on migrating existing markdown files.
 
+**Development Notes**: See [web/DEVELOPMENT_NOTES.md](web/DEVELOPMENT_NOTES.md) for important learnings about Tailwind CSS, TypeScript patterns, UI/UX best practices, and more.
+
 See [MIGRATION.md](MIGRATION.md) for details on the modular architecture.
 
