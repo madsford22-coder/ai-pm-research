@@ -12,9 +12,9 @@ export default function Dashboard() {
     fetch('/api/content/metadata')
       .then((res) => res.json())
       .then((data: ContentMetadata[]) => {
-        // Filter for daily updates by file path pattern (YYYY/YYYY-MM-DD) and sort by date (newest first)
+        // Filter for daily updates by path pattern and sort by date (newest first)
         const updates = data
-          .filter((item) => /^\d{4}\/\d{4}-\d{2}-\d{2}$/.test(item.slug))
+          .filter((item) => item.path.startsWith('updates/daily/') && !item.tags?.includes('monthly-summary'))
           .sort((a, b) => {
             const dateA = a.date ? new Date(a.date).getTime() : 0;
             const dateB = b.date ? new Date(b.date).getTime() : 0;

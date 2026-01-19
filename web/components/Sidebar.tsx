@@ -40,11 +40,23 @@ function buildTree(metadata: ContentMetadata[]): TreeNode {
   for (const monthly of monthlySummaries) {
     // Extract YYYY-MM from path or date
     let monthKey = '';
+    
+    // First try to use the date field
     if (monthly.date) {
-      const date = new Date(monthly.date);
-      monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-    } else {
-      const match = monthly.path.match(/(\d{4}-\d{2})\.md$/);
+      try {
+        const date = new Date(monthly.date);
+        if (!isNaN(date.getTime())) {
+          monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        }
+      } catch (e) {
+        // Date parsing failed, continue to path extraction
+      }
+    }
+    
+    // If date parsing didn't work, extract from path
+    if (!monthKey) {
+      // Try to extract from path: updates/monthly/2026-01.md
+      const match = monthly.path.match(/updates\/monthly\/(\d{4}-\d{2})\.md$/);
       if (match) {
         monthKey = match[1];
       }
@@ -59,12 +71,23 @@ function buildTree(metadata: ContentMetadata[]): TreeNode {
   const dailyByMonth = new Map<string, ContentMetadata[]>();
   for (const daily of dailyUpdates) {
     let monthKey = '';
+    
+    // First try to use the date field
     if (daily.date) {
-      const date = new Date(daily.date);
-      monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-    } else {
+      try {
+        const date = new Date(daily.date);
+        if (!isNaN(date.getTime())) {
+          monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        }
+      } catch (e) {
+        // Date parsing failed, continue to path extraction
+      }
+    }
+    
+    // If date parsing didn't work, extract from path
+    if (!monthKey) {
       // Try to extract from path: updates/daily/2026/2026-01-19.md
-      const match = daily.path.match(/(\d{4})\/(\d{4})-(\d{2})-(\d{2})\.md$/);
+      const match = daily.path.match(/updates\/daily\/(\d{4})\/(\d{4})-(\d{2})-(\d{2})\.md$/);
       if (match) {
         monthKey = `${match[1]}-${match[3]}`;
       }
@@ -120,11 +143,10 @@ function buildTree(metadata: ContentMetadata[]): TreeNode {
     });
 
     for (const daily of dailies) {
-      const dayName = daily.date 
-        ? new Date(daily.date).toLocaleDateString('en-US', { day: 'numeric' })
-        : daily.path.split('-').pop()?.replace('.md', '') || '';
+      // Use a unique key based on the date or slug
+      const dayKey = daily.date || daily.slug || daily.path;
       
-      monthNode.children.set(dayName, {
+      monthNode.children.set(dayKey, {
         name: daily.title.replace(/^#+\s+/, '').trim(),
         path: daily.path.replace(/\.md$/, ''),
         url: daily.url,
