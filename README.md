@@ -20,6 +20,7 @@ System of record and long-term memory for tracking AI product signals and transl
   - `adapters/` - I/O adapters (markdown, RSS, scraping)
   - `transforms/` - Pure transform functions
   - `pipelines/` - Orchestration pipelines
+  - `utils/` - Shared utilities (file ops, frontmatter, validation)
 - `scripts/` - Thin wrapper scripts (CLI entry points)
 - `tooling/` - Legacy scripts (deprecated, use `scripts/` instead)
 

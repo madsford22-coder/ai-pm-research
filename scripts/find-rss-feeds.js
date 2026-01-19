@@ -10,6 +10,7 @@
 
 const path = require('path');
 const fs = require('fs');
+const { validateFilePath } = require('../src/utils/validation');
 
 // Add tooling/node_modules to module path so Puppeteer can be found
 // This allows the modular scripts to use Puppeteer installed in tooling/
@@ -31,6 +32,16 @@ async function main() {
   const peopleFile = args.includes('--people-file')
     ? args[args.indexOf('--people-file') + 1]
     : path.join(__dirname, '..', 'context', 'people.md');
+  
+  // Validate inputs
+  try {
+    validateFilePath(peopleFile, '.md', false); // File may not exist yet
+  } catch (error) {
+    console.error(`\n✗ Invalid argument: ${error.message}`);
+    console.error('\nUsage:');
+    console.error('  node find-rss-feeds.js [--people-file PATH]');
+    process.exit(1);
+  }
   
   try {
     const results = await findRSSFeedsPipeline({

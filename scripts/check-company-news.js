@@ -10,6 +10,7 @@
 
 const path = require('path');
 const fs = require('fs');
+const { validatePositiveInteger, validateOneOf, validateFilePath } = require('../src/utils/validation');
 
 // Add tooling/node_modules to module path so Puppeteer can be found
 // This allows the modular scripts to use Puppeteer installed in tooling/
@@ -28,15 +29,27 @@ const { checkCompanyNewsPipeline } = require('../src/pipelines/company-news');
 
 async function main() {
   const args = process.argv.slice(2);
-  const daysBack = args.includes('--days') 
+  let daysBack = args.includes('--days') 
     ? parseInt(args[args.indexOf('--days') + 1]) 
     : 7;
-  const format = args.includes('--format') 
+  let format = args.includes('--format') 
     ? args[args.indexOf('--format') + 1] 
     : 'markdown';
   const companiesFile = args.includes('--companies-file')
     ? args[args.indexOf('--companies-file') + 1]
     : path.join(__dirname, '..', 'context', 'companies.md');
+  
+  // Validate inputs
+  try {
+    validatePositiveInteger(daysBack, 'daysBack', 1);
+    validateOneOf(format, ['json', 'markdown'], 'format');
+    validateFilePath(companiesFile, '.md', false); // File may not exist yet
+  } catch (error) {
+    console.error(`\n✗ Invalid argument: ${error.message}`);
+    console.error('\nUsage:');
+    console.error('  node check-company-news.js [--days N] [--format json|markdown] [--companies-file PATH]');
+    process.exit(1);
+  }
   
   try {
     const result = await checkCompanyNewsPipeline({

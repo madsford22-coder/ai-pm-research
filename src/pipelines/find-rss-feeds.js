@@ -8,6 +8,7 @@ const puppeteer = require('puppeteer');
 const path = require('path');
 const os = require('os');
 const { parsePeopleFile } = require('../adapters/markdown');
+const { validateFilePath } = require('../utils/validation');
 
 const COMMON_RSS_PATHS = [
   '/feed',
@@ -145,6 +146,9 @@ async function findRSSFeedsPipeline(options = {}) {
   const {
     peopleFile = path.join(__dirname, '../../context/people.md'),
   } = options;
+  
+  // Validate inputs
+  validateFilePath(peopleFile, '.md', false); // File may not exist yet
   
   console.log('Finding RSS feeds for people in context/people.md...\n');
   

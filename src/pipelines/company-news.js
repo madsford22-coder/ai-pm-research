@@ -11,6 +11,7 @@ const os = require('os');
 const { parseCompaniesFile } = require('../adapters/markdown');
 const { searchNewsForCompany } = require('../adapters/news');
 const { formatNewsMarkdown } = require('../transforms/format-news');
+const { validatePositiveInteger, validateOneOf, validateFilePath } = require('../utils/validation');
 
 const DEFAULT_DAYS_BACK = 7;
 
@@ -28,6 +29,11 @@ async function checkCompanyNewsPipeline(options = {}) {
     companiesFile = path.join(__dirname, '../../context/companies.md'),
     format = 'markdown',
   } = options;
+  
+  // Validate inputs
+  validatePositiveInteger(daysBack, 'daysBack', 1);
+  validateFilePath(companiesFile, '.md', false); // File may not exist yet
+  validateOneOf(format, ['json', 'markdown'], 'format');
   
   console.log(`Checking news mentions for companies from last ${daysBack} days...\n`);
   console.log('Note: This uses web search and may have rate limits.\n');

@@ -3,8 +3,11 @@
  * Extracts date from filename and generates a descriptive title from the summary
  */
 
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs'); // Still need for readdirSync and isDirectory
+const { readFileSafe, writeFileSafe, fileExists } = require('../src/utils/file');
+const { formatFrontmatter } = require('../src/utils/frontmatter');
+const { validateDateString } = require('../src/utils/validation');
 
 const UPDATES_DIR = path.join(__dirname, '..', 'updates', 'daily');
 
@@ -58,47 +61,57 @@ function generateTitleFromSummary(content) {
 }
 
 function addFrontmatter(filePath) {
-  const content = fs.readFileSync(filePath, 'utf-8');
+  try {
+    const content = readFileSafe(filePath);
 
-  // Check if frontmatter already exists
-  if (content.startsWith('---')) {
-    console.log(`⏭️  Skipping ${path.basename(filePath)} - already has frontmatter`);
-    return;
+    // Check if frontmatter already exists
+    if (content.startsWith('---')) {
+      console.log(`⏭️  Skipping ${path.basename(filePath)} - already has frontmatter`);
+      return;
+    }
+
+    // Extract date from filename (YYYY-MM-DD.md)
+    const filename = path.basename(filePath, '.md');
+    const dateMatch = filename.match(/(\d{4})-(\d{2})-(\d{2})/);
+
+    if (!dateMatch) {
+      console.log(`⚠️  Skipping ${filename} - couldn't extract date`);
+      return;
+    }
+
+    const date = `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`;
+
+    // Validate date
+    try {
+      validateDateString(date, 'date', true);
+    } catch (error) {
+      console.log(`⚠️  Skipping ${filename} - invalid date: ${error.message}`);
+      return;
+    }
+
+    // Generate title from summary
+    const generatedTitle = generateTitleFromSummary(content);
+    const title = generatedTitle || `Daily Update - ${date}`;
+
+    // Create frontmatter data
+    const frontmatterData = {
+      title: title,
+      date: date,
+      tags: ['daily-update', 'ai-pm-research'],
+    };
+
+    // Format with frontmatter
+    const newContent = formatFrontmatter(frontmatterData, content);
+
+    // Write file with frontmatter
+    writeFileSafe(filePath, newContent);
+
+    console.log(`✅ Added frontmatter to ${filename}`);
+    console.log(`   Title: "${title}"`);
+    console.log(`   Date: ${date}`);
+  } catch (error) {
+    console.error(`✗ Error processing ${path.basename(filePath)}: ${error.message}`);
   }
-
-  // Extract date from filename (YYYY-MM-DD.md)
-  const filename = path.basename(filePath, '.md');
-  const dateMatch = filename.match(/(\d{4})-(\d{2})-(\d{2})/);
-
-  if (!dateMatch) {
-    console.log(`⚠️  Skipping ${filename} - couldn't extract date`);
-    return;
-  }
-
-  const date = `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`;
-
-  // Generate title from summary
-  const generatedTitle = generateTitleFromSummary(content);
-  const title = generatedTitle || `Daily Update - ${date}`;
-
-  // Create frontmatter
-  const frontmatter = `---
-title: "${title}"
-date: ${date}
-tags:
-  - daily-update
-  - ai-pm-research
----
-
-`;
-
-  // Write file with frontmatter
-  const newContent = frontmatter + content;
-  fs.writeFileSync(filePath, newContent, 'utf-8');
-
-  console.log(`✅ Added frontmatter to ${filename}`);
-  console.log(`   Title: "${title}"`);
-  console.log(`   Date: ${date}`);
 }
 
 function processDirectory(dir) {

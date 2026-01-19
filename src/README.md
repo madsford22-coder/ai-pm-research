@@ -32,6 +32,14 @@ Orchestration functions that combine adapters and transforms:
 - `company-updates.js` - Check updates from tracked companies
 - `find-rss-feeds.js` - Find RSS feeds for people's blogs
 
+### 5. Shared Utilities (`utils/`)
+Common utilities used across the codebase:
+- `file.js` - Safe file operations with error handling
+- `frontmatter.js` - Consistent frontmatter parsing/formatting
+- `validation.js` - Input validation functions
+
+See [utils/README.md](utils/README.md) for details.
+
 ## Testing
 
 ### JavaScript Tests
@@ -53,15 +61,22 @@ pytest tooling/
 
 1. **Scripts are thin wrappers** - Scripts in `scripts/` only parse args and call pipeline functions
 2. **No side effects in core functions** - Pure transforms are easily testable
-3. **Dependency injection** - Adapters accept options for injecting test doubles
+3. **Dependency injection** - Adapters and utilities accept options for injecting test doubles
 4. **Separation of concerns** - Each layer has a single responsibility
+5. **Shared utilities** - Use utilities from `utils/` instead of duplicating code
+6. **Input validation** - Validate inputs at module boundaries using `utils/validation.js`
 
 ## Adding New Features
 
 1. Define domain types in `domain/types.js`
-2. Create adapters in `adapters/` for any I/O
+2. Create adapters in `adapters/` for any I/O (use `utils/file.js` for file operations)
 3. Create pure transforms in `transforms/` for data manipulation
-4. Create pipeline in `pipelines/` to orchestrate
+4. Create pipeline in `pipelines/` to orchestrate (validate inputs with `utils/validation.js`)
 5. Create thin script wrapper in `scripts/` if needed
-6. Add unit tests in `__tests__/` directories
+6. Use shared utilities from `utils/` instead of duplicating code
+7. Add unit tests in `__tests__/` directories
+
+## Modularity Improvements
+
+See [MODULARITY_ASSESSMENT.md](../MODULARITY_ASSESSMENT.md) for a comprehensive assessment and improvement plan for codebase modularity, testing, and safety.
 

@@ -10,6 +10,7 @@
 
 const path = require('path');
 const fs = require('fs');
+const { validatePositiveInteger, validateOneOf, validateFilePath } = require('../src/utils/validation');
 
 // Add tooling/node_modules to module path so Puppeteer can be found
 // This allows the modular scripts to use Puppeteer installed in tooling/
@@ -28,15 +29,27 @@ const { checkPeopleActivityPipeline } = require('../src/pipelines/people-activit
 
 async function main() {
   const args = process.argv.slice(2);
-  const daysBack = args.includes('--days') 
+  let daysBack = args.includes('--days') 
     ? parseInt(args[args.indexOf('--days') + 1]) 
     : 30;
-  const format = args.includes('--format') 
+  let format = args.includes('--format') 
     ? args[args.indexOf('--format') + 1] 
     : 'markdown';
   const peopleFile = args.includes('--people-file')
     ? args[args.indexOf('--people-file') + 1]
     : path.join(__dirname, '..', 'context', 'people.md');
+  
+  // Validate inputs
+  try {
+    validatePositiveInteger(daysBack, 'daysBack', 1);
+    validateOneOf(format, ['json', 'markdown'], 'format');
+    validateFilePath(peopleFile, '.md', false); // File may not exist yet
+  } catch (error) {
+    console.error(`\n✗ Invalid argument: ${error.message}`);
+    console.error('\nUsage:');
+    console.error('  node check-people-activity.js [--days N] [--format json|markdown] [--people-file PATH]');
+    process.exit(1);
+  }
   
   try {
     const result = await checkPeopleActivityPipeline({

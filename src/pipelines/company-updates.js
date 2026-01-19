@@ -13,6 +13,7 @@ const { fetchRSSFeed, findRSSFeedFromBlog } = require('../adapters/rss');
 const { scrapeChangelog } = require('../adapters/scraper');
 const { filterUpdatesByDate, dedupeUpdates } = require('../transforms/filter');
 const { sortUpdatesByDate } = require('../transforms/sort');
+const { validatePositiveInteger, validateOneOf, validateFilePath } = require('../utils/validation');
 
 const DEFAULT_DAYS_BACK = 14;
 
@@ -99,6 +100,11 @@ async function checkCompanyUpdatesPipeline(options = {}) {
     companiesFile = path.join(__dirname, '../../context/companies.md'),
     format = 'markdown',
   } = options;
+  
+  // Validate inputs
+  validatePositiveInteger(daysBack, 'daysBack', 1);
+  validateFilePath(companiesFile, '.md', false); // File may not exist yet
+  validateOneOf(format, ['json', 'markdown'], 'format');
   
   console.log(`Checking company updates from last ${daysBack} days...\n`);
   

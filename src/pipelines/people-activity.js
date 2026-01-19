@@ -13,6 +13,7 @@ const { fetchRSSFeed } = require('../adapters/rss');
 const { scrapeBlogPosts, scrapeLinkedInPosts, scrapeTwitterPosts } = require('../adapters/scraper');
 const { filterByDate, dedupePosts } = require('../transforms/filter');
 const { sortPostsByDate } = require('../transforms/sort');
+const { validatePositiveInteger, validateOneOf, validateFilePath } = require('../utils/validation');
 
 const DEFAULT_DAYS_BACK = 30;
 
@@ -108,6 +109,11 @@ async function checkPeopleActivityPipeline(options = {}) {
     peopleFile = path.join(__dirname, '../../context/people.md'),
     format = 'markdown',
   } = options;
+  
+  // Validate inputs
+  validatePositiveInteger(daysBack, 'daysBack', 1);
+  validateFilePath(peopleFile, '.md', false); // File may not exist yet
+  validateOneOf(format, ['json', 'markdown'], 'format');
   
   console.log(`Checking people activity from last ${daysBack} days...\n`);
   

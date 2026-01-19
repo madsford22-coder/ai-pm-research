@@ -10,42 +10,10 @@
  * - Resource links from all updates
  */
 
-const fs = require('fs');
 const path = require('path');
-
-// Simple frontmatter parser
-function parseFrontmatter(content) {
-  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
-  const match = content.match(frontmatterRegex);
-  
-  if (!match) {
-    return { data: {}, content: content };
-  }
-  
-  const yamlContent = match[1];
-  const markdownContent = match[2];
-  const data = {};
-  
-  // Simple YAML parser
-  const lines = yamlContent.split('\n');
-  for (const line of lines) {
-    const colonIndex = line.indexOf(':');
-    if (colonIndex > 0) {
-      const key = line.substring(0, colonIndex).trim();
-      const value = line.substring(colonIndex + 1).trim().replace(/^["']|["']$/g, '');
-      if (key && value) {
-        if (key === 'tags' && value.startsWith('[')) {
-          // Parse array
-          data[key] = value.replace(/[\[\]]/g, '').split(',').map(t => t.trim().replace(/^["']|["']$/g, ''));
-        } else {
-          data[key] = value;
-        }
-      }
-    }
-  }
-  
-  return { data, content: markdownContent };
-}
+const { readFileSafe, writeFileSafe, fileExists, ensureDirectoryExists } = require('../src/utils/file');
+const { parseFrontmatter, formatFrontmatter } = require('../src/utils/frontmatter');
+const { validatePositiveInteger, validateNonEmptyString } = require('../src/utils/validation');
 
 function extractResources(content) {
   const resources = new Set();
@@ -109,13 +77,18 @@ function extractSummary(content) {
 }
 
 function generateMonthlySummary(year, month) {
+  // Validate inputs
+  validatePositiveInteger(year, 'year', 2020);
+  validatePositiveInteger(month, 'month', 1);
+  if (month > 12) {
+    throw new Error('month must be between 1 and 12');
+  }
+  
   const updatesDir = path.join(__dirname, '..', 'updates', 'daily', String(year));
   const monthlyDir = path.join(__dirname, '..', 'updates', 'monthly');
   
   // Ensure monthly directory exists
-  if (!fs.existsSync(monthlyDir)) {
-    fs.mkdirSync(monthlyDir, { recursive: true });
-  }
+  ensureDirectoryExists(monthlyDir);
   
   const monthStr = String(month).padStart(2, '0');
   const monthKey = `${year}-${monthStr}`;
@@ -126,11 +99,12 @@ function generateMonthlySummary(year, month) {
   const monthStart = new Date(year, month - 1, 1);
   const monthEnd = new Date(year, month, 0);
   
-  if (!fs.existsSync(updatesDir)) {
+  if (!fileExists(updatesDir)) {
     console.error(`Updates directory not found: ${updatesDir}`);
     return;
   }
   
+  const fs = require('fs'); // Still need for readdirSync
   const files = fs.readdirSync(updatesDir);
   
   for (const file of files) {
@@ -172,7 +146,7 @@ function generateMonthlySummary(year, month) {
   const themes = new Map();
   
   for (const file of dailyFiles) {
-    const content = fs.readFileSync(file.path, 'utf-8');
+    const content = readFileSafe(file.path);
     const parsed = parseFrontmatter(content);
     
     const dateStr = file.date.toISOString().split('T')[0];
@@ -294,7 +268,7 @@ ${topItems.length > 0 ? `\n## Essential Resources (${topItems.length})\n\n${topI
 `;
   
   // Write output file
-  fs.writeFileSync(outputFile, markdown, 'utf-8');
+  writeFileSafe(outputFile, markdown);
   console.log(`✅ Generated monthly summary: ${outputFile}`);
   
   return {
@@ -312,8 +286,9 @@ function main() {
   if (args.length === 0) {
     // Generate for all months that have updates
     const updatesDir = path.join(__dirname, '..', 'updates', 'daily');
+    const fs = require('fs'); // Still need for readdirSync and statSync
     
-    if (!fs.existsSync(updatesDir)) {
+    if (!fileExists(updatesDir)) {
       console.error('Updates directory not found');
       process.exit(1);
     }
@@ -347,12 +322,18 @@ function main() {
     const year = parseInt(args[0]);
     const month = parseInt(args[1]);
     
-    if (isNaN(year) || isNaN(month) || month < 1 || month > 12) {
-      console.error('Invalid year or month');
+    try {
+      validatePositiveInteger(year, 'year', 2020);
+      validatePositiveInteger(month, 'month', 1);
+      if (month > 12) {
+        throw new Error('month must be between 1 and 12');
+      }
+      
+      generateMonthlySummary(year, month);
+    } catch (error) {
+      console.error(`Error: ${error.message}`);
       process.exit(1);
     }
-    
-    generateMonthlySummary(year, month);
   } else {
     console.error('Usage: node generate-monthly-summary.js [year month]');
     console.error('  With no arguments: generates summaries for all months with updates');

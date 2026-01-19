@@ -2,8 +2,10 @@
  * Script to improve titles in frontmatter based on the summary content
  */
 
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs'); // Still need for readdirSync and isDirectory
+const { readFileSafe, writeFileSafe, fileExists } = require('../src/utils/file');
+const { parseFrontmatter, formatFrontmatter } = require('../src/utils/frontmatter');
 
 const UPDATES_DIR = path.join(__dirname, '..', 'updates', 'daily');
 
@@ -108,34 +110,41 @@ function capitalizeTitle(str) {
 }
 
 function improveFrontmatter(filePath) {
-  const content = fs.readFileSync(filePath, 'utf-8');
+  try {
+    const content = readFileSafe(filePath);
 
-  // Check if frontmatter exists
-  if (!content.startsWith('---')) {
-    console.log(`⏭️  Skipping ${path.basename(filePath)} - no frontmatter`);
-    return;
+    // Check if frontmatter exists
+    if (!content.startsWith('---')) {
+      console.log(`⏭️  Skipping ${path.basename(filePath)} - no frontmatter`);
+      return;
+    }
+
+    // Parse frontmatter
+    const { data, content: markdownContent } = parseFrontmatter(content);
+
+    // Generate better title
+    const betterTitle = generateBetterTitle(content);
+
+    if (!betterTitle) {
+      console.log(`⚠️  Couldn't generate title for ${path.basename(filePath)}`);
+      return;
+    }
+
+    // Update title in frontmatter data
+    data.title = betterTitle;
+
+    // Format with new frontmatter
+    const newContent = formatFrontmatter(data, markdownContent);
+
+    // Write back
+    writeFileSafe(filePath, newContent);
+
+    const filename = path.basename(filePath, '.md');
+    console.log(`✅ Updated ${filename}`);
+    console.log(`   New title: "${betterTitle}"`);
+  } catch (error) {
+    console.error(`✗ Error processing ${path.basename(filePath)}: ${error.message}`);
   }
-
-  // Generate better title
-  const betterTitle = generateBetterTitle(content);
-
-  if (!betterTitle) {
-    console.log(`⚠️  Couldn't generate title for ${path.basename(filePath)}`);
-    return;
-  }
-
-  // Replace the title in frontmatter
-  const newContent = content.replace(
-    /^(---\s+title:\s*")[^"]+(\")/m,
-    `$1${betterTitle}$2`
-  );
-
-  // Write back
-  fs.writeFileSync(filePath, newContent, 'utf-8');
-
-  const filename = path.basename(filePath, '.md');
-  console.log(`✅ Updated ${filename}`);
-  console.log(`   New title: "${betterTitle}"`);
 }
 
 function processDirectory(dir) {

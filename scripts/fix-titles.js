@@ -8,8 +8,9 @@
  * 3. Shortens overly long titles naturally
  */
 
-const fs = require('fs');
 const path = require('path');
+const { readFileSafe, writeFileSafe, fileExists } = require('../src/utils/file');
+const fs = require('fs'); // Still need for readdirSync and statSync
 
 // Simple regex-based title replacement
 function replaceTitle(content, newTitle) {
@@ -86,7 +87,7 @@ function fixTitle(title) {
 
 function processFile(filePath) {
   try {
-    const content = fs.readFileSync(filePath, 'utf-8');
+    const content = readFileSafe(filePath);
     
     // Extract current title
     const titleMatch = content.match(/^title:\s*["']([^"']+)["']$/m);
@@ -104,7 +105,7 @@ function processFile(filePath) {
     // Replace title in content
     const newContent = replaceTitle(content, fixedTitle);
     
-    fs.writeFileSync(filePath, newContent, 'utf-8');
+    writeFileSafe(filePath, newContent);
     console.log(`✓ Fixed: ${path.basename(filePath)}`);
     console.log(`  Before: ${originalTitle}`);
     console.log(`  After:  ${fixedTitle}\n`);
@@ -119,7 +120,7 @@ function processFile(filePath) {
 function main() {
   const updatesDir = path.join(__dirname, '..', 'updates', 'daily');
   
-  if (!fs.existsSync(updatesDir)) {
+  if (!fileExists(updatesDir)) {
     console.error(`Error: Updates directory not found: ${updatesDir}`);
     process.exit(1);
   }

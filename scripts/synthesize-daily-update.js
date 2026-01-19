@@ -11,8 +11,9 @@
  */
 
 const Anthropic = require('@anthropic-ai/sdk');
-const fs = require('fs');
 const path = require('path');
+const { readFileSafe, writeFileSafe, fileExists, ensureDirectoryExists } = require('../src/utils/file');
+const { validateNonEmptyString } = require('../src/utils/validation');
 
 // Get today's date
 const today = new Date();
@@ -29,7 +30,9 @@ async function main() {
 
   // Check for API key
   const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
+  try {
+    validateNonEmptyString(apiKey, 'ANTHROPIC_API_KEY');
+  } catch (error) {
     console.error('❌ Error: ANTHROPIC_API_KEY environment variable not set');
     console.error('\nPlease set your API key:');
     console.error('  export ANTHROPIC_API_KEY="your-api-key-here"');
@@ -45,7 +48,7 @@ async function main() {
   const outputFile = path.join(outputDir, `${dateStr}.md`);
 
   // Check if data file exists
-  if (!fs.existsSync(dataFile)) {
+  if (!fileExists(dataFile)) {
     console.error(`❌ Error: Data file not found: ${dataFile}`);
     console.error('\nRun the data collection script first:');
     console.error('  ./scripts/run-daily-research-data-collection.sh\n');
@@ -53,34 +56,32 @@ async function main() {
   }
 
   // Check if output file already exists
-  if (fs.existsSync(outputFile)) {
+  if (fileExists(outputFile)) {
     console.log(`⚠️  Warning: Output file already exists: ${outputFile}`);
     console.log('Overwriting existing file...\n');
   }
 
+  // Ensure output directory exists
+  ensureDirectoryExists(outputDir);
+
   console.log('📖 Reading context files...');
 
   // Read all required files
-  const collectedData = fs.readFileSync(dataFile, 'utf-8');
-  const researchPrompt = fs.readFileSync(
-    path.join(projectRoot, 'tooling/prompts/daily-research.md'),
-    'utf-8'
+  const collectedData = readFileSafe(dataFile);
+  const researchPrompt = readFileSafe(
+    path.join(projectRoot, 'tooling/prompts/daily-research.md')
   );
-  const companies = fs.readFileSync(
-    path.join(projectRoot, 'context/companies.md'),
-    'utf-8'
+  const companies = readFileSafe(
+    path.join(projectRoot, 'context/companies.md')
   );
-  const people = fs.readFileSync(
-    path.join(projectRoot, 'context/people.md'),
-    'utf-8'
+  const people = readFileSafe(
+    path.join(projectRoot, 'context/people.md')
   );
-  const prefs = fs.readFileSync(
-    path.join(projectRoot, 'context/prefs.md'),
-    'utf-8'
+  const prefs = readFileSafe(
+    path.join(projectRoot, 'context/prefs.md')
   );
-  const openQuestions = fs.readFileSync(
-    path.join(projectRoot, 'context/open-questions.md'),
-    'utf-8'
+  const openQuestions = readFileSafe(
+    path.join(projectRoot, 'context/open-questions.md')
   );
 
   // Read previous 14 days of updates for deduplication
@@ -95,12 +96,17 @@ async function main() {
     const pastDateStr = `${pastYear}-${pastMonth}-${pastDay}`;
     const pastFile = path.join(projectRoot, 'updates', 'daily', String(pastYear), `${pastDateStr}.md`);
 
-    if (fs.existsSync(pastFile)) {
-      const content = fs.readFileSync(pastFile, 'utf-8');
-      previousUpdates.push({
-        date: pastDateStr,
-        content: content
-      });
+    if (fileExists(pastFile)) {
+      try {
+        const content = readFileSafe(pastFile);
+        previousUpdates.push({
+          date: pastDateStr,
+          content: content
+        });
+      } catch (error) {
+        // Skip files that can't be read
+        console.warn(`   Warning: Could not read ${pastFile}: ${error.message}`);
+      }
     }
   }
 
@@ -165,13 +171,9 @@ ${collectedData}`;
     // Extract the generated content
     const generatedContent = message.content[0].text;
 
-    // Ensure output directory exists
-    if (!fs.existsSync(outputDir)) {
-      fs.mkdirSync(outputDir, { recursive: true });
-    }
-
-    // Write to output file
-    fs.writeFileSync(outputFile, generatedContent);
+    // Ensure output directory exists and write file
+    ensureDirectoryExists(outputDir);
+    writeFileSafe(outputFile, generatedContent);
 
     console.log('✅ Daily update generated successfully!\n');
     console.log(`📄 Output saved to: ${outputFile}`);
