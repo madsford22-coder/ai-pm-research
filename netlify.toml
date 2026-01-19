@@ -9,11 +9,8 @@
   publish = ".next"
 
 [build.environment]
-  # Node.js version
-  NODE_VERSION = "18.0.0"
-
-  # NPM version (optional)
-  NPM_VERSION = "9.0.0"
+  # Node.js version (Next.js requires >= 18.17.0)
+  NODE_VERSION = "20.11.0"
 
 # Redirect rules
 [[redirects]]
