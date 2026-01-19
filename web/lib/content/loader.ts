@@ -92,7 +92,7 @@ export async function getContentByPath(filePath: string) {
 export function getAllContentMetadata(): ContentMetadata[] {
   const paths = getAllContentPaths();
   
-  return paths.map((filePath) => {
+  const items = paths.map((filePath) => {
     let fullPath: string | null = null;
     
     // Determine full path based on file location
@@ -132,14 +132,17 @@ export function getAllContentMetadata(): ContentMetadata[] {
       slug,
       path: filePath,
       url,
-    };
-  }).filter((item): item is ContentMetadata => item !== null);
+    } as ContentMetadata;
+  });
+
+  // Filter out nulls and narrow the type for TypeScript
+  return items.filter((item): item is ContentMetadata => item !== null);
 }
 
 export function buildSearchIndex(): SearchIndexItem[] {
   const paths = getAllContentPaths();
   
-  return paths.map((filePath) => {
+  const items = paths.map((filePath) => {
     let fullPath: string | null = null;
     
     // Determine full path based on file location
@@ -188,8 +191,11 @@ export function buildSearchIndex(): SearchIndexItem[] {
       summary: data.summary,
       tags: Array.isArray(data.tags) ? data.tags : undefined,
       body,
-    };
-  }).filter((item): item is SearchIndexItem => item !== null);
+    } as SearchIndexItem;
+  });
+
+  // Filter out nulls and narrow the type for TypeScript
+  return items.filter((item): item is SearchIndexItem => item !== null);
 }
 
 function slugToTitle(slug: string): string {
