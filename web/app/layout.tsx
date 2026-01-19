@@ -24,13 +24,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="flex min-h-screen bg-white">
+        <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
           <Sidebar />
           <main className="flex-1 lg:ml-64">
-            <div className="sticky top-0 z-10 bg-white/98 backdrop-blur-md border-b border-[#e5e7eb] px-8 py-5">
+            <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-xl border-b border-gray-200 px-8 py-4 shadow-sm">
               <Search />
             </div>
-            <div className="max-w-3xl mx-auto px-8 py-12">
+            <div className="max-w-4xl mx-auto px-8 py-8">
               {children}
             </div>
           </main>

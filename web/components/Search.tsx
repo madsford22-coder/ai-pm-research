@@ -64,17 +64,17 @@ export default function Search() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative max-w-2xl">
       <div className="relative">
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search content..."
-          className="w-full px-4 py-2.5 pl-10 border border-[#e5e7eb] rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563eb] focus:border-transparent bg-white text-[#1a1a1a] placeholder:text-[#9ca3af]"
+          placeholder="Search updates..."
+          className="w-full px-4 py-2.5 pl-11 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 placeholder:text-gray-400 shadow-sm hover:border-gray-400 transition-all"
         />
         <svg
-          className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
           fill="none"
           strokeLinecap="round"
           strokeLinejoin="round"

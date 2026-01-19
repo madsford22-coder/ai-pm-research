@@ -73,55 +73,68 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-12">
-      <div className="border-b border-[#e5e7eb] pb-8">
-        <h1 className="text-5xl font-bold text-[#1a1a1a] mb-4 tracking-tight">
-          AI PM Research Assistant
-        </h1>
-        <p className="text-xl text-[#6b7280] leading-relaxed max-w-2xl">
-          Your system of record for tracking AI product signals and translating them into actionable PM insights.
-        </p>
+    <div className="space-y-16">
+      {/* Hero Section */}
+      <div className="relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-3xl -z-10"></div>
+        <div className="px-8 py-12">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+              <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+              AI PM Research
+            </h1>
+          </div>
+          <p className="text-lg text-gray-600 leading-relaxed max-w-2xl">
+            Daily insights on AI product signals, industry trends, and actionable PM takeaways
+          </p>
+        </div>
       </div>
 
       {recentUpdates.length > 0 && (
         <div>
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-semibold text-[#1a1a1a]">Recent Daily Updates</h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Latest Updates</h2>
             <Link
               href="/updates/daily"
-              className="text-[#2563eb] hover:text-[#1d4ed8] font-medium text-sm hover:underline"
+              className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors group"
             >
-              View all →
+              View all
+              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </Link>
           </div>
-          <div className="space-y-4">
+          <div className="grid gap-4">
             {recentUpdates.map((update) => (
               <Link
                 key={update.url}
                 href={update.url}
-                className="block border-b border-[#e5e7eb] pb-6 hover:border-[#d1d5db] transition-colors group"
+                className="group relative bg-white border border-gray-200 rounded-xl p-6 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-100/50 transition-all duration-200"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-xl font-semibold text-[#1a1a1a] mb-2 group-hover:text-[#2563eb] transition-colors leading-tight">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
                       {update.title.replace(/^#+\s+/, '').trim()}
                     </h3>
-                    {update.summary && (
-                      <p className="text-[#6b7280] text-base mb-3 line-clamp-2 leading-relaxed">
-                        {update.summary}
-                      </p>
+                    {update.date && (
+                      <time className="text-sm text-gray-500 font-medium" dateTime={update.date}>
+                        {new Date(update.date).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })}
+                      </time>
                     )}
-                    <div className="flex items-center gap-4 text-sm text-[#9ca3af]">
-                      {update.date && (
-                        <time dateTime={update.date}>
-                          {formatDate(update.date)}
-                        </time>
-                      )}
-                    </div>
                   </div>
-                  <svg className="w-5 h-5 text-[#9ca3af] group-hover:text-[#2563eb] flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                  <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gray-50 group-hover:bg-blue-50 flex items-center justify-center transition-colors">
+                    <svg className="w-4 h-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
                 </div>
               </Link>
             ))}
