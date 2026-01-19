@@ -206,25 +206,64 @@ function generateMonthlySummary(year, month) {
     });
   }
   
-  // Sort themes by frequency
+  // Sort themes by frequency and get top 3 most important
   const topThemes = Array.from(themes.entries())
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 5)
+    .slice(0, 3)
     .map(([theme, count]) => theme);
   
-  // Generate monthly summary markdown
+  // Get top 3 most important resources (prioritize unique domains and most referenced)
+  const resourceCounts = new Map();
+  for (const resource of allResources) {
+    try {
+      const url = new URL(resource);
+      const domain = url.hostname.replace('www.', '');
+      resourceCounts.set(domain, (resourceCounts.get(domain) || 0) + 1);
+    } catch {
+      // Skip invalid URLs
+    }
+  }
+  
+  // Get top 3 most important items with their resources
+  const topItems = allItems
+    .filter(item => item.tldr && item.source)
+    .slice(0, 3)
+    .map((item, idx) => {
+      try {
+        const url = new URL(item.source);
+        const domain = url.hostname.replace('www.', '');
+        const title = item.title.replace(/\s*-\s*[^]+$/, '').trim();
+        return {
+          title,
+          source: item.source,
+          domain,
+          tldr: item.tldr
+        };
+      } catch {
+        return null;
+      }
+    })
+    .filter(item => item !== null);
+  
+  // Generate executive summary
   const monthName = monthStart.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   const monthTitle = monthName;
   
-  // Format date nicely
-  const formatDate = (dateStr) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { 
-      month: 'long', 
-      day: 'numeric',
-      year: 'numeric'
-    });
-  };
+  // Create concise executive summary (one page, chief of staff style)
+  let executiveSummary = '';
+  if (topThemes.length > 0) {
+    // Create one flowing sentence from themes
+    const themesLower = topThemes.map(theme => theme.charAt(0).toLowerCase() + theme.slice(1));
+    if (themesLower.length === 1) {
+      executiveSummary = themesLower[0] + '.';
+    } else if (themesLower.length === 2) {
+      executiveSummary = themesLower[0] + ', and ' + themesLower[1] + '.';
+    } else {
+      executiveSummary = themesLower.slice(0, -1).join(', ') + ', and ' + themesLower[themesLower.length - 1] + '.';
+    }
+  } else {
+    executiveSummary = `This month tracked ${allItems.length} key items across AI product management, tools, and workflows.`;
+  }
   
   let markdown = `---
 title: "${monthTitle} Research Summary"
@@ -236,44 +275,19 @@ tags:
 
 # ${monthTitle} Research Summary
 
-## Overview
+${executiveSummary.charAt(0).toUpperCase() + executiveSummary.slice(1)}
 
-This month saw **${dailyFiles.length} daily research updates** covering **${allItems.length} key items** across AI product management, tools, and workflows.
+## What Matters
 
-## Key Themes
+${topThemes.length > 0 ? topThemes.map(theme => `- ${theme.charAt(0).toUpperCase() + theme.slice(1)}`).join('\n') : `- ${dailyFiles.length} daily updates tracked ${allItems.length} key items this month`}
 
-${topThemes.length > 0 ? topThemes.map(theme => `- ${theme}`).join('\n') : '- Various AI product management insights and patterns'}
+${topItems.length > 0 ? `\n## Essential Resources (${topItems.length})\n\n${topItems.map((item, idx) => {
+  return `${idx + 1}. **${item.title}** — [${item.domain}](${item.source})`;
+}).join('\n')}\n` : ''}
 
-## Daily Updates
+---
 
-${dailySummaries.map(day => {
-    const displayDate = formatDate(day.date);
-    // URL format: /updates/daily/2026/2026-01-19
-    const urlPath = day.date;
-    return `### [${day.title}](/updates/daily/${year}/${urlPath})
-
-**${displayDate}** · ${day.itemCount} item${day.itemCount !== 1 ? 's' : ''}
-
-${day.summary ? `${day.summary}\n\n` : ''}→ [Read full update](/updates/daily/${year}/${urlPath})`;
-  }).join('\n\n---\n\n')}
-
-## Resources & Links
-
-${Array.from(allResources).sort().map(resource => {
-    try {
-      const url = new URL(resource);
-      return `- [${url.hostname.replace('www.', '')}](${resource})`;
-    } catch {
-      return `- ${resource}`;
-    }
-  }).join('\n')}
-
-## Statistics
-
-- **Total daily updates:** ${dailyFiles.length}
-- **Total items covered:** ${allItems.length}
-- **Unique resources:** ${allResources.size}
-- **Key themes identified:** ${topThemes.length}
+*${dailyFiles.length} daily updates tracked ${allItems.length} items this month. [View all updates](/updates/daily/${year}/)*
 `;
   
   // Write output file

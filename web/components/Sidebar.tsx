@@ -137,45 +137,18 @@ function buildTree(metadata: ContentMetadata[]): TreeNode {
       isFile: false,
     };
 
-    // Add monthly summary as first child (if exists) - use the correct monthKey
+    // Only add monthly summary - no individual daily updates in sidebar
     const monthlySummary = monthMap.get(monthKey);
     if (monthlySummary) {
-      monthNode.children.set('_summary', {
-        name: 'Summary',
-        path: monthlySummary.path.replace(/\.md$/, ''),
-        url: monthlySummary.url,
-        title: monthlySummary.title,
-        children: new Map(),
-        isFile: true,
-      });
+      // Make the month node itself the link to the summary (no nested summary node)
+      monthNode.url = monthlySummary.url;
+      monthNode.title = monthlySummary.title;
       // Debug log
       // console.log(`Added summary to ${monthKey}: ${monthlySummary.title}`);
     }
     
-    // Debug: log month node creation
-    // console.log(`Created month node: ${monthKey} -> ${monthName}, summary: ${monthlySummary ? monthlySummary.title : 'none'}`);
-
-    // Add daily updates as children
-    const dailies = dailyByMonth.get(monthKey) || [];
-    dailies.sort((a, b) => {
-      const dateA = a.date ? new Date(a.date).getTime() : 0;
-      const dateB = b.date ? new Date(b.date).getTime() : 0;
-      return dateB - dateA; // Newest first
-    });
-
-    for (const daily of dailies) {
-      // Use a unique key based on the date or slug
-      const dayKey = daily.date || daily.slug || daily.path;
-      
-      monthNode.children.set(dayKey, {
-        name: daily.title.replace(/^#+\s+/, '').trim(),
-        path: daily.path.replace(/\.md$/, ''),
-        url: daily.url,
-        title: daily.title,
-        children: new Map(),
-        isFile: true,
-      });
-    }
+    // Don't add daily updates as children - they're only on the dashboard
+    // Daily updates are available via the monthly summary page
 
     root.children.set(monthKey, monthNode);
   }
