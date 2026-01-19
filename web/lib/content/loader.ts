@@ -5,11 +5,16 @@ import { parseMarkdown, processMarkdownSync } from './parser';
 import { ContentMetadata, SearchIndexItem } from './types';
 
 // Resolve content directory relative to repo root
-// When running from /web, go up one level to repo root, then into /content
-const CONTENT_DIR = path.resolve(process.cwd(), '..', 'content');
+// When running from /web, go up one level to repo root, then into /updates/daily
+// Also support /content for backwards compatibility
+const UPDATES_DIR = path.resolve(process.cwd(), '..', 'updates', 'daily');
+const PRIMARY_CONTENT_DIR = path.resolve(process.cwd(), '..', 'content');
+
+// Use updates directory if it exists, otherwise fall back to content
+const PRIMARY_PRIMARY_CONTENT_DIR = fs.existsSync(UPDATES_DIR) ? UPDATES_DIR : PRIMARY_CONTENT_DIR;
 
 export function getAllContentPaths(): string[] {
-  if (!fs.existsSync(CONTENT_DIR)) {
+  if (!fs.existsSync(PRIMARY_CONTENT_DIR)) {
     return [];
   }
 
@@ -30,12 +35,12 @@ export function getAllContentPaths(): string[] {
     }
   }
 
-  walkDir(CONTENT_DIR);
+  walkDir(PRIMARY_CONTENT_DIR);
   return paths;
 }
 
 export async function getContentByPath(filePath: string) {
-  const fullPath = path.join(CONTENT_DIR, filePath);
+  const fullPath = path.join(PRIMARY_CONTENT_DIR, filePath);
   
   if (!fs.existsSync(fullPath)) {
     return null;
@@ -52,7 +57,7 @@ export function getAllContentMetadata(): ContentMetadata[] {
   const paths = getAllContentPaths();
   
   return paths.map((filePath) => {
-    const fullPath = path.join(CONTENT_DIR, filePath);
+    const fullPath = path.join(PRIMARY_CONTENT_DIR, filePath);
     const content = fs.readFileSync(fullPath, 'utf-8');
     const { data } = matter(content);
     
@@ -77,7 +82,7 @@ export function buildSearchIndex(): SearchIndexItem[] {
   const paths = getAllContentPaths();
   
   return paths.map((filePath) => {
-    const fullPath = path.join(CONTENT_DIR, filePath);
+    const fullPath = path.join(PRIMARY_CONTENT_DIR, filePath);
     const content = fs.readFileSync(fullPath, 'utf-8');
     const { data, content: markdown } = matter(content);
     

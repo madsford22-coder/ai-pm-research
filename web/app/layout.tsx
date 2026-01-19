@@ -7,8 +7,13 @@ import Search from "@/components/Search";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AI PM Research Assistant",
-  description: "System of record for tracking AI product signals",
+  title: "AI PM Research - Daily Updates",
+  description: "Daily research updates on AI product management, companies, and industry trends",
+  alternates: {
+    types: {
+      'application/rss+xml': '/rss.xml',
+    },
+  },
 };
 
 export default function RootLayout({
