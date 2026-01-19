@@ -45,18 +45,18 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="space-y-8">
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 rounded-2xl p-8 border border-blue-100 dark:border-blue-900 animate-pulse">
-          <div className="h-8 bg-gray-200 dark:bg-slate-700 rounded w-1/3 mb-3"></div>
-          <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-2/3 mb-6"></div>
-          <div className="h-10 bg-gray-200 dark:bg-slate-700 rounded w-32"></div>
+      <div className="space-y-8 animate-fade-in">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 rounded-2xl p-8 border border-blue-100 dark:border-blue-900 overflow-hidden">
+          <div className="h-8 animate-shimmer rounded w-1/3 mb-3"></div>
+          <div className="h-4 animate-shimmer rounded w-2/3 mb-6"></div>
+          <div className="h-10 animate-shimmer rounded w-32"></div>
         </div>
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 p-6 animate-pulse">
-              <div className="h-6 bg-gray-200 dark:bg-slate-700 rounded w-3/4 mb-3"></div>
-              <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-full mb-2"></div>
-              <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-5/6"></div>
+            <div key={i} className="bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 p-6 overflow-hidden">
+              <div className="h-6 animate-shimmer rounded w-3/4 mb-3"></div>
+              <div className="h-4 animate-shimmer rounded w-full mb-2"></div>
+              <div className="h-4 animate-shimmer rounded w-5/6"></div>
             </div>
           ))}
         </div>
@@ -65,7 +65,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-8 sm:space-y-16">
+    <div className="space-y-8 sm:space-y-16 animate-fade-in">
       {/* Hero Section */}
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950 rounded-2xl sm:rounded-3xl -z-10"></div>
@@ -105,7 +105,7 @@ export default function Dashboard() {
               <Link
                 key={update.url}
                 href={update.url}
-                className="group relative bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-4 sm:p-6 hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-lg hover:shadow-blue-100/50 dark:hover:shadow-blue-900/30 transition-all duration-200"
+                className="group relative bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-4 sm:p-6 hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-lg hover:shadow-blue-100/50 dark:hover:shadow-blue-900/30 hover:-translate-y-0.5 transition-all duration-200"
               >
                 <div className="flex items-start justify-between gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">

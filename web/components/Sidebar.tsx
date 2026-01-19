@@ -230,9 +230,9 @@ function renderTree(node: TreeNode, pathname: string, level: number = 0): React.
       {node.isFile ? (
         <Link
           href={node.url}
-          className={`block px-3 py-2 rounded-md text-sm transition-colors ${
+          className={`block px-3 py-2 rounded-md text-sm transition-all relative ${
             isActive
-              ? 'bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-gray-100 font-medium'
+              ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium border-l-2 border-blue-600 dark:border-blue-400 pl-2.5'
               : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-gray-100'
           }`}
         >
@@ -244,9 +244,9 @@ function renderTree(node: TreeNode, pathname: string, level: number = 0): React.
             <>
               <Link
                 href={node.url}
-                className={`block px-3 py-2 rounded-md text-sm font-semibold transition-colors ${
+                className={`block px-3 py-2 rounded-md text-sm font-semibold transition-all ${
                   isActive
-                    ? 'bg-gray-200 dark:bg-slate-700 text-gray-900 dark:text-gray-100'
+                    ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-gray-100'
                 }`}
               >
@@ -312,16 +312,22 @@ export default function Sidebar() {
       });
   }, []);
 
+  // Close sidebar on mobile when pathname changes
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
   return (
     <>
-      {/* Mobile menu button */}
+      {/* Mobile menu button - improved touch target */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-4 left-4 z-20 p-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-md shadow-sm text-gray-700 dark:text-gray-300"
+        className="lg:hidden fixed top-4 left-4 z-20 p-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all text-gray-700 dark:text-gray-300"
         aria-label="Toggle menu"
+        style={{ minWidth: '44px', minHeight: '44px' }}
       >
         <svg
-          className="w-6 h-6"
+          className="w-5 h-5"
           fill="none"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -339,21 +345,33 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-full w-64 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-700 z-10 transform transition-transform duration-200 ease-in-out ${
+        className={`fixed left-0 top-0 h-full w-64 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-700 z-10 transform transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0`}
+        } lg:translate-x-0 shadow-xl lg:shadow-none`}
       >
         <div className="p-6">
-          <Link href="/" className="block mb-8">
-            <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">AI PM Research Hub</h1>
-          </Link>
+          <div className="flex items-center justify-between mb-8">
+            <Link href="/" className="block">
+              <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">AI PM Research Hub</h1>
+            </Link>
+            {/* Close button for mobile inside sidebar */}
+            <button
+              onClick={() => setIsOpen(false)}
+              className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+              aria-label="Close menu"
+            >
+              <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
           <nav className="overflow-y-auto max-h-[calc(100vh-8rem)]">
             {tree ? (
               renderTree(tree, pathname)
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-2 overflow-hidden">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="h-8 bg-gray-200 dark:bg-slate-700 rounded animate-pulse"></div>
+                  <div key={i} className="h-8 animate-shimmer rounded"></div>
                 ))}
               </div>
             )}

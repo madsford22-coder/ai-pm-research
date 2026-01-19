@@ -84,7 +84,7 @@ export default async function ContentPage({ params }: PageProps) {
   const formattedTitle = formatTitle(content.title);
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-6 sm:space-y-8 animate-fade-in">
       {isDailyUpdate && content.date && availableDates.length > 0 && (
         <DateNavigator currentDate={content.date} availableDates={availableDates} />
       )}
