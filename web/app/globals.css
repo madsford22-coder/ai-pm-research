@@ -179,7 +179,8 @@ body {
 }
 
 .prose hr {
-  @apply my-10 border-[#e5e7eb];
+  @apply my-10 border-t;
+  border-color: #e5e7eb;
 }
 
 .prose .anchor-link {
