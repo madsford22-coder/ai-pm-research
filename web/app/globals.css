@@ -27,7 +27,8 @@ body {
 
 /* Markdown content styles - Modern, clean, elevated */
 .prose {
-  @apply text-[#1a1a1a] leading-7;
+  @apply leading-7;
+  color: #1a1a1a;
   font-size: 18px;
   max-width: none;
 }
@@ -38,13 +39,15 @@ body {
 }
 
 .prose h1 {
-  @apply text-4xl font-bold mt-0 mb-6 text-[#1a1a1a] leading-tight;
+  @apply text-4xl font-bold mt-0 mb-6 leading-tight;
+  color: #1a1a1a;
   letter-spacing: -0.025em;
   font-weight: 700;
 }
 
 .prose h2 {
-  @apply text-2xl font-semibold mt-16 mb-5 text-[#1a1a1a] leading-tight group;
+  @apply text-2xl font-semibold mt-16 mb-5 leading-tight;
+  color: #1a1a1a;
   letter-spacing: -0.015em;
   border: none;
   padding: 0;
@@ -52,15 +55,29 @@ body {
   position: relative;
 }
 
+.prose h2.group:hover .anchor-link {
+  opacity: 0.4;
+}
+
 .prose h3 {
-  @apply text-xl font-semibold mt-10 mb-4 text-[#1a1a1a] leading-tight group;
+  @apply text-xl font-semibold mt-10 mb-4 leading-tight;
+  color: #1a1a1a;
   letter-spacing: -0.01em;
   font-weight: 600;
 }
 
+.prose h3.group:hover .anchor-link {
+  opacity: 0.4;
+}
+
 .prose h4 {
-  @apply text-lg font-semibold mt-8 mb-3 text-[#1a1a1a] group;
+  @apply text-lg font-semibold mt-8 mb-3;
+  color: #1a1a1a;
   font-weight: 600;
+}
+
+.prose h4.group:hover .anchor-link {
+  opacity: 0.4;
 }
 
 .prose p {
@@ -106,10 +123,15 @@ body {
 }
 
 .prose a {
-  @apply text-[#2563eb] hover:text-[#1d4ed8] no-underline transition-colors;
+  @apply no-underline transition-colors;
+  color: #2563eb;
   border-bottom: 1px solid transparent;
   border-bottom-color: rgba(37, 99, 235, 0.3);
   transition: border-color 0.2s ease;
+}
+
+.prose a:hover {
+  color: #1d4ed8;
 }
 
 .prose a:hover {
@@ -117,22 +139,29 @@ body {
 }
 
 .prose code {
-  @apply bg-[#f3f4f6] px-1.5 py-0.5 rounded text-sm font-mono text-[#1a1a1a];
+  @apply px-1.5 py-0.5 rounded text-sm font-mono;
+  background-color: #f3f4f6;
+  color: #1a1a1a;
   font-size: 0.9em;
 }
 
 .prose pre {
-  @apply bg-[#1a1a1a] text-[#f9fafb] p-5 rounded-lg overflow-x-auto mb-6;
+  @apply p-5 rounded-lg overflow-x-auto mb-6;
+  background-color: #1a1a1a;
+  color: #f9fafb;
   border: 1px solid #e5e7eb;
 }
 
 .prose pre code {
-  @apply bg-transparent p-0 text-[#f9fafb];
+  @apply bg-transparent p-0;
+  color: #f9fafb;
   font-size: 0.9em;
 }
 
 .prose blockquote {
-  @apply border-l-4 border-[#e5e7eb] pl-6 italic my-6 text-[#4b5563];
+  @apply border-l-4 pl-6 italic my-6;
+  border-color: #e5e7eb;
+  color: #4b5563;
   font-size: 1.05em;
 }
 
@@ -154,11 +183,16 @@ body {
 }
 
 .prose .anchor-link {
-  @apply ml-2 text-[#9ca3af] hover:text-[#6b7280] no-underline;
+  @apply ml-2 no-underline;
+  color: #9ca3af;
   font-size: 0.75em;
   opacity: 0;
   transition: opacity 0.2s ease;
   font-weight: 400;
+}
+
+.prose .anchor-link:hover {
+  color: #6b7280;
 }
 
 .prose h2:hover .anchor-link,
@@ -168,7 +202,8 @@ body {
 }
 
 .prose strong {
-  @apply font-semibold text-[#1a1a1a];
+  @apply font-semibold;
+  color: #1a1a1a;
 }
 
 .prose em {
@@ -176,7 +211,7 @@ body {
 }
 
 .prose ol li::marker {
-  @apply text-[#9ca3af];
+  color: #9ca3af;
   font-weight: 500;
 }
 
