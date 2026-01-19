@@ -21,9 +21,14 @@ export default function TableOfContents({ html }: { html: string }) {
     headingElements.forEach((el) => {
       const id = el.id || el.textContent?.toLowerCase().replace(/\s+/g, '-') || '';
       if (id) {
+        // Remove anchor link symbols (#) and extra whitespace from text
+        let text = el.textContent || '';
+        text = text.replace(/#+/g, '').trim();
+        text = text.replace(/\s+/g, ' ');
+        
         extracted.push({
           id,
-          text: el.textContent || '',
+          text,
           level: parseInt(el.tagName.charAt(1)),
         });
       }
@@ -39,18 +44,18 @@ export default function TableOfContents({ html }: { html: string }) {
   return (
     <aside className="hidden xl:block w-64 flex-shrink-0">
       <div className="sticky top-28">
-        <div className="bg-[#f9fafb] rounded-md p-5 border border-[#e5e7eb]">
-          <h2 className="text-xs font-semibold text-[#6b7280] mb-4 uppercase tracking-wide">
-            Table of Contents
+        <div className="bg-white rounded-lg p-6 border border-[#e5e7eb] shadow-sm">
+          <h2 className="text-xs font-semibold text-[#9ca3af] mb-4 uppercase tracking-wider">
+            Contents
           </h2>
           <nav>
-            <ul className="space-y-2">
+            <ul className="space-y-1.5">
               {headings.map((heading) => (
                 <li key={heading.id}>
                   <a
                     href={`#${heading.id}`}
-                    className={`block text-sm text-[#6b7280] hover:text-[#1a1a1a] transition-colors ${
-                      heading.level === 3 ? 'ml-4' : ''
+                    className={`block text-sm text-[#6b7280] hover:text-[#1a1a1a] transition-colors duration-150 ${
+                      heading.level === 3 ? 'ml-4 text-[13px]' : ''
                     }`}
                   >
                     {heading.text}

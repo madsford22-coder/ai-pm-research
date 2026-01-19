@@ -102,8 +102,11 @@ async function processMarkdown(markdown: string): Promise<string> {
       content: {
         type: 'element',
         tagName: 'span',
-        properties: { className: ['anchor-link'] },
+        properties: { className: ['anchor-link', 'opacity-0', 'group-hover:opacity-100', 'transition-opacity'] },
         children: [{ type: 'text', value: '#' }],
+      },
+      properties: {
+        className: ['group'],
       },
     })
     .use(rehypeStringify)
@@ -139,8 +142,11 @@ export function processMarkdownSync(markdown: string): string {
       content: {
         type: 'element',
         tagName: 'span',
-        properties: { className: ['anchor-link'] },
+        properties: { className: ['anchor-link', 'opacity-0', 'group-hover:opacity-100', 'transition-opacity'] },
         children: [{ type: 'text', value: '#' }],
+      },
+      properties: {
+        className: ['group'],
       },
     })
     .use(rehypeStringify)

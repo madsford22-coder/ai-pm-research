@@ -25,60 +25,94 @@ body {
   }
 }
 
-/* Markdown content styles - Lenny's Newsletter inspired */
+/* Markdown content styles - Modern, clean, elevated */
 .prose {
   @apply text-[#1a1a1a] leading-7;
   font-size: 18px;
   max-width: none;
 }
 
+.prose-lg {
+  font-size: 19px;
+  line-height: 1.75;
+}
+
 .prose h1 {
   @apply text-4xl font-bold mt-0 mb-6 text-[#1a1a1a] leading-tight;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
+  font-weight: 700;
 }
 
 .prose h2 {
-  @apply text-2xl font-semibold mt-12 mb-6 text-[#1a1a1a] leading-tight;
-  letter-spacing: -0.01em;
+  @apply text-2xl font-semibold mt-16 mb-5 text-[#1a1a1a] leading-tight group;
+  letter-spacing: -0.015em;
   border: none;
   padding: 0;
+  font-weight: 600;
+  position: relative;
 }
 
 .prose h3 {
-  @apply text-xl font-semibold mt-10 mb-4 text-[#1a1a1a] leading-tight;
+  @apply text-xl font-semibold mt-10 mb-4 text-[#1a1a1a] leading-tight group;
   letter-spacing: -0.01em;
+  font-weight: 600;
 }
 
 .prose h4 {
-  @apply text-lg font-semibold mt-8 mb-3 text-[#1a1a1a];
+  @apply text-lg font-semibold mt-8 mb-3 text-[#1a1a1a] group;
+  font-weight: 600;
 }
 
 .prose p {
   @apply mb-6;
   line-height: 1.75;
+  font-size: 18px;
+  color: #374151;
 }
 
 .prose ul,
 .prose ol {
-  @apply mb-4 ml-6;
+  @apply mb-6 ml-6;
 }
 
 .prose ul {
   @apply list-disc;
+  list-style: none;
+  padding-left: 0;
+}
+
+.prose ul li {
+  position: relative;
+  padding-left: 1.5rem;
+  @apply mb-3;
+}
+
+.prose ul li::before {
+  content: '•';
+  position: absolute;
+  left: 0.5rem;
+  color: #9ca3af;
+  font-weight: 600;
 }
 
 .prose ol {
   @apply list-decimal;
+  padding-left: 1.5rem;
 }
 
-.prose li {
-  @apply mb-2;
+.prose ol li {
+  @apply mb-3;
 }
 
 .prose a {
-  @apply text-[#2563eb] hover:text-[#1d4ed8] underline transition-colors;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
+  @apply text-[#2563eb] hover:text-[#1d4ed8] no-underline transition-colors;
+  border-bottom: 1px solid transparent;
+  border-bottom-color: rgba(37, 99, 235, 0.3);
+  transition: border-color 0.2s ease;
+}
+
+.prose a:hover {
+  border-bottom-color: #2563eb;
 }
 
 .prose code {
@@ -120,8 +154,16 @@ body {
 
 .prose .anchor-link {
   @apply ml-2 text-[#9ca3af] hover:text-[#6b7280] no-underline;
-  font-size: 0.8em;
-  opacity: 0.7;
+  font-size: 0.75em;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  font-weight: 400;
+}
+
+.prose h2:hover .anchor-link,
+.prose h3:hover .anchor-link,
+.prose h4:hover .anchor-link {
+  opacity: 0.4;
 }
 
 .prose strong {
@@ -133,10 +175,11 @@ body {
 }
 
 .prose ul li::marker {
-  @apply text-[#6b7280];
+  display: none;
 }
 
 .prose ol li::marker {
-  @apply text-[#6b7280];
+  @apply text-[#9ca3af];
+  font-weight: 500;
 }
 

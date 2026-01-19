@@ -88,15 +88,15 @@ export default async function ContentPage({ params }: PageProps) {
       {isDailyUpdate && content.date && availableDates.length > 0 && (
         <DateNavigator currentDate={content.date} availableDates={availableDates} />
       )}
-      <div className="flex gap-12">
-        <article className="prose flex-1 min-w-0">
-          <header className="mb-10">
-            <h1 className="text-5xl font-bold text-[#1a1a1a] leading-tight mb-4 tracking-tight">
+      <div className="flex gap-16">
+        <article className="prose prose-lg flex-1 min-w-0 max-w-none">
+          <header className="mb-12 pb-8 border-b border-[#e5e7eb]">
+            <h1 className="text-5xl font-bold text-[#1a1a1a] leading-[1.1] mb-6 tracking-[-0.025em]">
               {formattedTitle}
             </h1>
-            <div className="flex items-center gap-4 text-sm text-[#6b7280] mb-6">
+            <div className="flex items-center gap-3 text-sm text-[#6b7280] mb-4">
               {content.date && (
-                <time dateTime={content.date}>
+                <time dateTime={content.date} className="font-medium">
                   {new Date(content.date).toLocaleDateString('en-US', {
                     weekday: 'long',
                     year: 'numeric',
@@ -107,12 +107,12 @@ export default async function ContentPage({ params }: PageProps) {
               )}
               {content.source_url && (
                 <>
-                  <span>•</span>
+                  <span className="text-[#d1d5db]">•</span>
                   <a 
                     href={content.source_url} 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="text-[#2563eb] hover:text-[#1d4ed8] hover:underline"
+                    className="text-[#2563eb] hover:text-[#1d4ed8] transition-colors font-medium"
                   >
                     Source
                   </a>
@@ -124,7 +124,7 @@ export default async function ContentPage({ params }: PageProps) {
                 {content.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="px-3 py-1 bg-[#f3f4f6] text-[#4b5563] text-xs font-medium rounded-full border border-[#e5e7eb]"
+                    className="px-3 py-1.5 bg-[#f9fafb] text-[#6b7280] text-xs font-medium rounded-md border border-[#e5e7eb]"
                   >
                     {tag.replace(/-/g, ' ')}
                   </span>
