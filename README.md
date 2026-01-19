@@ -11,9 +11,10 @@ System of record and long-term memory for tracking AI product signals and transl
   - `open-questions.md` - Open questions to investigate
 - `updates/daily/YYYY/` - Daily research updates organized by year
   - Format: `YYYY-MM-DD.md`
-- `updates/monthly/` - Monthly research summaries
+- `updates/monthly/` - Monthly research summaries (executive-style, one-page)
   - Format: `YYYY-MM.md`
   - Auto-generated from daily updates using `scripts/generate-monthly-summary.js`
+  - Includes top 3 themes and max 3 essential resources per month
 - `src/` - Modular, testable source code (see [src/README.md](src/README.md))
   - `domain/` - Domain type definitions
   - `adapters/` - I/O adapters (markdown, RSS, scraping)

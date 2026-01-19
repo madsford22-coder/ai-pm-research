@@ -30,8 +30,10 @@
 - `updates/daily/YYYY/YYYY-MM-DD.md` - Daily research updates
 
 ### Monthly Summaries
-- `updates/monthly/YYYY-MM.md` - Monthly research summaries (auto-generated)
+- `updates/monthly/YYYY-MM.md` - Executive-style monthly research summaries (auto-generated)
+- One-page summaries with top 3 themes and max 3 essential resources
 - Generate with: `node scripts/generate-monthly-summary.js`
+- Web app sidebar shows months linking directly to summaries
 
 ---
 

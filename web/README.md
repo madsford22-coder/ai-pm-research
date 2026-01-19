@@ -44,12 +44,11 @@ See `/content/README.md` for details on file structure and frontmatter schema.
 
 ### Monthly Summaries
 
-Monthly summaries are auto-generated using `scripts/generate-monthly-summary.js`. They include:
-- Overview and statistics for the month
-- Key themes extracted from daily updates
-- List of daily updates with summaries and links
-- Aggregated resources and links
-- Monthly statistics
+Monthly summaries are auto-generated executive-style summaries using `scripts/generate-monthly-summary.js`. They are concise, one-page summaries (chief of staff style) that include:
+- Executive summary paragraph synthesizing key themes
+- "What Matters" section with top 3 themes
+- "Essential Resources" section with max 3 links to most important resources
+- Footer with link to view all daily updates for the month
 
 Generate or update monthly summaries:
 ```bash
@@ -60,9 +59,10 @@ node scripts/generate-monthly-summary.js 2026 1  # Specific month
 ## Features
 
 - **Dynamic Routing**: Markdown files automatically become pages
-- **Monthly Navigation**: Sidebar organizes daily updates by month with monthly summaries
-- **Monthly Summaries**: Aggregate summaries with key themes, resources, and links to daily updates
-- **Sidebar Navigation**: Auto-generated from folder structure, grouped by months
+- **Monthly Navigation**: Sidebar shows months (e.g., "January 2026", "December 2025") linking directly to executive-style monthly summaries
+- **Dashboard**: Home page shows latest daily updates with quick links
+- **Monthly Summaries**: Executive-style one-page summaries with top 3 themes and max 3 essential resources
+- **Sidebar Navigation**: Auto-generated from folder structure, organized chronologically by month (newest first)
 - **Search**: Client-side search with keyword matching
 - **Table of Contents**: Auto-generated from h2/h3 headings
 - **Responsive Design**: Mobile-friendly with collapsible sidebar
