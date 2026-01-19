@@ -1,5 +1,5 @@
 /**
- * Script to improve titles in frontmatter based on the actual content items
+ * Script to improve titles in frontmatter based on the summary content
  */
 
 const fs = require('fs');
@@ -7,54 +7,104 @@ const path = require('path');
 
 const UPDATES_DIR = path.join(__dirname, '..', 'updates', 'daily');
 
-// Extract main topics from Items sections
+// Extract main topics from Summary section
 function generateBetterTitle(content) {
-  // Extract all item headings (### level)
-  const itemHeadings = [];
-  const headingMatches = content.matchAll(/### (.+?)(?:\n|$)/g);
+  // Extract the summary section
+  const summaryMatch = content.match(/## Summary\s*\n\s*\n(.+?)(?:\n\n---|\n\n##|$)/s);
 
-  for (const match of headingMatches) {
-    const heading = match[1].trim();
-    // Remove author attribution and clean up
-    const cleaned = heading
-      .replace(/\s*-\s*.+$/, '') // Remove everything after first dash
-      .replace(/\(.+?\)/g, '') // Remove parentheses
-      .trim();
-
-    if (cleaned && !itemHeadings.includes(cleaned)) {
-      itemHeadings.push(cleaned);
-    }
-  }
-
-  if (itemHeadings.length === 0) {
+  if (!summaryMatch) {
     return null;
   }
 
-  // Shorten long names
-  const shortened = itemHeadings.map(h => {
-    // Extract key companies/products
-    const companies = ['Lenny Rachitsky', 'LangChain', 'OpenAI', 'Anthropic', 'Google', 'Meta', 'Microsoft', 'Vercel', 'GitHub'];
-    for (const company of companies) {
-      if (h.includes(company)) {
-        // Extract the main topic after the company name
-        const parts = h.split(/[-–:]/);
-        if (parts.length > 1) {
-          return parts[1].trim();
+  const summary = summaryMatch[1].trim();
+
+  // Extract key topics and themes from the summary
+  // Look for patterns like "shows how X" or "reveals Y patterns" or "guide to Z"
+  const topics = [];
+
+  // Extract phrases after common patterns
+  const patterns = [
+    /(?:shows? how|reveals?|demonstrates?) (.+?)(?:\s+and|\s+for|,|\.|$)/gi,
+    /(?:guide to|introduction to) (.+?)(?:\s+and|\s+for|,|\.|$)/gi,
+    /(?:patterns? for|approaches? to) (.+?)(?:\s+and|\s+for|,|\.|$)/gi,
+    /enable(?:s)? (?:PMs|product managers) to (.+?)(?:\s+and|\s+for|,|\.|$)/gi,
+  ];
+
+  patterns.forEach(pattern => {
+    const matches = summary.matchAll(pattern);
+    for (const match of matches) {
+      if (match[1]) {
+        const topic = match[1].trim()
+          .replace(/^(the|a|an)\s+/i, '') // Remove articles
+          .replace(/\s+(through|using|with|via).+$/, '') // Remove method descriptions
+          .trim();
+
+        if (topic.length > 10 && topic.length < 80 && !topics.includes(topic)) {
+          topics.push(topic);
         }
-        return h.replace(company, '').trim() || company;
       }
     }
-    return h;
   });
 
-  // Create title
-  if (shortened.length === 1) {
-    return shortened[0];
-  } else if (shortened.length === 2) {
-    return `${shortened[0]} & ${shortened[1]}`;
-  } else {
-    return `${shortened[0]}, ${shortened[1]} & More`;
+  // If no topics found with patterns, extract key noun phrases
+  if (topics.length === 0) {
+    // Look for capitalized terms and important phrases
+    const sentences = summary.split(/[.:]/);
+    for (const sentence of sentences) {
+      // Extract phrases with AI, PM, or technical terms
+      const keyPhrases = sentence.match(/(?:AI|PM|multi-agent|product|workflow|agent|system|tool)[^,]*/gi);
+      if (keyPhrases) {
+        keyPhrases.forEach(phrase => {
+          const cleaned = phrase.trim().replace(/^(the|a|an)\s+/i, '');
+          if (cleaned.length > 10 && cleaned.length < 80 && !topics.includes(cleaned)) {
+            topics.push(cleaned);
+          }
+        });
+      }
+    }
   }
+
+  // If still no topics, fall back to item headings
+  if (topics.length === 0) {
+    const headingMatches = content.matchAll(/### (.+?)\s*-\s*(.+?)(?:\n|$)/g);
+    for (const match of headingMatches) {
+      const topic = match[2].trim();
+      if (topic && !topics.includes(topic)) {
+        topics.push(topic);
+      }
+    }
+  }
+
+  if (topics.length === 0) {
+    return null;
+  }
+
+  // Create title from topics - keep it concise and descriptive
+  if (topics.length === 1) {
+    return capitalizeTitle(topics[0]);
+  } else if (topics.length === 2) {
+    return `${capitalizeTitle(topics[0])} & ${capitalizeTitle(topics[1])}`;
+  } else {
+    // Pick the two most descriptive topics
+    const sorted = topics.sort((a, b) => b.length - a.length);
+    return `${capitalizeTitle(sorted[0])} & ${capitalizeTitle(sorted[1])}`;
+  }
+}
+
+// Helper to properly capitalize titles
+function capitalizeTitle(str) {
+  const lowerWords = ['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on', 'at', 'to', 'from', 'by', 'of', 'in', 'with'];
+
+  return str
+    .split(' ')
+    .map((word, index) => {
+      // Always capitalize first word and words not in lowerWords list
+      if (index === 0 || !lowerWords.includes(word.toLowerCase())) {
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      }
+      return word.toLowerCase();
+    })
+    .join(' ');
 }
 
 function improveFrontmatter(filePath) {
@@ -76,7 +126,7 @@ function improveFrontmatter(filePath) {
 
   // Replace the title in frontmatter
   const newContent = content.replace(
-    /^(---\s+title:\s*")[^"]+(")/m,
+    /^(---\s+title:\s*")[^"]+(\")/m,
     `$1${betterTitle}$2`
   );
 

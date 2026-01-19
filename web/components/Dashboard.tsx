@@ -12,16 +12,9 @@ export default function Dashboard() {
     fetch('/api/content/metadata')
       .then((res) => res.json())
       .then((data: ContentMetadata[]) => {
-        console.log('Total content items:', data.length);
-        console.log('Sample slugs:', data.slice(0, 3).map(d => d.slug));
-
         // Filter for daily updates by file path pattern (YYYY/YYYY-MM-DD) and sort by date (newest first)
         const updates = data
-          .filter((item) => {
-            const matches = /^\d{4}\/\d{4}-\d{2}-\d{2}$/.test(item.slug);
-            if (matches) console.log('Matched:', item.slug, item.title);
-            return matches;
-          })
+          .filter((item) => /^\d{4}\/\d{4}-\d{2}-\d{2}$/.test(item.slug))
           .sort((a, b) => {
             const dateA = a.date ? new Date(a.date).getTime() : 0;
             const dateB = b.date ? new Date(b.date).getTime() : 0;
@@ -29,7 +22,6 @@ export default function Dashboard() {
           })
           .slice(0, 10);
 
-        console.log('Filtered updates:', updates.length);
         setRecentUpdates(updates);
 
         setLoading(false);
@@ -85,11 +77,11 @@ export default function Dashboard() {
               </svg>
             </div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-              AI PM Research
+              AI PM Research Hub
             </h1>
           </div>
           <p className="text-lg text-gray-600 leading-relaxed max-w-2xl">
-            Daily insights on AI product signals, industry trends, and actionable PM takeaways
+            Your daily dose of AI product insights, practical patterns, and PM takeaways from the evolving world of AI tools and workflows
           </p>
         </div>
       </div>

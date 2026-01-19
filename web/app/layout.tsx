@@ -7,8 +7,8 @@ import Search from "@/components/Search";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AI PM Research - Daily Updates",
-  description: "Daily research updates on AI product management, companies, and industry trends",
+  title: "AI PM Research Hub",
+  description: "Your daily dose of AI product insights, practical patterns, and PM takeaways from the evolving world of AI tools and workflows",
   alternates: {
     types: {
       'application/rss+xml': '/rss.xml',

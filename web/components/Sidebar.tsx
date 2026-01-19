@@ -60,7 +60,8 @@ function renderTree(node: TreeNode, pathname: string, level: number = 0): React.
           .sort((a, b) => {
             if (a.isFile && !b.isFile) return 1;
             if (!a.isFile && b.isFile) return -1;
-            return a.name.localeCompare(b.name);
+            // Sort dates in reverse (newest first)
+            return b.name.localeCompare(a.name);
           })
           .map((child) => renderTree(child, pathname, level + 1))}
       </ul>
@@ -94,7 +95,8 @@ function renderTree(node: TreeNode, pathname: string, level: number = 0): React.
                 .sort((a, b) => {
                   if (a.isFile && !b.isFile) return 1;
                   if (!a.isFile && b.isFile) return -1;
-                  return a.name.localeCompare(b.name);
+                  // Sort dates in reverse (newest first)
+                  return b.name.localeCompare(a.name);
                 })
                 .map((child) => renderTree(child, pathname, level + 1))}
             </ul>
@@ -156,7 +158,7 @@ export default function Sidebar() {
       >
         <div className="p-6">
           <Link href="/" className="block mb-8">
-            <h1 className="text-lg font-semibold text-[#1a1a1a]">AI PM Research</h1>
+            <h1 className="text-lg font-semibold text-[#1a1a1a]">AI PM Research Hub</h1>
           </Link>
           <nav className="overflow-y-auto max-h-[calc(100vh-8rem)]">
             {tree ? (
