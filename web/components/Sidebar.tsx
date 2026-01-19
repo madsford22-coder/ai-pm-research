@@ -36,34 +36,48 @@ function buildTree(metadata: ContentMetadata[]): TreeNode {
   );
 
   // Process monthly summaries first
+  // Prioritize path extraction as it's most reliable (filename contains YYYY-MM)
   const monthMap = new Map<string, ContentMetadata>();
   for (const monthly of monthlySummaries) {
-    // Extract YYYY-MM from path or date
+    // Extract YYYY-MM from path (most reliable source)
     let monthKey = '';
     
-    // First try to use the date field
-    if (monthly.date) {
+    // Extract from path first: updates/monthly/2026-01.md
+    const pathMatch = monthly.path.match(/updates\/monthly\/(\d{4}-\d{2})\.md$/);
+    if (pathMatch) {
+      monthKey = pathMatch[1];
+    }
+    
+    // Fallback to date parsing if path extraction failed
+    if (!monthKey && monthly.date) {
       try {
-        const date = new Date(monthly.date);
-        if (!isNaN(date.getTime())) {
-          monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        // Parse date string directly (YYYY-MM-DD format)
+        const dateMatch = monthly.date.match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (dateMatch) {
+          monthKey = `${dateMatch[1]}-${dateMatch[2]}`;
+        } else {
+          // Try Date object parsing as last resort
+          const date = new Date(monthly.date);
+          if (!isNaN(date.getTime())) {
+            // Use UTC to avoid timezone issues
+            const year = date.getUTCFullYear();
+            const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+            monthKey = `${year}-${month}`;
+          }
         }
       } catch (e) {
-        // Date parsing failed, continue to path extraction
+        // Date parsing failed
       }
     }
     
-    // If date parsing didn't work, extract from path
-    if (!monthKey) {
-      // Try to extract from path: updates/monthly/2026-01.md
-      const match = monthly.path.match(/updates\/monthly\/(\d{4}-\d{2})\.md$/);
-      if (match) {
-        monthKey = match[1];
-      }
-    }
-    
-    if (monthKey) {
+    // Validate monthKey format (YYYY-MM)
+    if (monthKey && /^\d{4}-\d{2}$/.test(monthKey)) {
       monthMap.set(monthKey, monthly);
+      // Debug log (enable for troubleshooting)
+      // console.log(`Monthly summary: ${monthly.title} -> monthKey: ${monthKey}, path: ${monthly.path}, date: ${monthly.date}`);
+    } else if (monthKey) {
+      // Invalid monthKey format - log for debugging
+      console.warn(`Invalid monthKey format: ${monthKey} for ${monthly.title}, path: ${monthly.path}`);
     }
   }
 
@@ -108,7 +122,9 @@ function buildTree(metadata: ContentMetadata[]): TreeNode {
     .reverse();
 
   for (const monthKey of sortedMonths) {
-    const monthDate = new Date(monthKey + '-01');
+    // Parse monthKey (YYYY-MM format) directly to avoid Date parsing issues
+    const [year, month] = monthKey.split('-');
+    const monthDate = new Date(parseInt(year), parseInt(month) - 1, 1);
     const monthName = monthDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     
     // Create month node
@@ -121,7 +137,7 @@ function buildTree(metadata: ContentMetadata[]): TreeNode {
       isFile: false,
     };
 
-    // Add monthly summary as first child (if exists)
+    // Add monthly summary as first child (if exists) - use the correct monthKey
     const monthlySummary = monthMap.get(monthKey);
     if (monthlySummary) {
       monthNode.children.set('_summary', {
@@ -132,10 +148,12 @@ function buildTree(metadata: ContentMetadata[]): TreeNode {
         children: new Map(),
         isFile: true,
       });
+      // Debug log
+      // console.log(`Added summary to ${monthKey}: ${monthlySummary.title}`);
     }
     
     // Debug: log month node creation
-    // console.log(`Created month node: ${monthKey} -> ${monthName} with ${monthNode.children.size} children`);
+    // console.log(`Created month node: ${monthKey} -> ${monthName}, summary: ${monthlySummary ? monthlySummary.title : 'none'}`);
 
     // Add daily updates as children
     const dailies = dailyByMonth.get(monthKey) || [];
