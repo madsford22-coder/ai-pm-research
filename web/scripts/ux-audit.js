@@ -28,7 +28,7 @@ async function takeScreenshot(page, name) {
 async function testHomepage(page) {
   console.log('\n📄 Testing Homepage...');
   await page.goto(BASE_URL, { waitUntil: 'networkidle0', timeout: 10000 });
-  await page.waitForTimeout(2000); // Wait for content to load
+  await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for content to load
 
   // Check for loading states
   const loadingSpinner = await page.$('.animate-spin');
@@ -105,7 +105,7 @@ async function testNavigation(page) {
     const href = await page.evaluate(el => el.getAttribute('href'), firstUpdate);
     console.log(`   → Clicking on: ${href}`);
     await firstUpdate.click();
-    await page.waitForTimeout(2000);
+    await new Promise(resolve => setTimeout(resolve,2000);
     
     // Check if we navigated successfully
     const currentUrl = page.url();
@@ -124,7 +124,7 @@ async function testDailyUpdatePage(page) {
   const currentUrl = page.url();
   if (!currentUrl.includes('/updates/daily/')) {
     await page.goto(`${BASE_URL}/updates/daily/2025-12-29`, { waitUntil: 'networkidle0' });
-    await page.waitForTimeout(2000);
+    await new Promise(resolve => setTimeout(resolve,2000);
   }
 
   // Check for date navigator
@@ -172,7 +172,7 @@ async function testSearch(page) {
   console.log('\n🔍 Testing Search...');
   
   await page.goto(BASE_URL, { waitUntil: 'networkidle0' });
-  await page.waitForTimeout(2000);
+  await new Promise(resolve => setTimeout(resolve,2000);
 
   const searchInput = await page.$('input[type="text"][placeholder*="Search"]');
   if (!searchInput) {
@@ -183,7 +183,7 @@ async function testSearch(page) {
   // Test search functionality
   await searchInput.click();
   await page.type('input[type="text"][placeholder*="Search"]', 'Lenny', { delay: 100 });
-  await page.waitForTimeout(1000);
+  await new Promise(resolve => setTimeout(resolve,1000);
 
   // Check if search results appear
   const searchResults = await page.$('div:has-text("No results found"), ul:has(li)');
@@ -201,7 +201,7 @@ async function testSearch(page) {
   // Clear search
   await searchInput.click({ clickCount: 3 });
   await page.keyboard.press('Backspace');
-  await page.waitForTimeout(500);
+  await new Promise(resolve => setTimeout(resolve,500);
 }
 
 async function testNewContentFlow(page) {
@@ -209,7 +209,7 @@ async function testNewContentFlow(page) {
   
   // Test New Daily Update flow
   await page.goto(`${BASE_URL}/updates/daily/new`, { waitUntil: 'networkidle0' });
-  await page.waitForTimeout(1000);
+  await new Promise(resolve => setTimeout(resolve,1000);
 
   const dateInput = await page.$('input[type="date"]');
   const textarea = await page.$('textarea');
@@ -235,7 +235,7 @@ async function testNewContentFlow(page) {
 
   // Test New Reflection flow
   await page.goto(`${BASE_URL}/reflections/new`, { waitUntil: 'networkidle0' });
-  await page.waitForTimeout(1000);
+  await new Promise(resolve => setTimeout(resolve,1000);
 
   const reflectionTitle = await page.$('input[type="text"]');
   const reflectionTextarea = await page.$('textarea');
@@ -256,7 +256,7 @@ async function testResponsiveDesign(page) {
   // Test mobile view
   await page.setViewport({ width: 375, height: 667 }); // iPhone SE size
   await page.goto(BASE_URL, { waitUntil: 'networkidle0' });
-  await page.waitForTimeout(2000);
+  await new Promise(resolve => setTimeout(resolve,2000);
 
   // Check if mobile menu button is visible
   const menuButton = await page.$('button[aria-label="Toggle menu"]');
@@ -273,7 +273,7 @@ async function testResponsiveDesign(page) {
       
       // Test menu toggle
       await menuButton.click();
-      await page.waitForTimeout(500);
+      await new Promise(resolve => setTimeout(resolve,500);
       
       const sidebar = await page.$('aside');
       if (sidebar) {
@@ -294,12 +294,12 @@ async function testResponsiveDesign(page) {
   // Test tablet view
   await page.setViewport({ width: 768, height: 1024 }); // iPad size
   await page.goto(BASE_URL, { waitUntil: 'networkidle0' });
-  await page.waitForTimeout(1000);
+  await new Promise(resolve => setTimeout(resolve,1000);
 
   // Test desktop view
   await page.setViewport({ width: 1920, height: 1080 });
   await page.goto(BASE_URL, { waitUntil: 'networkidle0' });
-  await page.waitForTimeout(1000);
+  await new Promise(resolve => setTimeout(resolve,1000);
 
   await takeScreenshot(page, 'responsive-desktop');
 }
@@ -308,7 +308,7 @@ async function testAccessibility(page) {
   console.log('\n♿ Testing Accessibility...');
   
   await page.goto(BASE_URL, { waitUntil: 'networkidle0' });
-  await page.waitForTimeout(2000);
+  await new Promise(resolve => setTimeout(resolve,2000);
 
   // Check for alt text on images (if any)
   const images = await page.$$('img');
@@ -365,7 +365,7 @@ async function testPerformance(page) {
     }
   });
 
-  await page.waitForTimeout(2000);
+  await new Promise(resolve => setTimeout(resolve,2000);
   
   if (logs.length > 0) {
     logIssue('high', 'Errors', `${logs.length} console error(s) found`, 'Fix JavaScript errors in browser console');
