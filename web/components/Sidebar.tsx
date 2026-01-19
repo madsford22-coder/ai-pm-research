@@ -133,6 +133,9 @@ function buildTree(metadata: ContentMetadata[]): TreeNode {
         isFile: true,
       });
     }
+    
+    // Debug: log month node creation
+    // console.log(`Created month node: ${monthKey} -> ${monthName} with ${monthNode.children.size} children`);
 
     // Add daily updates as children
     const dailies = dailyByMonth.get(monthKey) || [];
@@ -160,13 +163,26 @@ function buildTree(metadata: ContentMetadata[]): TreeNode {
   }
 
   // Add other content (non-update content)
+  // But skip any that might conflict with month nodes
   for (const item of otherContent) {
+    // Skip if this would conflict with a month node key
     const parts = item.slug.split('/');
+    
+    // Don't create directory structures for update-related paths
+    if (item.path.startsWith('updates/')) {
+      continue;
+    }
+    
     let current = root;
 
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i];
       const isLast = i === parts.length - 1;
+
+      // Skip if this key already exists as a month node
+      if (i === 0 && root.children.has(part) && root.children.get(part)!.path.startsWith('updates/monthly/')) {
+        continue;
+      }
 
       if (!current.children.has(part)) {
         const path = parts.slice(0, i + 1).join('/');
@@ -190,16 +206,26 @@ function buildTree(metadata: ContentMetadata[]): TreeNode {
 function renderTree(node: TreeNode, pathname: string, level: number = 0): React.ReactNode {
   if (node.name === '' && level === 0) {
     // Root level - render children
+    // Sort month nodes chronologically (newest first) by parsing their path
     return (
       <ul className="space-y-1">
-        {Array.from(node.children.values())
-          .sort((a, b) => {
+        {Array.from(node.children.entries())
+          .sort(([keyA, a], [keyB, b]) => {
             if (a.isFile && !b.isFile) return 1;
             if (!a.isFile && b.isFile) return -1;
-            // Sort dates/months in reverse (newest first)
+            // For month nodes, sort by monthKey (YYYY-MM format) in reverse chronological order
+            if (a.path.startsWith('updates/monthly/') && b.path.startsWith('updates/monthly/')) {
+              const matchA = keyA.match(/^(\d{4})-(\d{2})$/);
+              const matchB = keyB.match(/^(\d{4})-(\d{2})$/);
+              if (matchA && matchB) {
+                // Compare as YYYY-MM strings (reverse order = newest first)
+                return keyB.localeCompare(keyA);
+              }
+            }
+            // Fallback to alphabetical for non-month nodes
             return b.name.localeCompare(a.name);
           })
-          .map((child) => renderTree(child, pathname, level + 1))}
+          .map(([key, child]) => renderTree(child, pathname, level + 1))}
       </ul>
     );
   }
