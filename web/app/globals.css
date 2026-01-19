@@ -76,7 +76,6 @@ body {
 }
 
 .prose ul {
-  @apply list-disc;
   list-style: none;
   padding-left: 0;
 }
@@ -93,6 +92,8 @@ body {
   left: 0.5rem;
   color: #9ca3af;
   font-weight: 600;
+  font-size: 1.2em;
+  line-height: 1;
 }
 
 .prose ol {
@@ -172,10 +173,6 @@ body {
 
 .prose em {
   @apply italic;
-}
-
-.prose ul li::marker {
-  display: none;
 }
 
 .prose ol li::marker {
