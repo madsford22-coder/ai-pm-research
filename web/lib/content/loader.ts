@@ -69,7 +69,13 @@ export function getAllContentMetadata(): ContentMetadata[] {
     
     const slug = filePath.replace(/\.md$/, '');
     const url = slug === 'index' ? '/' : `/${slug}`;
-    const title = data.title || slugToTitle(slug);
+    let title = data.title || slugToTitle(slug);
+    
+    // Ensure "AI" is always capitalized correctly
+    title = title.replace(/\bAi\b/gi, 'AI');
+    title = title.replace(/\bai\b/gi, 'AI');
+    // Ensure "PMs" is always capitalized correctly
+    title = title.replace(/\bPms\b/g, 'PMs');
 
     return {
       title,
@@ -94,7 +100,13 @@ export function buildSearchIndex(): SearchIndexItem[] {
     
     const slug = filePath.replace(/\.md$/, '');
     const url = slug === 'index' ? '/' : `/${slug}`;
-    const title = data.title || slugToTitle(slug);
+    let title = data.title || slugToTitle(slug);
+    
+    // Ensure "AI" is always capitalized correctly
+    title = title.replace(/\bAi\b/gi, 'AI');
+    title = title.replace(/\bai\b/gi, 'AI');
+    // Ensure "PMs" is always capitalized correctly
+    title = title.replace(/\bPms\b/g, 'PMs');
     
     // Extract plain text from markdown (remove markdown syntax)
     const body = markdown
@@ -119,11 +131,19 @@ export function buildSearchIndex(): SearchIndexItem[] {
 }
 
 function slugToTitle(slug: string): string {
-  return slug
+  let title = slug
     .split('/')
     .pop()!
     .replace(/\.md$/, '')
     .replace(/[-_]/g, ' ')
     .replace(/\b\w/g, (l) => l.toUpperCase());
+  
+  // Ensure "AI" is always capitalized correctly
+  title = title.replace(/\bAi\b/gi, 'AI');
+  title = title.replace(/\bai\b/gi, 'AI');
+  // Ensure "PMs" is always capitalized correctly
+  title = title.replace(/\bPms\b/g, 'PMs');
+  
+  return title;
 }
 

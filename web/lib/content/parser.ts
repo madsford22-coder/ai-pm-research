@@ -19,7 +19,13 @@ export async function parseMarkdown(
   const { data, content } = matter(fileContent);
   
   // Ensure title exists (use filename as fallback)
-  const title = data.title || slugToTitle(slug);
+  let title = data.title || slugToTitle(slug);
+  
+  // Ensure "AI" is always capitalized correctly
+  title = title.replace(/\bAi\b/gi, 'AI');
+  title = title.replace(/\bai\b/gi, 'AI');
+  // Ensure "PMs" is always capitalized correctly
+  title = title.replace(/\bPms\b/g, 'PMs');
   
   const frontmatter: ContentFrontmatter = {
     title,
@@ -50,7 +56,7 @@ function slugToTitle(slug: string): string {
     .replace(/[-_]/g, ' ');
   
   // Convert to proper title case (not all caps)
-  return title
+  let formatted = title
     .split(' ')
     .map(word => {
       // Keep acronyms uppercase, otherwise capitalize first letter
@@ -60,6 +66,14 @@ function slugToTitle(slug: string): string {
       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     })
     .join(' ');
+  
+  // Ensure "AI" is always capitalized correctly
+  formatted = formatted.replace(/\bAi\b/gi, 'AI');
+  formatted = formatted.replace(/\bai\b/gi, 'AI');
+  // Ensure "PMs" is always capitalized correctly
+  formatted = formatted.replace(/\bPms\b/g, 'PMs');
+  
+  return formatted;
 }
 
 async function processMarkdown(markdown: string): Promise<string> {

@@ -68,9 +68,17 @@ export default async function ContentPage({ params }: PageProps) {
 
   // Format title properly (remove any markdown formatting, fix capitalization)
   const formatTitle = (title: string) => {
-    return title
+    let formatted = title
       .replace(/^#+\s+/, '') // Remove markdown headers
       .trim();
+    
+    // Ensure "AI" is always capitalized correctly
+    formatted = formatted.replace(/\bAi\b/gi, 'AI');
+    formatted = formatted.replace(/\bai\b/gi, 'AI');
+    // Ensure "PMs" is always capitalized correctly
+    formatted = formatted.replace(/\bPms\b/g, 'PMs');
+    
+    return formatted;
   };
 
   const formattedTitle = formatTitle(content.title);

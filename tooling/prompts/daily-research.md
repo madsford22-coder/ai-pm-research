@@ -67,6 +67,44 @@ updates/daily/YYYY/YYYY-MM-DD.md
 
 Where `YYYY` is the current year and `YYYY-MM-DD` is today's date (e.g., `2025-01-15.md`).
 
+### Frontmatter Format
+
+Each daily update file must start with YAML frontmatter in this exact format:
+
+```markdown
+---
+title: "[Short, Natural Title]"
+date: YYYY-MM-DD
+tags:
+  - daily-update
+  - ai-pm-research
+---
+
+# Daily PM Research Update: YYYY-MM-DD
+```
+
+### Title Requirements
+
+The frontmatter `title` field must be:
+- **Short and natural** (target: 60-80 characters, maximum 100 characters)
+- **Always capitalize "AI" as "AI"** (never "Ai" or "ai")
+- **Always capitalize "PMs" as "PMs"** (never "Pms")
+- **Use natural language** - write like a blog post title, not a research paper
+- **Focus on the main insight or topic** - avoid verbose descriptions
+- **Use "How" or "Why" for action-oriented titles** when appropriate
+- **Avoid redundant phrases** like "Addresses the Organizational Challenge of", "Provides Concrete", "Reveals", etc.
+- **Summarize the day's main theme** - don't list every topic, focus on the most important insight
+
+Examples of good titles:
+- "How PMs Actually Use AI Coding Tools for Research and Experiments"
+- "Managing AI Tool Sprawl Across Teams"
+- "How Product Leaders Structure AI Tool Stacks"
+- "Practical Patterns for Building Agent Systems"
+
+Examples of bad titles (too long or awkward):
+- "AI Coding Tools Enable Pms to Conduct Research & Practical Multi-agent System Patterns" (too long, has "Pms")
+- "Ai Usage Across Teams Addresses the Organizational Challenge of Ai Tool Sprawl & Pms Dealing with Fragmented Ai Adoption in Their Organizations" (way too long, multiple capitalization issues)
+
 ### Content Structure
 
 Each daily update must follow this exact format with strict brevity requirements:
