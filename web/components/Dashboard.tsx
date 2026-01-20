@@ -211,7 +211,13 @@ export default function Dashboard() {
                     {update.date && (
                       <time className="text-sm text-gray-500 dark:text-gray-400 font-medium" dateTime={update.date}>
                         {(() => {
-                          const dateStr = typeof update.date === 'string' ? update.date : update.date.toString();
+                          const rawDate = update.date;
+                          const dateStr = typeof rawDate === 'string'
+                            ? rawDate
+                            : rawDate instanceof Date
+                              ? rawDate.toISOString()
+                              : '';
+                          if (!dateStr) return null;
                           const date = dateStr.includes('T') ? new Date(dateStr) : new Date(dateStr + 'T00:00:00');
                           return date.toLocaleDateString('en-US', {
                             month: 'short',
