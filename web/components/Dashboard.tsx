@@ -1,15 +1,25 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ContentMetadata } from '@/lib/content/types';
 
 export default function Dashboard() {
+  const searchParams = useSearchParams();
   const [allUpdates, setAllUpdates] = useState<ContentMetadata[]>([]);
   const [filteredUpdates, setFilteredUpdates] = useState<ContentMetadata[]>([]);
   const [loading, setLoading] = useState(true);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+
+  // Initialize dates from URL params
+  useEffect(() => {
+    const from = searchParams.get('from');
+    const to = searchParams.get('to');
+    if (from) setStartDate(from);
+    if (to) setEndDate(to);
+  }, [searchParams]);
 
   useEffect(() => {
     fetch('/api/content/metadata')

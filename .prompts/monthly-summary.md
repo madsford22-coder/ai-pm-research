@@ -87,8 +87,10 @@ tags:
 
 ---
 
-*[X] daily updates tracked [Y] items this month. [View all updates](/updates/daily/[YYYY]/)*
+*[X] daily updates tracked [Y] items this month. [View all [Month] updates](/?from=[YYYY-MM-01]&to=[YYYY-MM-last-day])*
 ```
+
+**Note:** The "View all updates" link now points to the dashboard with pre-populated date filters for the entire month. Replace `[YYYY-MM-last-day]` with the actual last day of the month (28/29/30/31).
 
 ## How to Use
 
