@@ -34,6 +34,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:watch": "concurrently \"npm run dev\" \"node scripts/watch-content.js\"",
+    "prebuild": "cp -r ../updates . || true",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

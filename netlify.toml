@@ -2,8 +2,8 @@
   # Base directory for the build
   base = "web"
 
-  # Build command to run - copy updates directory first, then build
-  command = "cp -r ../updates . && npm run build"
+  # Build command - prebuild script will copy updates automatically
+  command = "npm run build"
 
   # Publish directory - for Next.js on Netlify, this should be .next
   publish = ".next"
