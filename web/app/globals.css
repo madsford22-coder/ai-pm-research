@@ -91,6 +91,8 @@ body {
   color: #1a1a1a;
   font-size: 18px;
   max-width: none;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .dark .prose {
