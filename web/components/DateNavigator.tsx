@@ -40,7 +40,8 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
   };
 
   const formatDateForDisplay = (dateStr: string) => {
-    const date = new Date(dateStr);
+    // Add T00:00:00 to ensure date is parsed in local timezone
+    const date = new Date(dateStr + 'T00:00:00');
     return date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -55,8 +56,9 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
   const getPreviousDate = () => {
     if (!currentDate) return null;
     const currentIndex = availableDates.indexOf(currentDate);
-    if (currentIndex > 0) {
-      return availableDates[currentIndex - 1];
+    // availableDates is sorted descending (newest first), so next index is older/previous
+    if (currentIndex >= 0 && currentIndex < availableDates.length - 1) {
+      return availableDates[currentIndex + 1];
     }
     return null;
   };
@@ -64,8 +66,9 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
   const getNextDate = () => {
     if (!currentDate) return null;
     const currentIndex = availableDates.indexOf(currentDate);
-    if (currentIndex < availableDates.length - 1) {
-      return availableDates[currentIndex + 1];
+    // availableDates is sorted descending (newest first), so previous index is newer/next
+    if (currentIndex > 0) {
+      return availableDates[currentIndex - 1];
     }
     return null;
   };

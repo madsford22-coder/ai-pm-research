@@ -209,7 +209,7 @@ export default function Dashboard() {
                     </h3>
                     {update.date && (
                       <time className="text-sm text-gray-500 dark:text-gray-400 font-medium" dateTime={update.date}>
-                        {new Date(update.date).toLocaleDateString('en-US', {
+                        {new Date(update.date + 'T00:00:00').toLocaleDateString('en-US', {
                           month: 'short',
                           day: 'numeric',
                           year: 'numeric',
