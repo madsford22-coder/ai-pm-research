@@ -87,8 +87,8 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
 
   return (
     <div className="bg-gray-50 dark:bg-slate-800 rounded-md border border-gray-200 dark:border-slate-700 p-3 sm:p-4 mb-6 sm:mb-8">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
           {prevDate ? (
             <Link
               href={`/updates/daily/${toDateString(prevDate).split('-')[0]}/${toDateString(prevDate)}`}
@@ -108,21 +108,11 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
             </div>
           )}
 
-          <div className="flex items-center gap-2 flex-1 sm:flex-none">
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={handleDateChange}
-              min={availableDates.length > 0 ? toDateString(availableDates[availableDates.length - 1]) : undefined}
-              max={availableDates.length > 0 ? toDateString(availableDates[0]) : undefined}
-              className="px-3 py-2 border border-gray-200 dark:border-slate-600 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
-            />
-            {currentDate && (
-              <span className="hidden md:inline text-sm text-gray-600 dark:text-gray-400">
-                {formatDateForDisplay(currentDate)}
-              </span>
-            )}
-          </div>
+          {currentDate && (
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {formatDateForDisplay(currentDate)}
+            </span>
+          )}
 
           {nextDate ? (
             <Link

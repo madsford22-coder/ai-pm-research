@@ -5,8 +5,11 @@ import Link from 'next/link';
 import { ContentMetadata } from '@/lib/content/types';
 
 export default function Dashboard() {
-  const [recentUpdates, setRecentUpdates] = useState<ContentMetadata[]>([]);
+  const [allUpdates, setAllUpdates] = useState<ContentMetadata[]>([]);
+  const [filteredUpdates, setFilteredUpdates] = useState<ContentMetadata[]>([]);
   const [loading, setLoading] = useState(true);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
     fetch('/api/content/metadata')
@@ -19,11 +22,10 @@ export default function Dashboard() {
             const dateA = a.date ? new Date(a.date).getTime() : 0;
             const dateB = b.date ? new Date(b.date).getTime() : 0;
             return dateB - dateA;
-          })
-          .slice(0, 10);
+          });
 
-        setRecentUpdates(updates);
-
+        setAllUpdates(updates);
+        setFilteredUpdates(updates.slice(0, 10)); // Show 10 most recent by default
         setLoading(false);
       })
       .catch((err) => {
@@ -31,6 +33,39 @@ export default function Dashboard() {
         setLoading(false);
       });
   }, []);
+
+  // Filter updates when date range changes
+  useEffect(() => {
+    if (!startDate && !endDate) {
+      // No filters - show 10 most recent
+      setFilteredUpdates(allUpdates.slice(0, 10));
+      return;
+    }
+
+    const filtered = allUpdates.filter((item) => {
+      if (!item.date) return false;
+
+      const itemDate = new Date(item.date);
+      const start = startDate ? new Date(startDate) : null;
+      const end = endDate ? new Date(endDate) : null;
+
+      if (start && end) {
+        return itemDate >= start && itemDate <= end;
+      } else if (start) {
+        return itemDate >= start;
+      } else if (end) {
+        return itemDate <= end;
+      }
+      return true;
+    });
+
+    setFilteredUpdates(filtered);
+  }, [startDate, endDate, allUpdates]);
+
+  const handleClearFilters = () => {
+    setStartDate('');
+    setEndDate('');
+  };
 
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return '';
@@ -86,10 +121,60 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {recentUpdates.length > 0 && (
+      {/* Date Range Filter */}
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+            <div>
+              <label htmlFor="start-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                From
+              </label>
+              <input
+                id="start-date"
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
+              />
+            </div>
+            <div>
+              <label htmlFor="end-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                To
+              </label>
+              <input
+                id="end-date"
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
+              />
+            </div>
+          </div>
+          {(startDate || endDate) && (
+            <button
+              onClick={handleClearFilters}
+              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap"
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
+        {(startDate || endDate) && (
+          <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+            Showing {filteredUpdates.length} {filteredUpdates.length === 1 ? 'update' : 'updates'}
+            {startDate && endDate && ` from ${new Date(startDate).toLocaleDateString()} to ${new Date(endDate).toLocaleDateString()}`}
+            {startDate && !endDate && ` from ${new Date(startDate).toLocaleDateString()}`}
+            {!startDate && endDate && ` until ${new Date(endDate).toLocaleDateString()}`}
+          </p>
+        )}
+      </div>
+
+      {filteredUpdates.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-4 sm:mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Latest Updates</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+              {startDate || endDate ? 'Filtered Updates' : 'Latest Updates'}
+            </h2>
             <Link
               href="/updates/daily"
               className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium text-sm transition-colors group"
@@ -101,7 +186,7 @@ export default function Dashboard() {
             </Link>
           </div>
           <div className="grid gap-3 sm:gap-4">
-            {recentUpdates.map((update) => (
+            {filteredUpdates.map((update) => (
               <Link
                 key={update.url}
                 href={update.url}
@@ -134,9 +219,11 @@ export default function Dashboard() {
         </div>
       )}
 
-      {recentUpdates.length === 0 && (
+      {filteredUpdates.length === 0 && !loading && (
         <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700">
-          <p className="text-gray-500 dark:text-gray-400">No daily updates found.</p>
+          <p className="text-gray-500 dark:text-gray-400">
+            {startDate || endDate ? 'No updates found for the selected date range.' : 'No daily updates found.'}
+          </p>
         </div>
       )}
     </div>
