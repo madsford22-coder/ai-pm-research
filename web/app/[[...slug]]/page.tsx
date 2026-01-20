@@ -98,13 +98,7 @@ export default async function ContentPage({ params }: PageProps) {
               {content.date && (
                 <time dateTime={content.date} className="font-medium">
                   {(() => {
-                    const rawDate = content.date;
-                    const dateStr = typeof rawDate === 'string'
-                      ? rawDate
-                      : rawDate instanceof Date
-                        ? rawDate.toISOString()
-                        : '';
-                    if (!dateStr) return null;
+                    const dateStr = content.date;
                     const date = dateStr.includes('T') ? new Date(dateStr) : new Date(dateStr + 'T00:00:00');
                     return date.toLocaleDateString('en-US', {
                       weekday: 'long',
