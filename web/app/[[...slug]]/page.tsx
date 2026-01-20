@@ -97,12 +97,16 @@ export default async function ContentPage({ params }: PageProps) {
             <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-sm text-gray-600 dark:text-gray-400 mb-4">
               {content.date && (
                 <time dateTime={content.date} className="font-medium">
-                  {new Date(content.date + 'T00:00:00').toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
+                  {(() => {
+                    const dateStr = typeof content.date === 'string' ? content.date : content.date.toString();
+                    const date = dateStr.includes('T') ? new Date(dateStr) : new Date(dateStr + 'T00:00:00');
+                    return date.toLocaleDateString('en-US', {
+                      weekday: 'long',
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    });
+                  })()}
                 </time>
               )}
               {content.source_url && (

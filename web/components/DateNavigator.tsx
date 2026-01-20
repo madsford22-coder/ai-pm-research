@@ -40,8 +40,8 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
   };
 
   const formatDateForDisplay = (dateStr: string) => {
-    // Add T00:00:00 to ensure date is parsed in local timezone
-    const date = new Date(dateStr + 'T00:00:00');
+    // Handle both ISO strings and YYYY-MM-DD format
+    const date = dateStr.includes('T') ? new Date(dateStr) : new Date(dateStr + 'T00:00:00');
     return date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',

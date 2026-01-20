@@ -79,7 +79,8 @@ export default function Dashboard() {
 
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return '';
-    const date = new Date(dateStr);
+    // Handle both ISO strings and YYYY-MM-DD format
+    const date = dateStr.includes('T') ? new Date(dateStr) : new Date(dateStr + 'T00:00:00');
     return date.toLocaleDateString('en-US', {
       weekday: 'long',
       year: 'numeric',
@@ -172,9 +173,9 @@ export default function Dashboard() {
         {(startDate || endDate) && (
           <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
             Showing {filteredUpdates.length} {filteredUpdates.length === 1 ? 'update' : 'updates'}
-            {startDate && endDate && ` from ${new Date(startDate + 'T00:00:00').toLocaleDateString()} to ${new Date(endDate + 'T00:00:00').toLocaleDateString()}`}
-            {startDate && !endDate && ` from ${new Date(startDate + 'T00:00:00').toLocaleDateString()}`}
-            {!startDate && endDate && ` until ${new Date(endDate + 'T00:00:00').toLocaleDateString()}`}
+            {startDate && endDate && ` from ${(startDate.includes('T') ? new Date(startDate) : new Date(startDate + 'T00:00:00')).toLocaleDateString()} to ${(endDate.includes('T') ? new Date(endDate) : new Date(endDate + 'T00:00:00')).toLocaleDateString()}`}
+            {startDate && !endDate && ` from ${(startDate.includes('T') ? new Date(startDate) : new Date(startDate + 'T00:00:00')).toLocaleDateString()}`}
+            {!startDate && endDate && ` until ${(endDate.includes('T') ? new Date(endDate) : new Date(endDate + 'T00:00:00')).toLocaleDateString()}`}
           </p>
         )}
       </div>
@@ -209,11 +210,15 @@ export default function Dashboard() {
                     </h3>
                     {update.date && (
                       <time className="text-sm text-gray-500 dark:text-gray-400 font-medium" dateTime={update.date}>
-                        {new Date(update.date + 'T00:00:00').toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
+                        {(() => {
+                          const dateStr = typeof update.date === 'string' ? update.date : update.date.toString();
+                          const date = dateStr.includes('T') ? new Date(dateStr) : new Date(dateStr + 'T00:00:00');
+                          return date.toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                          });
+                        })()}
                       </time>
                     )}
                   </div>

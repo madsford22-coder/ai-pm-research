@@ -119,7 +119,11 @@ export default function Search() {
                       {item.title.replace(/^#+\s+/, '').trim()}
                       {item.date && (
                         <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">
-                          {new Date(item.date + 'T00:00:00').toLocaleDateString()}
+                          {(() => {
+                            const dateStr = typeof item.date === 'string' ? item.date : item.date.toString();
+                            const date = dateStr.includes('T') ? new Date(dateStr) : new Date(dateStr + 'T00:00:00');
+                            return date.toLocaleDateString();
+                          })()}
                         </span>
                       )}
                     </div>
