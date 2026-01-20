@@ -129,6 +129,10 @@ async function checkPeopleActivityPipeline(options = {}) {
   }
   const userDataDir = path.join(puppeteerDataDir, 'puppeteer-people-activity-' + Date.now());
   
+  // Set environment variables to disable Chrome crashpad (avoids permission issues)
+  process.env.CHROME_CRASHPAD_HANDLER_PATH = '';
+  process.env.GOOGLE_CHROME_CRASHPAD_HANDLER_PATH = '';
+  
   // Launch options optimized for sandboxed environments
   const launchOptions = {
     headless: true,

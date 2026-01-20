@@ -120,6 +120,10 @@ async function checkCompanyUpdatesPipeline(options = {}) {
   }
   const userDataDir = path.join(puppeteerDataDir, 'puppeteer-user-data-' + Date.now());
   
+  // Set environment variables to disable Chrome crashpad (avoids permission issues)
+  process.env.CHROME_CRASHPAD_HANDLER_PATH = '';
+  process.env.GOOGLE_CHROME_CRASHPAD_HANDLER_PATH = '';
+  
   // Launch options optimized for sandboxed environments
   // These flags help Puppeteer work in restricted environments
   const launchOptions = {
