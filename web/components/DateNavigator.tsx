@@ -11,7 +11,33 @@ interface DateNavigatorProps {
 
 export default function DateNavigator({ currentDate, availableDates }: DateNavigatorProps) {
   const router = useRouter();
-  const [selectedDate, setSelectedDate] = useState(currentDate || '');
+  const [selectedDate, setSelectedDate] = useState(currentDate ? toDateStringHelper(currentDate) : '');
+
+  // Helper function for initial state (can't use function declared below)
+  function toDateStringHelper(date: string | Date): string {
+    if (typeof date === 'string') {
+      return date.split('T')[0];
+    }
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  // Helper to convert date to YYYY-MM-DD string
+  const toDateString = (date: string | Date): string => {
+    if (typeof date === 'string') {
+      // If it's already a string, extract just the date part (YYYY-MM-DD)
+      return date.split('T')[0];
+    }
+    // If it's a Date object, format it
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
   const formatDateForDisplay = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -23,7 +49,7 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
   };
 
   const formatDateForInput = (dateStr: string) => {
-    return dateStr; // Already in YYYY-MM-DD format
+    return toDateString(dateStr);
   };
 
   const getPreviousDate = () => {
@@ -65,7 +91,7 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
         <div className="flex items-center gap-2 w-full sm:w-auto">
           {prevDate ? (
             <Link
-              href={`/updates/daily/${prevDate.split('-')[0]}/${prevDate}`}
+              href={`/updates/daily/${toDateString(prevDate).split('-')[0]}/${toDateString(prevDate)}`}
               className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-700 rounded transition-colors"
               title={`Previous: ${formatDateForDisplay(prevDate)}`}
               aria-label={`Go to previous update: ${formatDateForDisplay(prevDate)}`}
@@ -87,8 +113,8 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
               type="date"
               value={selectedDate}
               onChange={handleDateChange}
-              min={availableDates[availableDates.length - 1]}
-              max={availableDates[0]}
+              min={availableDates.length > 0 ? toDateString(availableDates[availableDates.length - 1]) : undefined}
+              max={availableDates.length > 0 ? toDateString(availableDates[0]) : undefined}
               className="px-3 py-2 border border-gray-200 dark:border-slate-600 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
             />
             {currentDate && (
@@ -100,7 +126,7 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
 
           {nextDate ? (
             <Link
-              href={`/updates/daily/${nextDate.split('-')[0]}/${nextDate}`}
+              href={`/updates/daily/${toDateString(nextDate).split('-')[0]}/${toDateString(nextDate)}`}
               className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-700 rounded transition-colors"
               title={`Next: ${formatDateForDisplay(nextDate)}`}
               aria-label={`Go to next update: ${formatDateForDisplay(nextDate)}`}
