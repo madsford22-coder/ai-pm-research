@@ -35,7 +35,7 @@ export default function Dashboard() {
           });
 
         setAllUpdates(updates);
-        setFilteredUpdates(updates.slice(0, 10)); // Show 10 most recent by default
+        setFilteredUpdates(updates.slice(0, 20)); // Show 20 most recent by default
         setLoading(false);
       })
       .catch((err) => {
@@ -47,8 +47,8 @@ export default function Dashboard() {
   // Filter updates when date range changes
   useEffect(() => {
     if (!startDate && !endDate) {
-      // No filters - show 10 most recent
-      setFilteredUpdates(allUpdates.slice(0, 10));
+      // No filters - show 20 most recent
+      setFilteredUpdates(allUpdates.slice(0, 20));
       return;
     }
 
