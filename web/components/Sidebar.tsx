@@ -51,18 +51,26 @@ function buildTree(metadata: ContentMetadata[]): TreeNode {
     // Fallback to date parsing if path extraction failed
     if (!monthKey && monthly.date) {
       try {
-        // Parse date string directly (YYYY-MM-DD format)
-        const dateMatch = monthly.date.match(/^(\d{4})-(\d{2})-(\d{2})/);
-        if (dateMatch) {
-          monthKey = `${dateMatch[1]}-${dateMatch[2]}`;
+        // Handle both string and Date types
+        if (monthly.date instanceof Date) {
+          // It's already a Date object
+          const year = monthly.date.getUTCFullYear();
+          const month = String(monthly.date.getUTCMonth() + 1).padStart(2, '0');
+          monthKey = `${year}-${month}`;
         } else {
-          // Try Date object parsing as last resort
-          const date = new Date(monthly.date);
-          if (!isNaN(date.getTime())) {
-            // Use UTC to avoid timezone issues
-            const year = date.getUTCFullYear();
-            const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-            monthKey = `${year}-${month}`;
+          // It's a string - try regex match first
+          const dateMatch = monthly.date.match(/^(\d{4})-(\d{2})-(\d{2})/);
+          if (dateMatch) {
+            monthKey = `${dateMatch[1]}-${dateMatch[2]}`;
+          } else {
+            // Try Date object parsing as last resort
+            const date = new Date(monthly.date);
+            if (!isNaN(date.getTime())) {
+              // Use UTC to avoid timezone issues
+              const year = date.getUTCFullYear();
+              const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+              monthKey = `${year}-${month}`;
+            }
           }
         }
       } catch (e) {
@@ -89,7 +97,8 @@ function buildTree(metadata: ContentMetadata[]): TreeNode {
     // First try to use the date field
     if (daily.date) {
       try {
-        const date = new Date(daily.date);
+        // Handle both Date objects and strings
+        const date = daily.date instanceof Date ? daily.date : new Date(daily.date);
         if (!isNaN(date.getTime())) {
           monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
         }
