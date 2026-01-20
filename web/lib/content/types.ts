@@ -1,6 +1,6 @@
 export interface ContentFrontmatter {
   title: string;
-  date?: string;
+  date?: string | Date;
   tags?: string[];
   summary?: string;
   source_url?: string;
@@ -21,7 +21,7 @@ export interface SearchIndexItem {
   slug: string;
   url: string;
   title: string;
-  date?: string;
+  date?: string | Date;
   summary?: string;
   tags?: string[];
   body: string;

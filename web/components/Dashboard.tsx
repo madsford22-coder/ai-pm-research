@@ -209,10 +209,11 @@ export default function Dashboard() {
                       {update.title.replace(/^#+\s+/, '').trim()}
                     </h3>
                     {update.date && (
-                      <time className="text-sm text-gray-500 dark:text-gray-400 font-medium" dateTime={update.date}>
+                      <time className="text-sm text-gray-500 dark:text-gray-400 font-medium" dateTime={update.date instanceof Date ? update.date.toISOString() : update.date}>
                         {(() => {
-                          const dateStr = update.date;
-                          const date = dateStr.includes('T') ? new Date(dateStr) : new Date(dateStr + 'T00:00:00');
+                          const date = update.date instanceof Date
+                            ? update.date
+                            : (update.date.includes('T') ? new Date(update.date) : new Date(update.date + 'T00:00:00'));
                           return date.toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',

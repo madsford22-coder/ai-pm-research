@@ -120,8 +120,9 @@ export default function Search() {
                       {item.date && (
                         <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">
                           {(() => {
-                            const dateStr = item.date;
-                            const date = dateStr.includes('T') ? new Date(dateStr) : new Date(dateStr + 'T00:00:00');
+                            const date = item.date instanceof Date
+                              ? item.date
+                              : (item.date.includes('T') ? new Date(item.date) : new Date(item.date + 'T00:00:00'));
                             return date.toLocaleDateString();
                           })()}
                         </span>

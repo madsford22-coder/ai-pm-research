@@ -60,7 +60,7 @@ export default async function ContentPage({ params }: PageProps) {
     );
     
     availableDates.push(...allMetadata
-      .map(m => m.date!)
+      .map(m => m.date instanceof Date ? m.date.toISOString().split('T')[0] : m.date!)
       .filter(Boolean)
       .sort()
       .reverse());
@@ -86,7 +86,10 @@ export default async function ContentPage({ params }: PageProps) {
   return (
     <div className="space-y-6 sm:space-y-8 animate-fade-in">
       {isDailyUpdate && content.date && availableDates.length > 0 && (
-        <DateNavigator currentDate={content.date} availableDates={availableDates} />
+        <DateNavigator
+          currentDate={content.date instanceof Date ? content.date.toISOString().split('T')[0] : content.date}
+          availableDates={availableDates}
+        />
       )}
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
         <article className="prose prose-lg flex-1 min-w-0 max-w-none">
@@ -96,10 +99,11 @@ export default async function ContentPage({ params }: PageProps) {
             </h1>
             <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-sm text-gray-600 dark:text-gray-400 mb-4">
               {content.date && (
-                <time dateTime={content.date} className="font-medium">
+                <time dateTime={content.date instanceof Date ? content.date.toISOString() : content.date} className="font-medium">
                   {(() => {
-                    const dateStr = content.date;
-                    const date = dateStr.includes('T') ? new Date(dateStr) : new Date(dateStr + 'T00:00:00');
+                    const date = content.date instanceof Date
+                      ? content.date
+                      : (content.date.includes('T') ? new Date(content.date) : new Date(content.date + 'T00:00:00'));
                     return date.toLocaleDateString('en-US', {
                       weekday: 'long',
                       year: 'numeric',
