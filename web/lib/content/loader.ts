@@ -110,7 +110,23 @@ export function getAllContentMetadata(): ContentMetadata[] {
       return null;
     }
     
-    const content = fs.readFileSync(fullPath, 'utf-8');
+    let content = fs.readFileSync(fullPath, 'utf-8');
+
+    // Handle edge case where H1 comes before frontmatter (same as parser.ts)
+    if (content.startsWith('#') && content.includes('\n---\n')) {
+      const lines = content.split('\n');
+      const firstH1Index = lines.findIndex(line => line.startsWith('# '));
+      const firstFrontmatterIndex = lines.findIndex((line, i) => i > firstH1Index && line === '---');
+
+      if (firstH1Index === 0 && firstFrontmatterIndex > 0) {
+        const afterH1 = lines.slice(1);
+        const frontmatterStart = afterH1.findIndex(line => line === '---');
+        if (frontmatterStart >= 0) {
+          content = afterH1.slice(frontmatterStart).join('\n');
+        }
+      }
+    }
+
     const { data } = matter(content);
     
     const slug = filePath.replace(/\.md$/, '');
@@ -160,7 +176,23 @@ export function buildSearchIndex(): SearchIndexItem[] {
       return null;
     }
     
-    const content = fs.readFileSync(fullPath, 'utf-8');
+    let content = fs.readFileSync(fullPath, 'utf-8');
+
+    // Handle edge case where H1 comes before frontmatter (same as parser.ts)
+    if (content.startsWith('#') && content.includes('\n---\n')) {
+      const lines = content.split('\n');
+      const firstH1Index = lines.findIndex(line => line.startsWith('# '));
+      const firstFrontmatterIndex = lines.findIndex((line, i) => i > firstH1Index && line === '---');
+
+      if (firstH1Index === 0 && firstFrontmatterIndex > 0) {
+        const afterH1 = lines.slice(1);
+        const frontmatterStart = afterH1.findIndex(line => line === '---');
+        if (frontmatterStart >= 0) {
+          content = afterH1.slice(frontmatterStart).join('\n');
+        }
+      }
+    }
+
     const { data, content: markdown } = matter(content);
     
     const slug = filePath.replace(/\.md$/, '');

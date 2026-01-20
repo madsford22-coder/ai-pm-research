@@ -97,7 +97,7 @@ export default async function ContentPage({ params }: PageProps) {
             <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-sm text-gray-600 dark:text-gray-400 mb-4">
               {content.date && (
                 <time dateTime={content.date} className="font-medium">
-                  {new Date(content.date).toLocaleDateString('en-US', {
+                  {new Date(content.date + 'T00:00:00').toLocaleDateString('en-US', {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',

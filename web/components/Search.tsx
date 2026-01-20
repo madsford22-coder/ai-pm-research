@@ -119,7 +119,7 @@ export default function Search() {
                       {item.title.replace(/^#+\s+/, '').trim()}
                       {item.date && (
                         <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">
-                          {new Date(item.date).toLocaleDateString()}
+                          {new Date(item.date + 'T00:00:00').toLocaleDateString()}
                         </span>
                       )}
                     </div>

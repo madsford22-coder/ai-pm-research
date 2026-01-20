@@ -13,7 +13,7 @@ export default function NewDailyUpdatePage() {
     setSaving(true);
     
     const filename = `updates/daily/${date}.md`;
-    const title = `Daily PM Research Update - ${new Date(date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+    const title = `Daily PM Research Update - ${new Date(date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
     
     const frontmatter = `---
 title: ${title}

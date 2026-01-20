@@ -172,9 +172,9 @@ export default function Dashboard() {
         {(startDate || endDate) && (
           <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
             Showing {filteredUpdates.length} {filteredUpdates.length === 1 ? 'update' : 'updates'}
-            {startDate && endDate && ` from ${new Date(startDate).toLocaleDateString()} to ${new Date(endDate).toLocaleDateString()}`}
-            {startDate && !endDate && ` from ${new Date(startDate).toLocaleDateString()}`}
-            {!startDate && endDate && ` until ${new Date(endDate).toLocaleDateString()}`}
+            {startDate && endDate && ` from ${new Date(startDate + 'T00:00:00').toLocaleDateString()} to ${new Date(endDate + 'T00:00:00').toLocaleDateString()}`}
+            {startDate && !endDate && ` from ${new Date(startDate + 'T00:00:00').toLocaleDateString()}`}
+            {!startDate && endDate && ` until ${new Date(endDate + 'T00:00:00').toLocaleDateString()}`}
           </p>
         )}
       </div>
