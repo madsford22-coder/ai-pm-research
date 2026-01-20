@@ -16,8 +16,30 @@ export async function parseMarkdown(
   filePath: string,
   url: string
 ): Promise<ContentPage> {
-  const { data, content } = matter(fileContent);
-  
+  // Handle edge case where H1 comes before frontmatter (daily updates format)
+  // Format: # Title\n\n---\nfrontmatter\n---\ncontent
+  let processedContent = fileContent;
+  if (fileContent.startsWith('#') && fileContent.includes('\n---\n')) {
+    const lines = fileContent.split('\n');
+    const firstH1Index = lines.findIndex(line => line.startsWith('# '));
+    const firstFrontmatterIndex = lines.findIndex((line, i) => i > firstH1Index && line === '---');
+
+    if (firstH1Index === 0 && firstFrontmatterIndex > 0) {
+      // Remove the H1 and any blank lines before frontmatter
+      const beforeFrontmatter = lines.slice(0, firstFrontmatterIndex);
+      const afterH1 = lines.slice(1); // Skip the H1
+
+      // Find where actual frontmatter starts (skip blank lines after H1)
+      const frontmatterStart = afterH1.findIndex(line => line === '---');
+      if (frontmatterStart >= 0) {
+        // Reconstruct: frontmatter + content (without the initial H1)
+        processedContent = afterH1.slice(frontmatterStart).join('\n');
+      }
+    }
+  }
+
+  const { data, content } = matter(processedContent);
+
   // Ensure title exists (use filename as fallback)
   let title = data.title || slugToTitle(slug);
   
