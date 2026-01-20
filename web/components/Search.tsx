@@ -30,24 +30,41 @@ export default function Search() {
     }
 
     const lowerQuery = query.toLowerCase();
+    const queryWords = lowerQuery.split(/\s+/).filter(w => w.length > 0);
+
     const scored = index.map((item) => {
       let score = 0;
-      const titleMatch = item.title.toLowerCase().includes(lowerQuery);
-      const summaryMatch = item.summary?.toLowerCase().includes(lowerQuery);
-      const bodyMatch = item.body.toLowerCase().includes(lowerQuery);
-      const tagMatch = item.tags?.some((tag) => tag.toLowerCase().includes(lowerQuery));
+      const lowerTitle = item.title.toLowerCase();
+      const lowerSummary = item.summary?.toLowerCase() || '';
+      const lowerBody = item.body.toLowerCase();
+      const lowerTags = item.tags?.map(t => t.toLowerCase()) || [];
 
-      if (titleMatch) score += 10;
-      if (summaryMatch) score += 5;
-      if (tagMatch) score += 3;
-      if (bodyMatch) score += 1;
+      // Exact phrase match gets highest score
+      if (lowerTitle.includes(lowerQuery)) score += 20;
+      if (lowerSummary.includes(lowerQuery)) score += 10;
+      if (lowerBody.includes(lowerQuery)) score += 5;
+
+      // Individual word matches
+      queryWords.forEach(word => {
+        if (lowerTitle.includes(word)) score += 8;
+        if (lowerSummary.includes(word)) score += 4;
+        if (lowerTags.some(tag => tag.includes(word))) score += 3;
+        if (lowerBody.includes(word)) score += 1;
+      });
 
       return { item, score };
     });
 
     return scored
       .filter(({ score }) => score > 0)
-      .sort((a, b) => b.score - a.score)
+      .sort((a, b) => {
+        // Sort by score first, then by date (newest first)
+        if (b.score !== a.score) return b.score - a.score;
+        if (a.item.date && b.item.date) {
+          return new Date(b.item.date).getTime() - new Date(a.item.date).getTime();
+        }
+        return 0;
+      })
       .slice(0, 10)
       .map(({ item }) => item);
   }, [query, index]);

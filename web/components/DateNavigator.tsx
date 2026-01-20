@@ -47,7 +47,9 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
     setSelectedDate(newDate);
-    router.push(`/updates/daily/${newDate}`);
+    // Extract year from date (YYYY-MM-DD format)
+    const year = newDate.split('-')[0];
+    router.push(`/updates/daily/${year}/${newDate}`);
   };
 
   const prevDate = getPreviousDate();
@@ -63,7 +65,7 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
         <div className="flex items-center gap-2 w-full sm:w-auto">
           {prevDate ? (
             <Link
-              href={`/updates/daily/${prevDate}`}
+              href={`/updates/daily/${prevDate.split('-')[0]}/${prevDate}`}
               className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-700 rounded transition-colors"
               title={`Previous: ${formatDateForDisplay(prevDate)}`}
               aria-label={`Go to previous update: ${formatDateForDisplay(prevDate)}`}
@@ -98,7 +100,7 @@ export default function DateNavigator({ currentDate, availableDates }: DateNavig
 
           {nextDate ? (
             <Link
-              href={`/updates/daily/${nextDate}`}
+              href={`/updates/daily/${nextDate.split('-')[0]}/${nextDate}`}
               className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-700 rounded transition-colors"
               title={`Next: ${formatDateForDisplay(nextDate)}`}
               aria-label={`Go to next update: ${formatDateForDisplay(nextDate)}`}
