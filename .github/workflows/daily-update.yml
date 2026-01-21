@@ -1,11 +1,11 @@
 name: Daily Research Update
 
 on:
-  # Run daily at 9:00 AM PT (5:00 PM UTC, adjust for DST)
+  # Run daily at 6:00 AM PT (2:00 PM UTC, adjust for DST)
   # Note: GitHub Actions uses UTC timezone
-  # 9am PT = 5pm UTC (standard time) or 4pm UTC (daylight time)
+  # 6am PT = 2pm UTC (standard time) or 1pm UTC (daylight time)
   schedule:
-    - cron: '0 17 * * *'  # 9am PT in standard time
+    - cron: '0 14 * * *'  # 6am PT in standard time
 
   # Allow manual trigger for testing
   workflow_dispatch:
