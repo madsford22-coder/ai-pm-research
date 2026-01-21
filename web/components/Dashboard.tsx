@@ -218,6 +218,7 @@ export default function Dashboard() {
                             month: 'short',
                             day: 'numeric',
                             year: 'numeric',
+                            timeZone: 'UTC',
                           });
                         })()}
                       </time>
