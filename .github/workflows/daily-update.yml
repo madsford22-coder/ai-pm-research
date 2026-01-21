@@ -1,0 +1,110 @@
+name: Daily Research Update
+
+on:
+  # Run daily at 9:00 AM PT (5:00 PM UTC, adjust for DST)
+  # Note: GitHub Actions uses UTC timezone
+  # 9am PT = 5pm UTC (standard time) or 4pm UTC (daylight time)
+  schedule:
+    - cron: '0 17 * * *'  # 9am PT in standard time
+
+  # Allow manual trigger for testing
+  workflow_dispatch:
+
+jobs:
+  generate-update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history for git operations
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: tooling/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd tooling
+          npm ci
+
+      - name: Run data collection
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          # Get today's date in PT timezone
+          export TZ=America/Los_Angeles
+          TODAY=$(date +%Y-%m-%d)
+          YEAR=$(date +%Y)
+
+          echo "Generating update for ${TODAY}"
+
+          # Run the data collection script
+          bash scripts/run-daily-research-data-collection.sh
+
+          # Check if update file was created
+          UPDATE_FILE="updates/daily/${YEAR}/${TODAY}.md"
+          if [ ! -f "$UPDATE_FILE" ]; then
+            echo "ERROR: Update file not created at $UPDATE_FILE"
+            exit 1
+          fi
+
+          echo "Update file created successfully at $UPDATE_FILE"
+
+          # Validate frontmatter is at the beginning
+          FIRST_LINE=$(head -n 1 "$UPDATE_FILE")
+          if [ "$FIRST_LINE" != "---" ]; then
+            echo "ERROR: File does not start with frontmatter delimiter '---'"
+            echo "First line is: $FIRST_LINE"
+            exit 1
+          fi
+
+          echo "Frontmatter validation passed"
+
+      - name: Commit and push update
+        run: |
+          export TZ=America/Los_Angeles
+          TODAY=$(date +%Y-%m-%d)
+
+          # Configure git
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+          # Add the update file
+          git add updates/daily/
+
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          # Commit with descriptive message
+          git commit -m "Add daily research update for ${TODAY}
+
+Generated automatically by GitHub Actions
+Date: ${TODAY}
+Workflow: daily-update.yml
+
+Co-Authored-By: GitHub Actions Bot <actions@github.com>"
+
+          # Push to main branch
+          git push origin main
+
+          echo "Update committed and pushed successfully"
+
+      - name: Send notification on failure
+        if: failure()
+        env:
+          NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
+        run: |
+          if [ -n "$NOTIFICATION_EMAIL" ]; then
+            echo "Workflow failed. Notification would be sent to $NOTIFICATION_EMAIL"
+            # TODO: Implement email notification using GitHub Actions email service
+          else
+            echo "No notification email configured"
+          fi

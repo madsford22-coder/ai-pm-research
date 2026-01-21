@@ -1,0 +1,156 @@
+# Cursor Rules for AI PM Research Project
+
+## Critical: Daily Update File Format
+
+When creating daily update markdown files in `updates/daily/YYYY/YYYY-MM-DD.md`:
+
+### 🚨 MANDATORY: Frontmatter MUST be first
+
+**The frontmatter MUST be the absolute first content in the file.**
+
+- ✅ CORRECT: Start with `---` on line 1
+- ❌ WRONG: Any content before `---` (headings, comments, blank lines)
+
+### Required format:
+
+```markdown
+---
+title: "Your Title Here"
+date: YYYY-MM-DD
+tags:
+  - daily-update
+  - ai-pm-research
+---
+
+# Daily PM Research Update: YYYY-MM-DD
+
+## Summary
+
+Your content here...
+```
+
+### Why this matters:
+
+The `gray-matter` markdown parser expects frontmatter at the beginning of the file. If you put ANY content before the `---` delimiter, it will:
+- Fail to parse frontmatter
+- Return invalid metadata
+- Cause "Invalid Date" displays across the site
+- Crash the site on Netlify with SSR errors
+- Require hours of debugging and ~12 commits to fix
+
+### Date Format Requirements:
+
+- Use `YYYY-MM-DD` format (e.g., `2026-01-20`)
+- Do NOT use ISO strings like `2026-01-20T00:00:00.000Z`
+- File must be located at `updates/daily/YYYY/YYYY-MM-DD.md`
+
+### Title Requirements:
+
+- **Always capitalize "AI" as "AI"** (never "Ai" or "ai")
+- **Always capitalize "PMs" as "PMs"** (never "Pms")
+- Keep titles under 100 characters
+- Use natural language (blog post style, not academic)
+
+### Before committing daily updates:
+
+1. Verify frontmatter is at the very beginning (line 1 starts with `---`)
+2. Check date format is `YYYY-MM-DD`
+3. Verify tags include `daily-update`
+4. Run `cd web && npm run build` to catch errors
+5. Check that all "AI" and "PMs" are capitalized correctly
+
+## Monthly Summary File Format
+
+When creating monthly summary files in `updates/monthly/YYYY-MM.md`:
+
+### Required format:
+
+```markdown
+---
+title: "Month Year Summary"
+date: YYYY-MM-01
+tags:
+  - monthly-summary
+  - ai-pm-research
+---
+
+# Month Year Summary
+
+Your summary content here...
+```
+
+### Key requirements:
+
+- Frontmatter MUST be first (same rule as daily updates)
+- Date should be first day of month: `YYYY-MM-01`
+- Must include `monthly-summary` tag
+- File must be at `updates/monthly/YYYY-MM.md`
+
+## Other File Formats
+
+When working with other markdown files in this project:
+
+- Always put YAML frontmatter first if present
+- Use consistent date formatting (`YYYY-MM-DD`)
+- Follow the same capitalization rules (AI, PMs)
+
+## Research Process
+
+When generating daily updates:
+
+1. Read context files first:
+   - `context/companies.md` - Tracked companies
+   - `context/people.md` - Tracked people
+   - `context/prefs.md` - Quality bars and filters
+   - `context/open-questions.md` - Questions to watch for
+
+2. Use the research prompt at `tooling/prompts/daily-research.md`
+
+3. Run data collection scripts:
+   - `node scripts/check-people-activity.js --days 14 --format markdown`
+   - `node scripts/check-company-updates.js --days 14 --format markdown`
+
+4. Filter through quality bar in `context/prefs.md`
+
+5. Create file with FRONTMATTER FIRST
+
+6. Verify format before committing
+
+## Web Development
+
+When working in the `web/` directory:
+
+- Run `npm run build` before committing to catch TypeScript errors
+- Test changes locally with `npm run dev`
+- Date fields in TypeScript can be `string | Date` (see `web/lib/content/types.ts`)
+- When displaying dates, use UTC timezone to prevent off-by-one errors
+
+## Common Mistakes to Avoid
+
+❌ **DO NOT** create files like this:
+```markdown
+# Daily PM Research Update: 2026-01-20
+
+---
+title: "..."
+```
+
+❌ **DO NOT** use lowercase "ai" or "pms" in titles
+
+❌ **DO NOT** commit without running build first
+
+❌ **DO NOT** use ISO date strings in frontmatter
+
+✅ **DO** start files with frontmatter
+
+✅ **DO** capitalize AI and PMs correctly
+
+✅ **DO** run build before committing
+
+✅ **DO** use YYYY-MM-DD date format
+
+## Additional Resources
+
+- Full daily update process: `docs/DAILY_UPDATE_PROCESS.md`
+- Research prompt: `tooling/prompts/daily-research.md`
+- Netlify functions setup: `netlify/functions/README.md`

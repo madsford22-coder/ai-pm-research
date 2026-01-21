@@ -69,6 +69,8 @@ Where `YYYY` is the current year and `YYYY-MM-DD` is today's date (e.g., `2025-0
 
 ### Frontmatter Format
 
+**CRITICAL: Frontmatter MUST be the FIRST thing in the file. No content, comments, or headings before it.**
+
 Each daily update file must start with YAML frontmatter in this exact format:
 
 ```markdown
@@ -82,6 +84,30 @@ tags:
 
 # Daily PM Research Update: YYYY-MM-DD
 ```
+
+**WRONG (will break the site):**
+```markdown
+# Daily PM Research Update: 2026-01-20
+
+---
+title: "..."
+---
+```
+
+**CORRECT:**
+```markdown
+---
+title: "..."
+date: 2026-01-20
+tags:
+  - daily-update
+  - ai-pm-research
+---
+
+# Daily PM Research Update: 2026-01-20
+```
+
+**Why this matters:** The markdown parser expects frontmatter at the very beginning. If you put ANY content (even a comment or heading) before the `---`, the entire site will break with date parsing errors.
 
 ### Title Requirements
 
