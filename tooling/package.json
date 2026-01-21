@@ -12,6 +12,8 @@
     "test:coverage": "jest --rootDir=.. --coverage"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "googleapis": "^144.0.0",
     "puppeteer": "^24.34.0"
   },
   "devDependencies": {
