@@ -27,6 +27,28 @@ jobs:
           cache: 'npm'
           cache-dependency-path: tooling/package-lock.json
 
+      - name: Install Puppeteer dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            chromium-browser \
+            libxss1 \
+            libnss3 \
+            libasound2 \
+            fonts-liberation \
+            libappindicator3-1 \
+            libatk-bridge2.0-0 \
+            libatk1.0-0 \
+            libcups2 \
+            libdbus-1-3 \
+            libgdk-pixbuf2.0-0 \
+            libnspr4 \
+            libx11-xcb1 \
+            libxcomposite1 \
+            libxdamage1 \
+            libxrandr2 \
+            xdg-utils
+
       - name: Install dependencies
         run: |
           cd tooling
@@ -35,6 +57,8 @@ jobs:
       - name: Run data collection
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
+          PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium-browser
         run: |
           # Get today's date in PT timezone
           export TZ=America/Los_Angeles
@@ -69,6 +93,9 @@ jobs:
         run: |
           export TZ=America/Los_Angeles
           TODAY=$(date +%Y-%m-%d)
+          YEAR=$(date +%Y)
+          echo "TODAY=$TODAY" >> $GITHUB_ENV
+          echo "YEAR=$YEAR" >> $GITHUB_ENV
 
           # Configure git
           git config user.name "GitHub Actions Bot"
@@ -84,27 +111,47 @@ jobs:
           fi
 
           # Commit with descriptive message
-          git commit -m "Add daily research update for ${TODAY}
-
-Generated automatically by GitHub Actions
-Date: ${TODAY}
-Workflow: daily-update.yml
-
-Co-Authored-By: GitHub Actions Bot <actions@github.com>"
+          git commit -m "Add daily research update for ${TODAY}" \
+                     -m "Generated automatically by GitHub Actions" \
+                     -m "Date: ${TODAY}" \
+                     -m "Workflow: daily-update.yml" \
+                     -m "" \
+                     -m "Co-Authored-By: GitHub Actions Bot <actions@github.com>"
 
           # Push to main branch
           git push origin main
 
           echo "Update committed and pushed successfully"
 
-      - name: Send notification on failure
+      - name: Send email notification on success
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.GMAIL_USERNAME }}
+          password: ${{ secrets.GMAIL_APP_PASSWORD }}
+          subject: "✅ Daily Research Update - ${{ env.TODAY }}"
+          to: ${{ secrets.NOTIFICATION_EMAIL }}
+          from: AI PM Research Bot
+          html_body: |
+            <h2>Daily Research Update Complete</h2>
+            <p>The daily research update for <strong>${{ env.TODAY }}</strong> has been generated successfully.</p>
+            <p><a href="https://github.com/${{ github.repository }}/blob/main/updates/daily/${{ env.YEAR }}/${{ env.TODAY }}.md">View the update</a></p>
+            <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View workflow run</a></p>
+
+      - name: Send email notification on failure
         if: failure()
-        env:
-          NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
-        run: |
-          if [ -n "$NOTIFICATION_EMAIL" ]; then
-            echo "Workflow failed. Notification would be sent to $NOTIFICATION_EMAIL"
-            # TODO: Implement email notification using GitHub Actions email service
-          else
-            echo "No notification email configured"
-          fi
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.GMAIL_USERNAME }}
+          password: ${{ secrets.GMAIL_APP_PASSWORD }}
+          subject: "❌ Daily Research Update Failed - ${{ env.TODAY }}"
+          to: ${{ secrets.NOTIFICATION_EMAIL }}
+          from: AI PM Research Bot
+          html_body: |
+            <h2>Daily Research Update Failed</h2>
+            <p>The daily research update for <strong>${{ env.TODAY }}</strong> failed to generate.</p>
+            <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View workflow run for details</a></p>
