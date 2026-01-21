@@ -10,8 +10,23 @@
  * 5. Saves output to updates/daily/YYYY/YYYY-MM-DD.md
  */
 
-const Anthropic = require('@anthropic-ai/sdk');
 const path = require('path');
+const fs = require('fs');
+
+// Add tooling/node_modules to module path so @anthropic-ai/sdk can be found
+// This allows the script to use dependencies installed in tooling/
+const toolingNodeModules = path.join(__dirname, '..', 'tooling', 'node_modules');
+if (fs.existsSync(toolingNodeModules)) {
+  // Add to NODE_PATH so require() can find modules in tooling/node_modules
+  if (!process.env.NODE_PATH) {
+    process.env.NODE_PATH = toolingNodeModules;
+  } else if (!process.env.NODE_PATH.includes(toolingNodeModules)) {
+    process.env.NODE_PATH = toolingNodeModules + path.delimiter + process.env.NODE_PATH;
+  }
+  require('module')._initPaths();
+}
+
+const Anthropic = require('@anthropic-ai/sdk');
 const { readFileSafe, writeFileSafe, fileExists, ensureDirectoryExists } = require('../src/utils/file');
 const { validateNonEmptyString } = require('../src/utils/validation');
 
