@@ -15,3 +15,16 @@
 # Use Netlify's Next.js runtime
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# Scheduled Functions
+# Note: Scheduled functions are configured in Netlify UI under Functions > Scheduled functions
+# This section documents the configuration for reference
+#
+# Function: scheduled-daily-update
+# Schedule: 0 9 * * * (9:00 AM daily, cron syntax)
+# Timezone: America/Los_Angeles (PT)
+#
+# Required Environment Variables:
+# - ANTHROPIC_API_KEY
+# - GITHUB_TOKEN (for committing updates)
+# - NOTIFICATION_EMAIL (optional, for error alerts)
