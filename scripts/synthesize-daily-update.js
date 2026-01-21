@@ -184,7 +184,19 @@ ${collectedData}`;
     });
 
     // Extract the generated content
-    const generatedContent = message.content[0].text;
+    let generatedContent = message.content[0].text;
+
+    // Clean up the content - remove any preamble before the frontmatter
+    // The file must start with '---' for valid frontmatter
+    const frontmatterIndex = generatedContent.indexOf('---');
+    if (frontmatterIndex > 0) {
+      console.log('   ⚠️  Removing preamble text before frontmatter...');
+      generatedContent = generatedContent.substring(frontmatterIndex);
+    } else if (frontmatterIndex === -1) {
+      console.error('   ❌ Error: Generated content does not contain frontmatter delimiter "---"');
+      console.error('   Generated content preview:', generatedContent.substring(0, 200));
+      process.exit(1);
+    }
 
     // Ensure output directory exists and write file
     ensureDirectoryExists(outputDir);
