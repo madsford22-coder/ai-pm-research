@@ -133,8 +133,8 @@ else
     SYNTHESIS_EXIT_CODE=$?
 fi
 
-# Send email notification if configured
-if [ -n "$NOTIFICATION_EMAIL" ]; then
+# Send email notification if configured (only works locally with Gmail OAuth setup)
+if [ -n "$NOTIFICATION_EMAIL" ] && [ -f "${SCRIPT_DIR}/../.gmail-credentials.json" ]; then
     echo ""
     echo "=========================================="
     echo "Sending Email Notification"
@@ -154,7 +154,7 @@ if [ -n "$NOTIFICATION_EMAIL" ]; then
     fi
 else
     echo ""
-    echo "📧 Email notifications not configured"
-    echo "   Set NOTIFICATION_EMAIL to enable email notifications"
+    echo "📧 Gmail notifications not configured (GitHub Actions uses workflow email instead)"
+    echo "   Local setup: Run scripts/setup-gmail-notifications.js"
     echo ""
 fi
