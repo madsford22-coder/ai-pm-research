@@ -12,8 +12,8 @@
   # Check for changes in both web/ and updates/ directories
   # Exit code 0 = skip build, Exit code 1 = run build
   # This ensures builds run when daily updates change, even if web/ hasn't changed
-  # Note: ignore command runs from repo root, so paths are relative to root
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- web/ updates/ && exit 0 || exit 1"
+  # Note: ignore command runs from base directory (web/), so use ../updates/ to reference updates
+  ignore = "cd .. && git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- web/ updates/ && exit 0 || exit 1"
 
 [build.environment]
   # Node.js version (Next.js requires >= 18.17.0)
