@@ -5,9 +5,9 @@
   # Build command - prebuild script will copy updates automatically
   command = "npm run build"
 
-  # Publish directory - must be explicitly different from base for plugin validation
-  # Using a dummy directory that doesn't conflict with base
-  publish = "web/.next"
+  # Publish directory - relative to base directory
+  # The plugin needs this to be set correctly
+  publish = ".next"
 
 [build.environment]
   # Node.js version (Next.js requires >= 18.17.0)
