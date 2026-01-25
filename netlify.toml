@@ -12,10 +12,13 @@
   # Node.js version (Next.js requires >= 18.17.0)
   NODE_VERSION = "20.11.0"
 
-# Use Netlify's Next.js runtime
-# Temporarily disabled to debug deploy skipping issue
-# [[plugins]]
-#   package = "@netlify/plugin-nextjs"
+# Use Netlify's Next.js runtime with explicit configuration
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+  [plugins.inputs]
+    # Disable the auto-publish feature that was causing deploy skips
+    autoPublish = false
 
 # Scheduled Functions
 # Note: Scheduled functions are configured in Netlify UI under Functions > Scheduled functions
