@@ -69,3 +69,4 @@ node scripts/generate-monthly-summary.js 2026 1  # Specific month
 - **Table of Contents**: Auto-generated from h2/h3 headings
 - **Responsive Design**: Mobile-friendly with collapsible sidebar
 
+<!-- Deploy test: 2026-01-25 -->
