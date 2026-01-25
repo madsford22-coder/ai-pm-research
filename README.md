@@ -92,3 +92,4 @@ See [web/README.md](web/README.md) for details. The web app reads markdown files
 
 See [MIGRATION.md](MIGRATION.md) for details on the modular architecture.
 
+<!-- Deploy test: 2026-01-25 -->
