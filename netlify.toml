@@ -13,8 +13,9 @@
   NODE_VERSION = "20.11.0"
 
 # Use Netlify's Next.js runtime
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+# Temporarily disabled to debug deploy skipping issue
+# [[plugins]]
+#   package = "@netlify/plugin-nextjs"
 
 # Scheduled Functions
 # Note: Scheduled functions are configured in Netlify UI under Functions > Scheduled functions
