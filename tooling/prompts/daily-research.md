@@ -133,124 +133,121 @@ Examples of bad titles (too long or awkward):
 
 ### Content Structure
 
-Each daily update must follow this exact format with strict brevity requirements:
+Each daily update must follow this exact format:
 
-**For product changes:**
+**1. One-Line Summary (Required)**
 ```markdown
-### [Company/Product Name] - [Brief Title]
-**Source:** [Link to source]
+## One-Line Summary
 
-**tl;dr:** [Max 2 sentences, max 35 words total]
-
-**What changed:** [Max 1 sentence, max 25 words]
-
-**PM Takeaway:**
-[Max 1 sentence, max 25 words]
-
-**User problem impacted:**
-[Max 1 sentence, max 25 words]
-
-**Product surface area:**
-[Max 1 sentence, max 25 words]
-
-**Decision this informs:**
-[Max 1 sentence, max 25 words]
-
-**Pattern to note:**
-[Max 1 sentence, max 30 words]
+[A single sentence that captures the day's most important insights, connecting the main items together. Should be substantive and specific, not generic.]
 ```
 
-**For PM craft/leadership/productivity content:**
+**2. Items Section (Required)**
+
+Each item must follow this detailed format:
+
 ```markdown
-### [Author/Person Name] - [Brief Title]
-**Author:** [Person Name] ([Role/Title/Background from people.md])
+## Items
+
+### [Company/Product Name or Author Name] - [Brief Title]
 **Source:** [Link to source]
+**Credibility:** [High/Medium/Low - with brief justification]
 
-**tl;dr:** [Max 2 sentences, max 35 words total]
+**What happened:** [2-4 sentences describing the key event, change, or insight. Be specific and concrete. Include relevant context about who/what/when.]
 
-**What changed:** [Max 1 sentence, max 25 words]
+**Key technical details:** (for product changes)
+[Bulleted list of specific technical capabilities, features, or implementation details. Include concrete examples, code snippets, or architectural patterns when relevant.]
 
-**PM Takeaway:**
-[Max 1 sentence, max 25 words]
+**Key capabilities:** (alternative to "Key technical details" for product launches)
+[Bulleted list of what the product/feature can do. Be specific about functionality.]
 
-**PM problem addressed:**
-[Max 1 sentence, max 25 words]
+**Key [domain] patterns:** (for PM craft/leadership content)
+[Bulleted list of frameworks, practices, or patterns discussed. Include specific steps or approaches.]
 
-**How to apply:**
-[Max 2 bullets, max 15 words per bullet]
+**Why it matters for PMs:**
+[2-3 sentences explaining the PM relevance. Connect to product decisions, user problems, or PM effectiveness. Be specific about implications.]
 
-**Decision this informs:**
-[Max 1 sentence, max 25 words]
+**Critical questions:**
+[2-4 bullet points with open questions that PMs should consider. These should be thought-provoking and actionable, not rhetorical.]
 
-**Pattern to note:**
-[Max 1 sentence, max 30 words]
+**Action you could take today:**
+[1-2 sentences with a concrete, immediate action a PM could take based on this insight. Should be specific and actionable, not vague advice.]
+
+---
+
+(Repeat for each item, maximum 3-5 items total)
 ```
 
-**Brevity Requirements (Mandatory)**
+**Formatting Notes:**
+- Use "Key technical details" for product changes with technical implementation
+- Use "Key capabilities" for product launches or feature announcements
+- Use "Key [domain] patterns" (e.g., "Key trust-building patterns", "Key diagnostic patterns") for PM craft/leadership content
+- Include code snippets, tables, or examples when they add clarity
+- Be specific and concrete—avoid vague generalizations
+- Each item should be substantial (typically 200-400 words)
 
-For each of the detailed item research sections:
-- **tl;dr:** max 2 sentences, max 35 words total
-- **What changed:** max 1 sentence, max 25 words
-- **PM Takeaway:** max 1 sentence, max 25 words
-- **PM problem addressed / User problem impacted:** max 1 sentence, max 25 words
-- **How to apply:** max 2 bullets, max 15 words per bullet
-- **Decision this informs:** max 1 sentence, max 25 words
-- **Pattern to note:** max 1 sentence, max 30 words
+### Quick Hits Section
 
-If any section exceeds its limit, rewrite it until it fits. Do not remove sections to achieve brevity.
-
-(Repeat for each item, maximum 5 items total)
-
-### Other Notable Updates Section
-
-After the main items, include a section titled "## Other Notable Updates" that lists:
+After the main items, include a section titled "## Quick Hits" that lists:
 - Additional items found in today's research that were not included in the detailed analysis above
-- Items that were covered in detail in previous days should be marked with *(Note: Covered in detail on YYYY-MM-DD)*
-- Format: Bulleted list with title/description, date (if relevant), and URL
-- Purpose: Provide a concise record of the most important net-new items found, prioritizing quality over quantity
+- Format: Bulleted list with company/author name, brief description, date (if relevant), and URL
+- Purpose: Provide a concise record of other notable updates, prioritizing quality over quantity
 
 **Important: Deduplication and Prioritization**
 
-1. **Check for duplicates**: Before adding an item to "Other Notable Updates", check ALL previous days' "Other Notable Updates" sections for the past 14 days. If an item was already listed in a previous day's "Other Notable Updates", DO NOT include it again. Only include items that are truly new (not previously listed in any "Other Notable Updates" section within the past 14 days).
+1. **Check for duplicates**: Before adding an item to "Quick Hits", check ALL previous days' "Quick Hits" sections for the past 14 days. If an item was already listed in a previous day's "Quick Hits", DO NOT include it again. Only include items that are truly new (not previously listed in any "Quick Hits" section within the past 14 days).
 
-2. **Remove items after 2 weeks**: If an item has been listed in "Other Notable Updates" for 2 consecutive weeks (14 days), remove it from future updates. Items should not persist indefinitely in this section.
+2. **Remove items after 2 weeks**: If an item has been listed in "Quick Hits" for 2 consecutive weeks (14 days), remove it from future updates. Items should not persist indefinitely in this section.
 
-3. **Prioritize by topic interest**: Order items in "Other Notable Updates" by priority based on `context/prefs.md`:
+3. **Prioritize by topic interest**: Order items in "Quick Hits" by priority based on `context/prefs.md`:
    - **Highest priority** (list first): Items related to shipped product changes, vibe coding/AI-assisted development, PM craft/productivity insights, product strategy frameworks
    - **Medium priority**: Leadership/team management insights, user research methods, product positioning changes
    - **Lower priority** (list last): Conference lists, podcast episodes, general announcements, future-dated items
 
-4. **Mark previously covered items**: If an item was covered in detail in a previous day's main analysis, mark it with *(Note: Covered in detail on YYYY-MM-DD)*
+4. **Maximum 5 items**: Limit "Quick Hits" to a maximum of 5 items total. Prioritize the highest-signal items that meet the quality bar. If you have more than 5 items, select only the top 5 by priority and signal quality.
 
-5. **Maximum 5 items**: Limit "Other Notable Updates" to a maximum of 5 items total. Prioritize the highest-signal items that meet the quality bar. If you have more than 5 items, select only the top 5 by priority and signal quality.
+5. **If empty, omit section**: If "Quick Hits" would be empty or only contain items already covered, you may omit the section entirely.
 
 Example format:
 ```markdown
-## Other Notable Updates
+## Quick Hits
 
-Additional items found in today's research (not included in detailed analysis above):
+- **Company Name**: [Brief description] (Date): URL
+- **Author Name**: [Brief description] (Date): URL
+- **Company Name**: [Brief description] (Date): URL
+```
 
-- **Author Name - High Priority Post** (Date): URL
-- **Company Name - Product Change** (Date): URL
-- **Author Name - Medium Priority Post** (Date): URL *(Note: Covered in detail on YYYY-MM-DD)*
+### This Week's Pattern Section
+
+After "Quick Hits", include a section titled "## This Week's Pattern" that:
+- Identifies a broader pattern or trend observed across multiple items from the current week
+- Connects insights from today's research to patterns from recent days
+- Should be substantive and specific, not generic observations
+- If no clear pattern emerges, you may omit this section
+
+Example format:
+```markdown
+## This Week's Pattern
+
+**Pattern description.** [1-2 sentences explaining the pattern, referencing specific examples from the week.]
 ```
 
 ### Avoiding Duplicates
 
-- **Check previous days' updates** before including an item in detailed analysis OR "Other Notable Updates"
+- **Check previous days' updates** before including an item in detailed analysis OR "Quick Hits"
 - If an item was covered in detail in a previous update, do NOT repeat it in the detailed analysis
-- If an item was already listed in a previous day's "Other Notable Updates" (within past 14 days), do NOT include it again
+- If an item was already listed in a previous day's "Quick Hits" (within past 14 days), do NOT include it again
 - Only include items in detailed analysis that are net-new (not previously covered)
-- Only include items in "Other Notable Updates" that are net-new (not previously listed in any "Other Notable Updates" section within the past 14 days)
+- Only include items in "Quick Hits" that are net-new (not previously listed in any "Quick Hits" section within the past 14 days)
 - Remove items that have been listed for 2 consecutive weeks (14 days)
 
 ### Quantity Limits
 
-- **Maximum 3-5 items per day** in detailed analysis
-- **Maximum 5 items** in "Other Notable Updates" section - prioritize highest-signal items only
-- If there are fewer than 3 meaningful PM-relevant updates, include only what meets the quality bar
+- **Maximum 3-5 items per day** in detailed analysis (aim for 2-3 high-quality items rather than forcing 5)
+- **Maximum 5 items** in "Quick Hits" section - prioritize highest-signal items only
+- If there are fewer than 2 meaningful PM-relevant updates, include only what meets the quality bar
 - It is acceptable (and correct) to output "No meaningful PM-relevant updates today" if nothing meets the criteria
-- If "Other Notable Updates" would be empty or only contain items already covered, you may omit the section entirely
+- If "Quick Hits" would be empty or only contain items already covered, you may omit the section entirely
 
 ### Quality Bar
 
@@ -269,19 +266,14 @@ If any criterion is missing, do not include the item.
 
 ### Required Synthesis
 
-**For product changes**, every item must answer:
-- **User problem impacted**: What user need does this address or change?
-- **Product surface area**: What part of the product ecosystem is affected?
-- **Decision this informs**: What product decision does this signal inform?
-- **Pattern to note**: Any broader pattern or trend this represents (or "None" if isolated)
+Every item must include all of these sections:
+- **What happened**: Concrete description of the event, change, or insight
+- **Key technical details/capabilities/patterns**: Specific details relevant to the item type
+- **Why it matters for PMs**: Clear connection to PM work, product decisions, or user problems
+- **Critical questions**: Thought-provoking questions PMs should consider
+- **Action you could take today**: Concrete, immediate action a PM could take
 
-**For PM craft/leadership/productivity content**, every item must answer:
-- **PM problem addressed**: What PM challenge, workflow, or effectiveness gap does this address?
-- **How to apply**: Concrete steps, frameworks, or practices PMs can use
-- **Decision this informs**: What product decision, process, or approach does this inform?
-- **Pattern to note**: Any broader pattern or trend this represents (or "None" if isolated)
-
-If you cannot answer all required fields, do not include the item.
+The synthesis should be integrated naturally into the narrative format, not as a checklist. Each section should flow into the next, creating a coherent analysis rather than disconnected bullet points.
 
 ## When to Output "No meaningful PM-relevant updates today"
 
@@ -334,21 +326,22 @@ Do not include anything from the "Ignore Completely" list in `context/prefs.md`:
 4. Optionally check news mentions using `scripts/check-company-news.js --days 7 --format markdown`
 5. Review recent posts from tracked people for PM-relevant signals
 6. Filter all findings through the quality bar in `prefs.md`
-7. Synthesize remaining items using the required format
-8. Create the daily markdown file at the specified path
-9. Ensure maximum 3-5 items (or "No meaningful PM-relevant updates today")
+7. Synthesize remaining items using the detailed format (One-Line Summary, Items with full analysis, Quick Hits, This Week's Pattern, Reflection Prompt)
+8. Create the daily markdown file at the specified path with frontmatter first
+9. Ensure maximum 3-5 items in detailed analysis (or "No meaningful PM-relevant updates today")
+10. Include all required sections: One-Line Summary, Items, Quick Hits (if applicable), This Week's Pattern (if applicable), Reflection Prompt
 
 Remember: Your goal is NOT to summarize AI news. Your goal is to surface product-relevant signals and translate them into actionable insights for product management.
 
-## Daily Product Reflection Challenge
+## Reflection Prompt
 
-After completing the daily update, you MUST generate a reflection challenge at the end of the file.
+After completing the daily update, you MUST generate a reflection prompt at the end of the file.
 
 ### Instructions
 
 1. Review the research items you included in today's update
 2. Select ONE specific, concrete product signal from the day's research—a decision, pattern, or insight that has clear product implications
-3. Generate a single reflection challenge that:
+3. Generate a reflection prompt that:
    - Focuses on one specific item (not a summary of multiple items)
    - Challenges product judgment and decision-making
    - Requires the PM to evaluate a tradeoff, make a call, or assess an approach
@@ -362,35 +355,35 @@ Add this section at the very end of the daily update file:
 ```markdown
 ---
 
-## Daily Product Reflection Challenge
+## Reflection Prompt
 
-### [Short Title - Max 8 Words]
+[Brief context from one of today's items that sets up the reflection question.]
 
-[One reflection question that challenges product judgment]
+**For your [product/team/context]:** [One reflection question that challenges product judgment and requires a concrete decision or evaluation.]
 
 Complete your reflection in `/content/reflections/daily/YYYY-MM-DD.md`
 ```
 
 ### Requirements
 
-The challenge must:
-- Have a short title (maximum 8 words)
-- Contain one reflection question (not multiple questions or a list)
+The prompt must:
+- Start with 1-2 sentences of context from a specific item (not a summary of multiple items)
+- Contain one reflection question introduced with "For your [product/team/context]:"
 - Avoid asking for summaries, brainstorming, or abstract philosophy
 - Force a concrete judgment call or decision evaluation
-- Be based on a specific item from today's research (reference it briefly in the question)
+- Be based on a specific item from today's research
 
 ### Example
 
 ```markdown
 ---
 
-## Daily Product Reflection Challenge
+## Reflection Prompt
 
-### When to Build Custom AI Tools vs. Buy
+Healio's research revealed physicians wanted AI for "patient communication and empathy"—not diagnostics. Their assumptions about user needs were fundamentally wrong.
 
-Webflow's CPO built a custom AI chief-of-staff app for her own workflow instead of using off-the-shelf productivity tools. At what point does the time investment in building custom AI tools for your PM workflow justify the opportunity cost of not using existing solutions?
+**For your AI product:** What assumptions are you making about what users want AI to help with? How would you discover if those assumptions are wrong before building?
 
-Complete your reflection in `/reflections/daily/2025-12-29.md`
+Complete your reflection in `/content/reflections/daily/2026-01-22.md`
 ```
 
