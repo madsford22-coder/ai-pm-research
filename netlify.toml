@@ -5,20 +5,19 @@
   # Build command - prebuild script will copy updates automatically
   command = "npm run build"
 
-  # Publish directory - for Next.js on Netlify, this should be .next
-  publish = ".next"
+  # Publish directory - Must be empty when using Next.js plugin
+  # The plugin handles publishing automatically
+  publish = ""
 
 [build.environment]
   # Node.js version (Next.js requires >= 18.17.0)
   NODE_VERSION = "20.11.0"
 
-# Use Netlify's Next.js runtime with explicit configuration
+# Use Netlify's Next.js runtime
+# Important: When using this plugin, publish directory must be empty
+# The plugin handles the deployment automatically
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-  [plugins.inputs]
-    # Disable the auto-publish feature that was causing deploy skips
-    autoPublish = false
 
 # Scheduled Functions
 # Note: Scheduled functions are configured in Netlify UI under Functions > Scheduled functions
