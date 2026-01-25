@@ -205,6 +205,20 @@ ${collectedData}`;
     console.log('✅ Daily update generated successfully!\n');
     console.log(`📄 Output saved to: ${outputFile}`);
     console.log(`📊 Tokens used: ${message.usage.input_tokens} input, ${message.usage.output_tokens} output\n`);
+    
+    // Automatically regenerate monthly summary for current month
+    console.log('📅 Regenerating monthly summary...');
+    try {
+      const { generateMonthlySummary } = require('./generate-monthly-summary.js');
+      const monthNum = parseInt(month);
+      await generateMonthlySummary(year, monthNum);
+      console.log('✅ Monthly summary updated\n');
+    } catch (error) {
+      console.warn(`⚠️  Could not update monthly summary: ${error.message}`);
+      console.warn('   You can manually regenerate it with:');
+      console.warn(`   node scripts/generate-monthly-summary.js ${year} ${month}\n`);
+    }
+    
     console.log(`${'='.repeat(50)}`);
     console.log('Next Steps:');
     console.log(`${'='.repeat(50)}`);

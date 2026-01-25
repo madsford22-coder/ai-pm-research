@@ -94,13 +94,27 @@ tags:
 
 ## How to Use
 
-1. Read through all daily updates for the month
-2. Identify 2-3 main themes or shifts
-3. Pick the 3 most valuable distinct sources
-4. Write opening paragraphs that set up the themes without repeating bullets
-5. Write specific, example-rich bullet points
-6. Run through quality checks
-7. Generate the summary
+The script will provide you with:
+- **One-Line Summaries**: A single sentence from each daily update capturing the day's key insights
+- **Weekly Patterns**: Patterns identified in "This Week's Pattern" sections from daily updates
+- **All Items**: Full details from the "Items" section of each daily update, including:
+  - Company/Author name and title
+  - Source URL
+  - What happened (2-4 sentences)
+  - Why it matters for PMs (2-3 sentences)
+  - Dates for each item
+
+**Your process:**
+1. Review the one-line summaries to identify overarching themes
+2. Look at weekly patterns to see recurring topics
+3. Review all items to understand the depth and breadth of coverage
+4. Identify 2-3 main themes or shifts that connect multiple items
+5. Pick the 3 most valuable distinct sources (prioritize diversity: different companies, different perspectives)
+6. Write opening paragraphs that set up the themes without repeating bullets
+7. Write specific, example-rich bullet points for "What Matters"
+8. Format Essential Resources with source, title, URL, and one-line summary
+9. Run through quality checks
+10. Generate the summary
 
 ## Notes
 
@@ -108,3 +122,7 @@ tags:
 - Focus on signals and patterns, not just events
 - Help readers understand what matters and why
 - Make it easy to scan but rewarding to read carefully
+- Use the "Why it matters for PMs" sections from daily updates to inform your synthesis
+- Reference specific companies, products, and numbers from the daily items
+- Connect patterns across multiple days - don't just summarize individual items
+- The "This Week's Pattern" sections from daily updates can help identify monthly themes

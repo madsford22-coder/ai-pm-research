@@ -3,31 +3,46 @@
  * Generate Monthly Summary
  * 
  * This script aggregates all daily updates for a given month and creates
- * a monthly summary with:
- * - Monthly overview
- * - Key themes and patterns
- * - Daily updates list with tl;drs and links
- * - Resource links from all updates
+ * a monthly summary following the format in .prompts/monthly-summary.md:
+ * - Opening paragraphs (2-3 sentences main theme, 1-2 sentences secondary)
+ * - What Matters section (3 bullets with bold headers)
+ * - Essential Resources (3 items with descriptions)
+ * 
+ * Uses AI to synthesize themes and generate human-readable summary.
  */
 
 const path = require('path');
+const fs = require('fs');
 const { readFileSafe, writeFileSafe, fileExists, ensureDirectoryExists } = require('../src/utils/file');
-const { parseFrontmatter, formatFrontmatter } = require('../src/utils/frontmatter');
+const { parseFrontmatter } = require('../src/utils/frontmatter');
 const { validatePositiveInteger, validateNonEmptyString } = require('../src/utils/validation');
+
+// Add tooling/node_modules to module path for @anthropic-ai/sdk
+const toolingNodeModules = path.join(__dirname, '..', 'tooling', 'node_modules');
+if (fs.existsSync(toolingNodeModules)) {
+  if (!process.env.NODE_PATH) {
+    process.env.NODE_PATH = toolingNodeModules;
+  } else if (!process.env.NODE_PATH.includes(toolingNodeModules)) {
+    process.env.NODE_PATH = toolingNodeModules + path.delimiter + process.env.NODE_PATH;
+  }
+  require('module')._initPaths();
+}
+
+const Anthropic = require('@anthropic-ai/sdk');
 
 function extractResources(content) {
   const resources = new Set();
   
-  // Extract all source links (markdown format: **Source:** http://...)
+  // Extract all source links from Items section (markdown format: **Source:** http://...)
   const sourceRegex = /\*\*Source:\*\*\s*(https?:\/\/[^\s\n]+)/gi;
   let match;
   while ((match = sourceRegex.exec(content)) !== null) {
     resources.add(match[1]);
   }
   
-  // Extract links from "Other Notable Updates" section
-  const otherUpdatesRegex = /## Other Notable Updates[\s\S]*?((?:https?:\/\/[^\s\n)]+))/gi;
-  while ((match = otherUpdatesRegex.exec(content)) !== null) {
+  // Extract links from "Quick Hits" section (new format)
+  const quickHitsRegex = /## Quick Hits[\s\S]*?((?:https?:\/\/[^\s\n)]+))/gi;
+  while ((match = quickHitsRegex.exec(content)) !== null) {
     resources.add(match[1]);
   }
   
@@ -37,32 +52,49 @@ function extractResources(content) {
 function extractItems(content) {
   const items = [];
   
-  // Match item blocks (### Title ... until next ### or ##)
+  // Match item blocks in ## Items section (### Title ... until next ### or ##)
+  // Only extract from Items section, not Quick Hits
+  const itemsSectionMatch = content.match(/## Items\s*\n([\s\S]*?)(?=\n##|$)/);
+  if (!itemsSectionMatch) return items;
+  
+  const itemsContent = itemsSectionMatch[1];
   const itemRegex = /###\s+([^\n]+)\n([\s\S]*?)(?=\n###|\n##|$)/g;
   let match;
   
-  while ((match = itemRegex.exec(content)) !== null) {
+  while ((match = itemRegex.exec(itemsContent)) !== null) {
     const title = match[1].trim();
     const itemContent = match[2];
-    
-    // Extract tl;dr
-    const tldrMatch = itemContent.match(/\*\*tl;dr:\*\*\s*(.+?)(?=\n\*\*|$)/s);
-    const tldr = tldrMatch ? tldrMatch[1].trim() : null;
     
     // Extract source
     const sourceMatch = itemContent.match(/\*\*Source:\*\*\s*(https?:\/\/[^\s\n]+)/);
     const source = sourceMatch ? sourceMatch[1] : null;
     
-    // Extract author if present
-    const authorMatch = itemContent.match(/\*\*Author:\*\*\s*([^\n]+)/);
-    const author = authorMatch ? authorMatch[1].trim() : null;
+    // Extract credibility
+    const credibilityMatch = itemContent.match(/\*\*Credibility:\*\*\s*([^\n]+)/);
+    const credibility = credibilityMatch ? credibilityMatch[1].trim() : null;
     
-    if (title && (tldr || source)) {
+    // Extract "What happened" (2-4 sentences)
+    const whatHappenedMatch = itemContent.match(/\*\*What happened:\*\*\s*([\s\S]+?)(?=\n\*\*|$)/);
+    const whatHappened = whatHappenedMatch ? whatHappenedMatch[1].trim() : null;
+    
+    // Extract "Why it matters for PMs" (2-3 sentences)
+    const whyItMattersMatch = itemContent.match(/\*\*Why it matters for PMs:\*\*\s*([\s\S]+?)(?=\n\*\*|$)/);
+    const whyItMatters = whyItMattersMatch ? whyItMattersMatch[1].trim() : null;
+    
+    // Extract company/author name from title (format: "Company - Title" or "Author - Title")
+    const titleParts = title.split(' - ');
+    const companyOrAuthor = titleParts.length > 1 ? titleParts[0].trim() : null;
+    const itemTitle = titleParts.length > 1 ? titleParts.slice(1).join(' - ') : title;
+    
+    if (title && source) {
       items.push({
-        title,
-        tldr,
+        title: itemTitle,
+        companyOrAuthor,
         source,
-        author,
+        credibility,
+        whatHappened,
+        whyItMatters,
+        fullContent: itemContent, // Keep full content for AI synthesis
       });
     }
   }
@@ -70,13 +102,25 @@ function extractItems(content) {
   return items;
 }
 
-function extractSummary(content) {
-  // Extract the main summary from ## Summary section
-  const summaryMatch = content.match(/## Summary\s*\n\n([^\n]+(?:\n[^#][^\n]+)*)/);
+function extractOneLineSummary(content) {
+  // Extract the one-line summary from ## One-Line Summary section
+  const summaryMatch = content.match(/## One-Line Summary\s*\n\s*\n([^\n]+(?:\n[^#][^\n]+)*)/);
   return summaryMatch ? summaryMatch[1].trim() : null;
 }
 
-function generateMonthlySummary(year, month) {
+function extractWeeklyPattern(content) {
+  // Extract "This Week's Pattern" section
+  const patternMatch = content.match(/## This Week's Pattern\s*\n\s*\n\*\*([^\n]+)\*\*\s*\n\s*\n([\s\S]+?)(?=\n---|\n##|$)/);
+  if (patternMatch) {
+    return {
+      title: patternMatch[1].trim(),
+      description: patternMatch[2].trim(),
+    };
+  }
+  return null;
+}
+
+async function generateMonthlySummary(year, month) {
   // Validate inputs
   validatePositiveInteger(year, 'year', 2020);
   validatePositiveInteger(month, 'month', 1);
@@ -141,103 +185,192 @@ function generateMonthlySummary(year, month) {
   
   // Process all daily updates
   const allResources = new Set();
-  const dailySummaries = [];
   const allItems = [];
-  const themes = new Map();
+  const weeklyPatterns = [];
+  const oneLineSummaries = [];
   
   for (const file of dailyFiles) {
     const content = readFileSafe(file.path);
     const parsed = parseFrontmatter(content);
     
     const dateStr = file.date.toISOString().split('T')[0];
-    const dayOfMonth = file.date.getDate();
     
     // Extract resources
     const resources = extractResources(parsed.content);
     resources.forEach(r => allResources.add(r));
     
-    // Extract summary
-    const summary = extractSummary(parsed.content);
+    // Extract one-line summary
+    const oneLineSummary = extractOneLineSummary(parsed.content);
+    if (oneLineSummary) {
+      oneLineSummaries.push({ date: dateStr, summary: oneLineSummary });
+    }
     
     // Extract items
     const items = extractItems(parsed.content);
     allItems.push(...items.map(item => ({ ...item, date: dateStr })));
     
-    // Extract patterns/themes
-    const patternMatches = parsed.content.matchAll(/\*\*Pattern to note:\*\*\s*([^\n]+)/g);
-    for (const match of patternMatches) {
-      const pattern = match[1].trim();
-      themes.set(pattern, (themes.get(pattern) || 0) + 1);
+    // Extract weekly patterns
+    const weeklyPattern = extractWeeklyPattern(parsed.content);
+    if (weeklyPattern) {
+      weeklyPatterns.push({ date: dateStr, ...weeklyPattern });
     }
-    
-    dailySummaries.push({
-      date: dateStr,
-      day: dayOfMonth,
-      title: parsed.data.title || `Daily Update - ${dateStr}`,
-      summary,
-      itemCount: items.length,
-      url: `/updates/daily/${year}/${dateStr.replace(/-/g, '/')}`,
-    });
   }
   
-  // Sort themes by frequency and get top 3 most important
-  const topThemes = Array.from(themes.entries())
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
-    .map(([theme, count]) => theme);
+  // Prepare data for AI synthesis
+  const monthName = monthStart.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  const monthTitle = monthName;
   
-  // Get top 3 most important resources (prioritize unique domains and most referenced)
-  const resourceCounts = new Map();
-  for (const resource of allResources) {
+  // Get top 3 most valuable resources (prioritize diversity and impact)
+  // Group by domain to ensure diversity
+  const resourcesByDomain = new Map();
+  for (const item of allItems) {
+    if (!item.source) continue;
     try {
-      const url = new URL(resource);
+      const url = new URL(item.source);
       const domain = url.hostname.replace('www.', '');
-      resourceCounts.set(domain, (resourceCounts.get(domain) || 0) + 1);
+      if (!resourcesByDomain.has(domain)) {
+        resourcesByDomain.set(domain, []);
+      }
+      resourcesByDomain.get(domain).push(item);
     } catch {
       // Skip invalid URLs
     }
   }
   
-  // Get top 3 most important items with their resources
-  const topItems = allItems
-    .filter(item => item.tldr && item.source)
-    .slice(0, 3)
-    .map((item, idx) => {
-      try {
-        const url = new URL(item.source);
-        const domain = url.hostname.replace('www.', '');
-        const title = item.title.replace(/\s*-\s*[^]+$/, '').trim();
-        return {
-          title,
-          source: item.source,
-          domain,
-          tldr: item.tldr
-        };
-      } catch {
-        return null;
+  // Select top 3 resources, one per domain when possible
+  const topResources = [];
+  const usedDomains = new Set();
+  for (const item of allItems) {
+    if (topResources.length >= 3) break;
+    if (!item.source || !item.companyOrAuthor || !item.title) continue;
+    try {
+      const url = new URL(item.source);
+      const domain = url.hostname.replace('www.', '');
+      // Prefer diverse domains, but allow duplicates if needed
+      if (!usedDomains.has(domain) || topResources.length < 2) {
+        usedDomains.add(domain);
+        topResources.push({
+          source: item.companyOrAuthor,
+          title: item.title,
+          url: item.source,
+          description: item.whyItMatters || item.whatHappened || '',
+        });
       }
-    })
-    .filter(item => item !== null);
-  
-  // Generate executive summary
-  const monthName = monthStart.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-  const monthTitle = monthName;
-  
-  // Create concise executive summary (one page, chief of staff style)
-  let executiveSummary = '';
-  if (topThemes.length > 0) {
-    // Create one flowing sentence from themes
-    const themesLower = topThemes.map(theme => theme.charAt(0).toLowerCase() + theme.slice(1));
-    if (themesLower.length === 1) {
-      executiveSummary = themesLower[0] + '.';
-    } else if (themesLower.length === 2) {
-      executiveSummary = themesLower[0] + ', and ' + themesLower[1] + '.';
-    } else {
-      executiveSummary = themesLower.slice(0, -1).join(', ') + ', and ' + themesLower[themesLower.length - 1] + '.';
+    } catch {
+      // Skip invalid URLs
     }
-  } else {
-    executiveSummary = `This month tracked ${allItems.length} key items across AI product management, tools, and workflows.`;
   }
+  
+  // Use AI to generate summary following monthly prompt format
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    console.warn('⚠️  ANTHROPIC_API_KEY not set. Generating basic summary without AI synthesis.');
+    return generateBasicSummary(year, month, monthKey, monthTitle, dailyFiles, allItems, topResources, monthEnd);
+  }
+  
+  return generateAISummary(year, month, monthKey, monthTitle, dailyFiles, allItems, oneLineSummaries, weeklyPatterns, topResources, monthEnd, apiKey);
+}
+
+async function generateAISummary(year, month, monthKey, monthTitle, dailyFiles, allItems, oneLineSummaries, weeklyPatterns, topResources, monthEnd, apiKey) {
+  const monthlyPromptPath = path.join(__dirname, '..', '.prompts', 'monthly-summary.md');
+  const monthlyPrompt = readFileSafe(monthlyPromptPath);
+  
+  // Prepare context for AI
+  const itemsContext = allItems.map(item => {
+    return `### ${item.companyOrAuthor || 'Unknown'} - ${item.title}
+**Source:** ${item.source}
+**What happened:** ${item.whatHappened || 'N/A'}
+**Why it matters:** ${item.whyItMatters || 'N/A'}
+**Date:** ${item.date}`;
+  }).join('\n\n');
+  
+  const summariesContext = oneLineSummaries.map(s => `- ${s.date}: ${s.summary}`).join('\n');
+  const patternsContext = weeklyPatterns.map(p => `- ${p.date}: **${p.title}** - ${p.description}`).join('\n');
+  
+  const userPrompt = `Generate a monthly summary for ${monthTitle} following the format in the prompt.
+
+# Daily Updates Context
+
+## One-Line Summaries
+${summariesContext}
+
+## Weekly Patterns
+${patternsContext}
+
+## All Items (${allItems.length} total)
+${itemsContext}
+
+## Top Resources to Include
+${topResources.map((r, i) => `${i + 1}. ${r.source} - ${r.title} (${r.url})`).join('\n')}
+
+Generate the summary following the exact format in the prompt:
+- Opening paragraphs (2-3 sentences main theme, 1-2 sentences secondary)
+- What Matters section (3 bullets with bold headers and specific examples)
+- Essential Resources (3 items with format: **Source** — [Title](URL) — One-line summary)
+
+Use specific examples, company names, and numbers. Write like a human, not corporate jargon.`;
+
+  const anthropic = new Anthropic({ apiKey });
+  
+  try {
+    console.log('🤖 Generating monthly summary with AI...');
+    const message = await anthropic.messages.create({
+      model: 'claude-sonnet-4-5-20250929',
+      max_tokens: 4000,
+      messages: [{ role: 'user', content: userPrompt }],
+      system: monthlyPrompt,
+    });
+    
+    let generatedContent = message.content[0].text;
+    
+    // Ensure frontmatter is first
+    const frontmatterIndex = generatedContent.indexOf('---');
+    if (frontmatterIndex > 0) {
+      generatedContent = generatedContent.substring(frontmatterIndex);
+    } else if (frontmatterIndex === -1) {
+      // Add frontmatter if missing
+      generatedContent = `---
+title: "${monthTitle} Research Summary"
+date: ${monthKey}-01
+tags:
+  - monthly-summary
+  - ai-pm-research
+---
+
+${generatedContent}`;
+    }
+    
+    // Add footer with update count
+    const lastDay = monthEnd.getDate();
+    const footer = `\n---\n\n*${dailyFiles.length} daily updates tracked ${allItems.length} items this month. [View all ${monthTitle.split(' ')[0]} updates](/?from=${monthKey}-01&to=${monthKey}-${String(lastDay).padStart(2, '0')})*`;
+    
+    // Only add footer if not already present
+    if (!generatedContent.includes('*[')) {
+      generatedContent += footer;
+    }
+    
+    const outputFile = path.join(path.join(__dirname, '..', 'updates', 'monthly'), `${monthKey}.md`);
+    writeFileSafe(outputFile, generatedContent);
+    
+    console.log(`✅ Generated monthly summary: ${outputFile}`);
+    console.log(`📊 Tokens used: ${message.usage.input_tokens} input, ${message.usage.output_tokens} output\n`);
+    
+    return {
+      file: outputFile,
+      dailyCount: dailyFiles.length,
+      itemCount: allItems.length,
+      resourceCount: topResources.length,
+    };
+  } catch (error) {
+    console.error('❌ Error generating AI summary:', error.message);
+    console.log('Falling back to basic summary...\n');
+    return generateBasicSummary(year, month, monthKey, monthTitle, dailyFiles, allItems, topResources, monthEnd);
+  }
+}
+
+function generateBasicSummary(year, month, monthKey, monthTitle, dailyFiles, allItems, topResources, monthEnd) {
+  const outputFile = path.join(path.join(__dirname, '..', 'updates', 'monthly'), `${monthKey}.md`);
+  const lastDay = monthEnd.getDate();
   
   let markdown = `---
 title: "${monthTitle} Research Summary"
@@ -249,44 +382,42 @@ tags:
 
 # ${monthTitle} Research Summary
 
-${(executiveSummary.charAt(0).toUpperCase() + executiveSummary.slice(1)).replace(/\baI\b/gi, 'AI').replace(/\bai\b/g, 'AI')}
+This month tracked ${allItems.length} key items across AI product management, tools, and workflows.
 
 ## What Matters
 
-${topThemes.length > 0 ? topThemes.map(theme => {
-  const capitalized = theme.charAt(0).toUpperCase() + theme.slice(1);
-  return `- ${capitalized.replace(/\baI\b/gi, 'AI').replace(/\bai\b/g, 'AI')}`;
-}).join('\n') : `- ${dailyFiles.length} daily updates tracked ${allItems.length} key items this month`}
+- ${dailyFiles.length} daily updates tracked ${allItems.length} key items this month
+- Focus areas included product changes, PM craft insights, and AI tool adoption
+- Patterns emerged around agent infrastructure, PM productivity, and production deployments
 
-${topItems.length > 0 ? `\n## Essential Resources (${topItems.length})\n\n${topItems.map((item, idx) => {
-  return `${idx + 1}. **${item.title}** — [${item.domain}](${item.source})`;
+${topResources.length > 0 ? `\n## Essential Resources (${topResources.length})\n\n${topResources.map((item, idx) => {
+  const domain = new URL(item.url).hostname.replace('www.', '');
+  return `${idx + 1}. **${item.source}** — [${item.title}](${item.url}) — ${item.description.substring(0, 100)}...`;
 }).join('\n')}\n` : ''}
 
 ---
 
-*${dailyFiles.length} daily updates tracked ${allItems.length} items this month. [View all updates](/updates/daily/${year}/)*
+*${dailyFiles.length} daily updates tracked ${allItems.length} items this month. [View all ${monthTitle.split(' ')[0]} updates](/?from=${monthKey}-01&to=${monthKey}-${String(lastDay).padStart(2, '0')})*
 `;
   
-  // Write output file
   writeFileSafe(outputFile, markdown);
-  console.log(`✅ Generated monthly summary: ${outputFile}`);
+  console.log(`✅ Generated basic monthly summary: ${outputFile}`);
   
   return {
     file: outputFile,
     dailyCount: dailyFiles.length,
     itemCount: allItems.length,
-    resourceCount: allResources.size,
+    resourceCount: topResources.length,
   };
 }
 
 // Main function
-function main() {
+async function main() {
   const args = process.argv.slice(2);
   
   if (args.length === 0) {
     // Generate for all months that have updates
     const updatesDir = path.join(__dirname, '..', 'updates', 'daily');
-    const fs = require('fs'); // Still need for readdirSync and statSync
     
     if (!fileExists(updatesDir)) {
       console.error('Updates directory not found');
@@ -312,7 +443,7 @@ function main() {
           
           if (!monthsProcessed.has(monthKey)) {
             monthsProcessed.add(monthKey);
-            generateMonthlySummary(parseInt(match[1]), month);
+            await generateMonthlySummary(parseInt(match[1]), month);
           }
         }
       }
@@ -329,7 +460,7 @@ function main() {
         throw new Error('month must be between 1 and 12');
       }
       
-      generateMonthlySummary(year, month);
+      await generateMonthlySummary(year, month);
     } catch (error) {
       console.error(`Error: ${error.message}`);
       process.exit(1);
@@ -342,4 +473,9 @@ function main() {
   }
 }
 
-main();
+// Export for use in other scripts
+if (require.main === module) {
+  main().catch(console.error);
+} else {
+  module.exports = { generateMonthlySummary };
+}
