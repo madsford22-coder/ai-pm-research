@@ -76,15 +76,28 @@ jobs:
           export TZ=America/Los_Angeles
           TODAY=$(date +%Y-%m-%d)
           YEAR=$(date +%Y)
+          MONTH=$(date +%m)
+          MONTH_KEY="${YEAR}-${MONTH}"
           echo "TODAY=$TODAY" >> $GITHUB_ENV
           echo "YEAR=$YEAR" >> $GITHUB_ENV
+          echo "MONTH_KEY=$MONTH_KEY" >> $GITHUB_ENV
 
           # Configure git
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
 
-          # Add the update file
+          # Add the daily update file
           git add updates/daily/
+
+          # Check if monthly summary was regenerated and add it too
+          MONTHLY_FILE="updates/monthly/${MONTH_KEY}.md"
+          if [ -f "$MONTHLY_FILE" ]; then
+            echo "Monthly summary file found: $MONTHLY_FILE"
+            git add "$MONTHLY_FILE"
+            echo "Added monthly summary to commit"
+          else
+            echo "No monthly summary file found (this is normal if it wasn't regenerated)"
+          fi
 
           # Check if there are changes to commit
           if git diff --staged --quiet; then
@@ -92,8 +105,14 @@ jobs:
             exit 0
           fi
 
+          # Build commit message
+          COMMIT_MSG="Add daily research update for ${TODAY}"
+          if git diff --staged --name-only | grep -q "updates/monthly/"; then
+            COMMIT_MSG="${COMMIT_MSG} and update monthly summary"
+          fi
+
           # Commit with descriptive message
-          git commit -m "Add daily research update for ${TODAY}" \
+          git commit -m "${COMMIT_MSG}" \
                      -m "Generated automatically by GitHub Actions" \
                      -m "Date: ${TODAY}" \
                      -m "Workflow: daily-update.yml" \
