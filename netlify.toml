@@ -5,18 +5,18 @@
   # Build command - prebuild script will copy updates automatically
   command = "npm run build"
 
-  # Publish directory - required by plugin, must differ from base directory
-  # The @netlify/plugin-nextjs will handle the actual deployment
-  publish = ".next"
+  # Publish directory - must be explicitly different from base for plugin validation
+  # Using a dummy directory that doesn't conflict with base
+  publish = "web/.next"
 
 [build.environment]
   # Node.js version (Next.js requires >= 18.17.0)
   NODE_VERSION = "20.11.0"
 
 # Use Netlify's Next.js runtime
-# Temporarily disabled - plugin validation bug with publish directory
-# [[plugins]]
-#   package = "@netlify/plugin-nextjs"
+# Using explicit path for publish to avoid validation error
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 # Scheduled Functions
 # Note: Scheduled functions are configured in Netlify UI under Functions > Scheduled functions
