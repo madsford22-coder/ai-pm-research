@@ -144,47 +144,73 @@ Each daily update must follow this exact format:
 
 **2. Items Section (Required)**
 
+**CRITICAL: You MUST actually read and analyze the source content.** Do not summarize from titles or metadata alone. Fetch the actual article/changelog/blog post and extract specific details, numbers, examples, and insights.
+
 Each item must follow this detailed format:
 
 ```markdown
 ## Items
 
-### [Company/Product Name or Author Name] - [Brief Title]
+### [Company/Product Name or Author Name] - [Brief, Descriptive Title]
 **Source:** [Link to source]
-**Credibility:** [High/Medium/Low - with brief justification]
+**Credibility:** [High/Medium/Low] ([Brief justification - e.g., "first-party announcement", "controlled benchmark with methodology", "production case study"])
 
-**What happened:** [2-4 sentences describing the key event, change, or insight. Be specific and concrete. Include relevant context about who/what/when.]
+**What happened:** [2-4 sentences describing the key event, change, or insight. Be SPECIFIC and CONCRETE. Include relevant context about who/what/when. Pull actual details from the source, not generic descriptions.]
 
 **Key technical details:** (for product changes)
-[Bulleted list of specific technical capabilities, features, or implementation details. Include concrete examples, code snippets, or architectural patterns when relevant.]
+[Bulleted list with SPECIFIC technical capabilities, features, or implementation details. Include:
+- Actual numbers, metrics, or benchmarks when available
+- Code snippets or architectural patterns when relevant
+- Specific feature names and what they do
+- Concrete examples from the source]
 
-**Key capabilities:** (alternative to "Key technical details" for product launches)
-[Bulleted list of what the product/feature can do. Be specific about functionality.]
+**Key capabilities:** (alternative for product launches)
+[Bulleted list of SPECIFIC functionality. Include:
+- What the product/feature can actually do
+- Specific integrations, supported platforms, or compatible tools
+- Any limitations or requirements mentioned]
 
 **Key [domain] patterns:** (for PM craft/leadership content)
-[Bulleted list of frameworks, practices, or patterns discussed. Include specific steps or approaches.]
+[Bulleted list of SPECIFIC frameworks, practices, or patterns. Include:
+- Named steps or phases if it's a framework
+- Concrete practices, not abstract principles
+- Specific examples from the source]
 
 **Why it matters for PMs:**
-[2-3 sentences explaining the PM relevance. Connect to product decisions, user problems, or PM effectiveness. Be specific about implications.]
+[2-4 sentences explaining PM relevance. Be SPECIFIC about:
+- Which product decisions this informs
+- What user problems it addresses
+- How it changes the build-vs-buy calculus
+- What patterns it validates or challenges
+Connect to concrete PM work, not abstract concepts.]
 
 **Critical questions:**
-[2-4 bullet points with open questions that PMs should consider. These should be thought-provoking and actionable, not rhetorical.]
+[2-4 bullet points with SUBSTANTIVE questions that:
+- Challenge the claims or findings
+- Identify gaps in the information
+- Point to implementation concerns
+- Ask about tradeoffs or edge cases
+These should be genuine questions you'd ask in a product review, not rhetorical.]
 
 **Action you could take today:**
-[1-2 sentences with a concrete, immediate action a PM could take based on this insight. Should be specific and actionable, not vague advice.]
+[1-2 sentences with a CONCRETE, IMMEDIATE action. Include:
+- Specific tools to try, files to audit, or metrics to check
+- A clear next step, not vague advice like "consider this"
+- Something achievable in a day, not a multi-week initiative]
 
 ---
 
 (Repeat for each item, maximum 3-5 items total)
 ```
 
-**Formatting Notes:**
-- Use "Key technical details" for product changes with technical implementation
-- Use "Key capabilities" for product launches or feature announcements
-- Use "Key [domain] patterns" (e.g., "Key trust-building patterns", "Key diagnostic patterns") for PM craft/leadership content
-- Include code snippets, tables, or examples when they add clarity
-- Be specific and concrete—avoid vague generalizations
-- Each item should be substantial (typically 200-400 words)
+**Enrichment Requirements:**
+- **Actually read the sources**: Fetch and analyze the full content, not just headlines
+- **Extract real numbers**: Include specific metrics, benchmarks, costs, or percentages when available
+- **Include code examples**: If the source has code snippets, include relevant ones
+- **Add tables**: For benchmark comparisons or feature lists, use markdown tables
+- **Quote key phrases**: Pull distinctive quotes that capture key insights (use quotation marks)
+- **Be specific and concrete**: Avoid vague generalizations like "enables better X"
+- **Each item should be substantial**: Typically 250-400 words with rich detail
 
 ### Quick Hits Section
 
@@ -326,10 +352,20 @@ Do not include anything from the "Ignore Completely" list in `context/prefs.md`:
 4. Optionally check news mentions using `scripts/check-company-news.js --days 7 --format markdown`
 5. Review recent posts from tracked people for PM-relevant signals
 6. Filter all findings through the quality bar in `prefs.md`
-7. Synthesize remaining items using the detailed format (One-Line Summary, Items with full analysis, Quick Hits, This Week's Pattern, Reflection Prompt)
-8. Create the daily markdown file at the specified path with frontmatter first
-9. Ensure maximum 3-5 items in detailed analysis (or "No meaningful PM-relevant updates today")
-10. Include all required sections: One-Line Summary, Items, Quick Hits (if applicable), This Week's Pattern (if applicable), Reflection Prompt
+7. **CRITICAL: Fetch and read the actual source content for each candidate item**
+   - Use web fetch to read the full article/blog/changelog
+   - Extract specific details, numbers, examples, and quotes
+   - Do NOT summarize based on titles or metadata alone
+   - If you cannot access the full content, note this in the item
+8. Synthesize remaining items using the detailed format:
+   - One-Line Summary (connecting the main items)
+   - Items with full enriched analysis (source, credibility, what happened, key details, PM relevance, critical questions, action items)
+   - Quick Hits (if applicable, maximum 5 items)
+   - This Week's Pattern (if applicable)
+   - Reflection Prompt (required)
+9. Create the daily markdown file at the specified path with frontmatter first
+10. Ensure maximum 3-5 items in detailed analysis (or "No meaningful PM-relevant updates today")
+11. Include all required sections: One-Line Summary, Items, Quick Hits (if applicable), This Week's Pattern (if applicable), Reflection Prompt
 
 Remember: Your goal is NOT to summarize AI news. Your goal is to surface product-relevant signals and translate them into actionable insights for product management.
 
