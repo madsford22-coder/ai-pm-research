@@ -17,7 +17,8 @@ const { validatePositiveInteger, validateOneOf, validateFilePath } = require('..
 
 const DEFAULT_DAYS_BACK = 30;
 const DEFAULT_CONCURRENCY = 5; // Number of people to check in parallel
-const SKIP_SOCIAL_MEDIA = true; // Skip LinkedIn/Twitter which require auth
+const SKIP_LINKEDIN = true; // LinkedIn always requires auth
+const SKIP_TWITTER = false; // Twitter/X sometimes works for public profiles
 
 /**
  * Check activity for a single person
@@ -62,8 +63,8 @@ async function checkPersonActivity(browser, person, options = {}) {
       await new Promise(resolve => setTimeout(resolve, 500)); // Reduced delay
     }
     
-    // 3. Check LinkedIn if available (skip if SKIP_SOCIAL_MEDIA is true - requires auth)
-    if (person.linkedin && !SKIP_SOCIAL_MEDIA) {
+    // 3. Check LinkedIn if available (skip - always requires auth)
+    if (person.linkedin && !SKIP_LINKEDIN) {
       console.log(`  Checking LinkedIn: ${person.linkedin}`);
       const { posts, error } = await scrapeLinkedInPosts(page, person.linkedin, { daysBack });
       if (error) {
@@ -72,20 +73,21 @@ async function checkPersonActivity(browser, person, options = {}) {
         activity.posts.push(...posts);
         console.log(`    Found ${posts.length} posts from LinkedIn`);
       }
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 500));
     }
 
-    // 4. Check Twitter/X if available (skip if SKIP_SOCIAL_MEDIA is true - requires auth)
-    if (person.twitter && !SKIP_SOCIAL_MEDIA) {
+    // 4. Check Twitter/X if available (sometimes works for public profiles)
+    if (person.twitter && !SKIP_TWITTER) {
       console.log(`  Checking Twitter/X: @${person.twitter}`);
       const { posts, error } = await scrapeTwitterPosts(page, person.twitter, { daysBack });
       if (error) {
-        activity.errors.push(`Twitter error: ${error}`);
-      } else {
+        // Don't log as error since Twitter often requires auth - this is expected
+        // activity.errors.push(`Twitter error: ${error}`);
+      } else if (posts.length > 0) {
         activity.posts.push(...posts);
         console.log(`    Found ${posts.length} posts from Twitter/X`);
       }
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 500)); // Reduced delay
     }
     
   } catch (error) {

@@ -187,11 +187,11 @@ async function scrapeLinkedInPosts(page, linkedinUrl, options = {}) {
  */
 async function scrapeTwitterPosts(page, twitterHandle, options = {}) {
   const { daysBack = 30 } = options;
-  
+
   try {
     const twitterUrl = `https://twitter.com/${twitterHandle}`;
-    await page.goto(twitterUrl, { waitUntil: 'networkidle2', timeout: 15000 });
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await page.goto(twitterUrl, { waitUntil: 'networkidle2', timeout: 8000 }); // Reduced timeout
+    await new Promise(resolve => setTimeout(resolve, 1500)); // Reduced wait
     
     // Check for login wall
     const hasLoginWall = await page.evaluate(() => {
