@@ -16,6 +16,8 @@ const { sortPostsByDate } = require('../transforms/sort');
 const { validatePositiveInteger, validateOneOf, validateFilePath } = require('../utils/validation');
 
 const DEFAULT_DAYS_BACK = 30;
+const DEFAULT_CONCURRENCY = 5; // Number of people to check in parallel
+const SKIP_SOCIAL_MEDIA = true; // Skip LinkedIn/Twitter which require auth
 
 /**
  * Check activity for a single person
@@ -38,7 +40,7 @@ async function checkPersonActivity(browser, person, options = {}) {
   };
   
   try {
-    // 1. Check RSS feed if available
+    // 1. Check RSS feed if available (fastest, most reliable)
     if (person.rss_feed) {
       console.log(`  Checking RSS feed: ${person.rss_feed}`);
       const { posts, error } = await fetchRSSFeed(page, person.rss_feed, { daysBack });
@@ -48,20 +50,20 @@ async function checkPersonActivity(browser, person, options = {}) {
         activity.posts.push(...posts);
         console.log(`    Found ${posts.length} posts from RSS`);
       }
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 300)); // Reduced delay
     }
-    
+
     // 2. Scrape blog if no RSS or as backup
     if (person.blog && activity.posts.length === 0) {
       console.log(`  Scraping blog: ${person.blog}`);
       const posts = await scrapeBlogPosts(page, person.blog, { daysBack });
       activity.posts.push(...posts);
       console.log(`    Found ${posts.length} posts from blog scrape`);
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 500)); // Reduced delay
     }
     
-    // 3. Check LinkedIn if available
-    if (person.linkedin) {
+    // 3. Check LinkedIn if available (skip if SKIP_SOCIAL_MEDIA is true - requires auth)
+    if (person.linkedin && !SKIP_SOCIAL_MEDIA) {
       console.log(`  Checking LinkedIn: ${person.linkedin}`);
       const { posts, error } = await scrapeLinkedInPosts(page, person.linkedin, { daysBack });
       if (error) {
@@ -72,9 +74,9 @@ async function checkPersonActivity(browser, person, options = {}) {
       }
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
-    
-    // 4. Check Twitter/X if available
-    if (person.twitter) {
+
+    // 4. Check Twitter/X if available (skip if SKIP_SOCIAL_MEDIA is true - requires auth)
+    if (person.twitter && !SKIP_SOCIAL_MEDIA) {
       console.log(`  Checking Twitter/X: @${person.twitter}`);
       const { posts, error } = await scrapeTwitterPosts(page, person.twitter, { daysBack });
       if (error) {
@@ -193,14 +195,27 @@ async function checkPeopleActivityPipeline(options = {}) {
     throw error;
   }
   
-  // Check all people
+  // Check all people in parallel batches for speed
   const allActivity = [];
-  
-  for (const person of people) {
-    const activity = await checkPersonActivity(browser, person, { daysBack });
-    allActivity.push(activity);
+  const concurrency = DEFAULT_CONCURRENCY;
+
+  console.log(`Processing ${people.length} people with concurrency of ${concurrency}...\n`);
+
+  // Process in batches
+  for (let i = 0; i < people.length; i += concurrency) {
+    const batch = people.slice(i, i + concurrency);
+    const batchNum = Math.floor(i / concurrency) + 1;
+    const totalBatches = Math.ceil(people.length / concurrency);
+    console.log(`\n--- Batch ${batchNum}/${totalBatches} (${batch.length} people) ---`);
+
+    const batchPromises = batch.map(person =>
+      checkPersonActivity(browser, person, { daysBack })
+    );
+
+    const batchResults = await Promise.all(batchPromises);
+    allActivity.push(...batchResults);
   }
-  
+
   await browser.close();
   
   // Clean up
