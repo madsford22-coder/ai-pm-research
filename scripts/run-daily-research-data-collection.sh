@@ -44,7 +44,7 @@ echo "## People Activity (Last 14 Days)" >> "$OUTPUT_FILE"
 echo "==========================================" >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
-node scripts/check-people-activity.js --days 14 --format markdown >> "$OUTPUT_FILE" 2>&1 || {
+node scripts/check-people-activity.js --days 2 --format markdown >> "$OUTPUT_FILE" 2>&1 || {
     echo "ERROR: Failed to collect people activity data" >> "$OUTPUT_FILE"
     echo "Continuing with other data sources..."
 }
@@ -59,7 +59,7 @@ echo "## Company Updates (Last 14 Days)" >> "$OUTPUT_FILE"
 echo "==========================================" >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
-node scripts/check-company-updates.js --days 14 --format markdown >> "$OUTPUT_FILE" 2>&1 || {
+node scripts/check-company-updates.js --days 2 --format markdown >> "$OUTPUT_FILE" 2>&1 || {
     echo "ERROR: Failed to collect company updates" >> "$OUTPUT_FILE"
     echo "Continuing..."
 }

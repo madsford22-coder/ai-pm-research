@@ -153,8 +153,9 @@ Generate the daily research update for today based on the collected data below.
 
 Remember:
 - Maximum 3-5 items in detailed analysis
-- Maximum 5 items in "Other Notable Updates" section
-- Check for duplicates in previous 14 days - do NOT include items already covered
+- Maximum 5 items in "Quick Hits" section
+- STRICT DEDUPLICATION: The "Previous Updates" section in your system prompt contains the last 14 days of content. Before including ANY item, verify its source URL and topic have NOT appeared in any of those previous updates. If an item's source, company announcement, or core topic was already covered — even under a different framing — skip it entirely.
+- If the collected data contains nothing genuinely new (not covered in the last 14 days), output "No meaningful PM-relevant updates today" rather than repackaging old content.
 - Follow all quality bars and brevity requirements from the research prompt
 - Include the Daily Product Reflection Challenge at the end
 - Output file should be saved to: updates/daily/${year}/${dateStr}.md

@@ -7,19 +7,27 @@ This guide explains how to track activity from people across blogs, LinkedIn, an
 The `check-people-activity.js` script extends beyond RSS feeds to track activity across multiple platforms:
 
 1. **Blogs** - RSS feeds (preferred) or web scraping (fallback)
-2. **LinkedIn** - Scraping public profile posts
-3. **Twitter/X** - Scraping public profile tweets
+2. **LinkedIn** - Scraping public profile posts *(currently skipped - always requires auth)*
+3. **Twitter/X** - Scraping public profile tweets *(enabled - sometimes works for public profiles)*
+
+## Performance
+
+The script processes **38 people in ~80 seconds** using parallel batch processing:
+- 5 people checked concurrently per batch
+- LinkedIn skipped by default (always requires authentication)
+- Twitter/X enabled (sometimes works for public profiles)
+- Reduced delays between requests (300-500ms)
 
 ## Usage
 
 ```bash
-cd tooling
-node check-people-activity.js --days 30 --format markdown
+node scripts/check-people-activity.js --days 30 --format markdown
 ```
 
 Options:
 - `--days N` - Number of days back to check (default: 30)
 - `--format json|markdown` - Output format (default: markdown)
+- `--people-file PATH` - Path to people.md file (default: context/people.md)
 
 ## How It Works
 
@@ -62,23 +70,24 @@ For people with LinkedIn profiles:
   - Authenticated browser session
   - Third-party service with LinkedIn access
 
-**Current Status:** This is included but will likely show "login required" errors for most profiles.
+**Current Status:** ⚠️ **SKIPPED BY DEFAULT** - LinkedIn always requires authentication, so the script skips LinkedIn checks to save time. This is controlled by `SKIP_LINKEDIN = true` in `src/pipelines/people-activity.js`.
 
 ### 4. Twitter/X Scraping
 
 For people with Twitter/X handles:
 - Uses Puppeteer to visit `twitter.com/@username`
 - Attempts to scrape recent tweets
+- Uses 8-second timeout to minimize impact on total runtime
 
 **Important Limitations:**
-- **Twitter/X requires authentication for most content** - public scraping is limited
-- Twitter shows a login wall for unauthenticated access
+- **Twitter/X sometimes works for public profiles** - results vary
+- Some profiles show a login wall for unauthenticated access
 - For reliable Twitter tracking, you would need:
   - Twitter API access (requires API keys)
   - Authenticated browser session
   - Third-party service with Twitter access
 
-**Current Status:** This is included but will likely show "login required" errors for most profiles.
+**Current Status:** ✅ **ENABLED** - Twitter/X checks are enabled since public profiles sometimes work. Errors are suppressed (not logged) since auth failures are expected. This is controlled by `SKIP_TWITTER = false` in `src/pipelines/people-activity.js`.
 
 ## Platform-Specific Notes
 
@@ -207,13 +216,26 @@ This is expected - Twitter blocks most public scraping. Options:
 - Consider finding an RSS feed instead
 - The person may not have posted recently
 
+## Configuration
+
+The pipeline behavior is controlled by constants in `src/pipelines/people-activity.js`:
+
+```javascript
+const DEFAULT_DAYS_BACK = 30;      // How many days to look back
+const DEFAULT_CONCURRENCY = 5;     // Number of people to check in parallel
+const SKIP_LINKEDIN = true;        // LinkedIn always requires auth - skip
+const SKIP_TWITTER = false;        // Twitter/X sometimes works - enabled
+```
+
+To change these settings, edit the constants at the top of the file.
+
 ## Integration with Daily Research
 
 Update your daily research workflow:
 
 1. **Check people activity:**
    ```bash
-   node tooling/check-people-activity.js --days 14 --format markdown
+   node scripts/check-people-activity.js --days 14 --format markdown
    ```
 
 2. **Review output** for recent posts from tracked people

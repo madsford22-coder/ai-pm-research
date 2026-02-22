@@ -12,19 +12,20 @@
 
 ### Context Files (Define scope and filters)
 - `context/companies.md` - 19 tracked companies with what to watch for
-- `context/people.md` - 34 tracked people with RSS feeds and platforms
+- `context/people.md` - 38 tracked people with RSS feeds and platforms
 - `context/prefs.md` - Research preferences and quality bars
 - `context/open-questions.md` - 12 PM-relevant questions to watch for
-- `context/session-2025-12-27.md` - Today's setup summary
 
 ### Daily Research Prompt
-- `tooling/prompts/daily-research.md` - Complete prompt for running daily research
+- `tooling/prompts/daily-research.md` - Complete prompt for running daily research (enriched format)
 
 ### Tooling Scripts
-- `tooling/check-recent-posts.py` - Check RSS feeds for recent posts from tracked people
+- `scripts/check-people-activity.js` - Check people activity across blogs, RSS, and Twitter/X (~80s for 38 people)
+- `scripts/check-company-updates.js` - Check company changelogs and news
+- `scripts/synthesize-daily-update.js` - Generate daily update via Claude API
+- `scripts/generate-monthly-summary.js` - Generate monthly summaries
 - `tooling/find-rss-feeds.js` - Discover RSS feeds using Puppeteer
 - `tooling/package.json` - Node.js dependencies
-- `tooling/requirements.txt` - Python dependencies
 
 ### Daily Updates
 - `updates/daily/YYYY/YYYY-MM-DD.md` - Daily research updates
@@ -49,10 +50,26 @@
 
 ## Quick Commands
 
-**Check recent posts:**
+**Check people activity (RSS + blogs + Twitter/X):**
 ```bash
 cd ~/Documents/ai-pm-research
-python3 tooling/check-recent-posts.py --days 7 --format markdown
+node scripts/check-people-activity.js --days 14 --format markdown
+```
+
+**Check company updates:**
+```bash
+node scripts/check-company-updates.js --days 14 --format markdown
+```
+
+**Run full data collection + synthesis (automated):**
+```bash
+./scripts/run-daily-research-data-collection.sh
+node scripts/synthesize-daily-update.js
+```
+
+**Generate monthly summary:**
+```bash
+node scripts/generate-monthly-summary.js 2026 1  # Year, Month
 ```
 
 **Find RSS feeds:**
@@ -61,16 +78,17 @@ cd ~/Documents/ai-pm-research/tooling
 node find-rss-feeds.js
 ```
 
-**Generate daily update:**
-Follow the prompt in `tooling/prompts/daily-research.md`
-
 ---
 
 ## System Status
 
 ✅ All context files created and configured
-✅ 12 RSS feeds discovered and added
-✅ Tooling scripts operational
-✅ Daily research process validated
+✅ 38 people tracked with RSS feeds and platforms
+✅ 19 companies tracked with changelogs
+✅ People activity pipeline: ~80s for 38 people (parallel processing)
+✅ LinkedIn skipped (always requires auth), Twitter/X enabled
+✅ Enriched daily update format with critical questions & action items
+✅ GitHub Actions workflow for automated daily research
+✅ Netlify deployment from `web/` directory
 ✅ Git repository connected to GitHub
 
