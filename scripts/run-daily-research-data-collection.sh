@@ -40,7 +40,7 @@ EOF
 # Section 1: People Activity
 echo "Collecting people activity data..."
 echo "" >> "$OUTPUT_FILE"
-echo "## People Activity (Last 14 Days)" >> "$OUTPUT_FILE"
+echo "## People Activity (Last 2 Days)" >> "$OUTPUT_FILE"
 echo "==========================================" >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
@@ -55,7 +55,7 @@ echo "" >> "$OUTPUT_FILE"
 # Section 2: Company Updates
 echo "Collecting company updates..."
 echo "" >> "$OUTPUT_FILE"
-echo "## Company Updates (Last 14 Days)" >> "$OUTPUT_FILE"
+echo "## Company Updates (Last 2 Days)" >> "$OUTPUT_FILE"
 echo "==========================================" >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
