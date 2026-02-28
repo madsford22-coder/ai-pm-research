@@ -34,3 +34,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Content copied by prebuild script — not tracked in git
+/updates/
+
