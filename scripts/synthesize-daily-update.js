@@ -30,8 +30,11 @@ const Anthropic = require('@anthropic-ai/sdk');
 const { readFileSafe, writeFileSafe, fileExists, ensureDirectoryExists } = require('../src/utils/file');
 const { validateNonEmptyString } = require('../src/utils/validation');
 
-// Get today's date
-const today = new Date();
+// Get target date — supports --date YYYY-MM-DD override for reruns
+const dateArg = process.argv.includes('--date')
+  ? process.argv[process.argv.indexOf('--date') + 1]
+  : null;
+const today = dateArg ? new Date(dateArg + 'T12:00:00') : new Date();
 const year = today.getFullYear();
 const month = String(today.getMonth() + 1).padStart(2, '0');
 const day = String(today.getDate()).padStart(2, '0');
@@ -151,6 +154,8 @@ ${previousUpdates.length > 0 ? previousUpdates.map(u => `## ${u.date}\n${u.conte
 
 Generate the daily research update for today based on the collected data below.
 
+CRITICAL OUTPUT FORMAT: Your response must be raw markdown ONLY. Do NOT wrap in code fences (\`\`\`markdown). Do NOT add any preamble, explanation, or label before the content. The very first characters of your response must be exactly: ---
+
 Remember:
 - Maximum 3-5 items in detailed analysis
 - Maximum 5 items in "Quick Hits" section
@@ -187,6 +192,14 @@ ${collectedData}`;
     // Extract the generated content
     let generatedContent = message.content[0].text;
 
+    // Unwrap content if the model wrapped it in a ```markdown ... ``` fence
+    // Model sometimes outputs preamble text + fence, e.g. "**Output:**\n\n```markdown\n---..."
+    const fenceMatch = generatedContent.match(/```(?:markdown)?\s*\n(---[\s\S]*?)\n```/);
+    if (fenceMatch) {
+      console.log('   ⚠️  Content was wrapped in a fenced code block — unwrapping...');
+      generatedContent = fenceMatch[1];
+    }
+
     // Clean up the content - remove any preamble before the frontmatter
     // The file must start with '---' for valid frontmatter
     const frontmatterIndex = generatedContent.indexOf('---');
@@ -212,14 +225,6 @@ ${collectedData}`;
       console.error(`   ❌ Error: Frontmatter is missing required fields: ${missingFields.join(', ')}`);
       console.error('   Frontmatter found:', frontmatterBody);
       process.exit(1);
-    }
-
-    // Detect content accidentally wrapped in a fenced code block
-    // This happens when the model outputs ```markdown ... ``` instead of raw markdown
-    const wrappedMatch = generatedContent.match(/^---[\s\S]*?---\s*\n[\s\S]*?```markdown\s*\n(---[\s\S]*?)\n```\s*$/);
-    if (wrappedMatch) {
-      console.log('   ⚠️  Content was wrapped in a fenced code block — unwrapping...');
-      generatedContent = wrappedMatch[1];
     }
 
     // Ensure output directory exists and write file

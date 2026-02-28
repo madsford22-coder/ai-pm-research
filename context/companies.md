@@ -357,3 +357,90 @@ This file defines which companies and products matter for product management–f
 - @CohereAI on Twitter/X
 
 ---
+
+## Lovable
+**Category:** Developer & AI tooling
+**Why we track them:** Fastest-growing AI app builder ($200M ARR, $6.6B valuation). Their rapid feature iteration and pricing decisions show what's working in the no-code/vibe-coding space. Direct signal for how non-developers build products with AI.
+**What to watch for:**
+- New capabilities (collaboration, AI features, integrations)
+- Pricing and plan changes
+- Workflow patterns (what kinds of apps users actually build)
+- Enterprise features and adoption signals
+- Developer experience improvements
+**Ignore unless:**
+- Marketing campaigns without product changes
+- Generic AI hype content
+**Primary sources:**
+- https://lovable.dev/blog
+- https://docs.lovable.dev/changelog
+
+---
+
+## Wispr Flow
+**Category:** Consumer & productivity software
+**Why we track them:** Leading voice-to-text AI tool for professionals ($81M raised, users at OpenAI, Vercel, Nvidia). Their product decisions show how AI changes input modalities and professional workflows.
+**What to watch for:**
+- Feature launches (new editing, language, or workflow capabilities)
+- Platform expansions (new OS, mobile, integrations)
+- Pricing changes
+- Workflow patterns that reveal how users adopt voice-first AI
+**Ignore unless:**
+- Infrastructure or backend changes without user-facing implications
+**Primary sources:**
+- https://wisprflow.ai/blog
+- https://roadmap.wisprflow.ai/
+
+---
+
+## Windsurf (Codeium)
+**Category:** Developer & AI tooling
+**Why we track them:** Direct Cursor competitor with different architectural choices (Cascade agent, flow state model). Their product decisions provide contrast to Cursor and GitHub Copilot, showing what developers actually want from AI editors.
+**What to watch for:**
+- Editor feature launches and agent capabilities
+- Model and provider integrations
+- Pricing changes
+- Enterprise features
+- Developer workflow innovations
+**Ignore unless:**
+- Marketing-only announcements
+**Primary sources:**
+- https://codeium.com/blog
+- https://windsurf.com/blog
+- @windsurf_ai on Twitter/X
+
+---
+
+## Replit
+**Category:** Developer & AI tooling
+**Why we track them:** AI-first development environment with strong consumer and education reach. Their product decisions show how AI changes who can build software and what "development" means.
+**What to watch for:**
+- AI Agent and Ghostwriter feature launches
+- Pricing and access changes (especially free tier)
+- Deployment and hosting capabilities
+- Mobile development patterns
+- Enterprise or education features
+**Ignore unless:**
+- Infrastructure-only updates
+- Community events without product implications
+**Primary sources:**
+- https://blog.replit.com
+- Replit changelog
+
+---
+
+## The AI Daily Brief
+**Category:** Media / Signal aggregation
+**Why we track them:** Top-ranked daily AI podcast (#4 in US Technology). Nathaniel Whittemore surfaces product-relevant signals across the AI landscape daily — useful for catching launches and patterns that RSS feeds from tracked companies may miss.
+**What to watch for:**
+- Episodes covering shipped product changes from tracked companies
+- Patterns or trends across multiple companies in a single week
+- Product strategy analysis and market dynamics
+**Ignore unless:**
+- Pure news recap without analysis
+- Speculative or hype-driven episodes
+- Episodes covering only topics already covered in depth that week
+**Primary sources:**
+- https://aidailybrief.beehiiv.com/
+- Apple Podcasts / Spotify (episode summaries)
+
+---
