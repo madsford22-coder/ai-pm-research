@@ -330,13 +330,15 @@ tags:
 
 After reviewing today's collected data against the last 14 days of updates and the quality bar in `context/prefs.md`, no items met the criteria for inclusion.
 
-**Sources with activity (filtered):**
-- **[Company or Person]**: [Specific post/update title and link] — [Reason filtered: already covered DATE / outside PM scope / no concrete details]
-- Only list sources that actually returned content. Omit sources with no new posts.
+**Filtered activity** (had content, didn't meet bar):
 
-**Sources checked with no new content:** [comma-separated list of company/person names that returned nothing in the collection window]
+- [Company/Person] — [Post title with link](URL) — [One-line reason]
+- [Company/Person] — [Post title with link](URL) — [One-line reason]
+- Only list sources that actually returned content. Omit sources with no new posts. Always include the URL as a markdown link on the post title.
 
-**Filter summary:** All activity either duplicated topics from [DATE range], lacked concrete product details, or fell outside PM-relevant scope per `context/prefs.md`.
+**Coverage:** [N] sources checked, [N] with activity filtered above, [N] with no new content in the window.
+
+**Filter summary:** [1-2 sentences: what patterns dominated the filtered content and why they didn't meet the bar.]
 
 ---
 
