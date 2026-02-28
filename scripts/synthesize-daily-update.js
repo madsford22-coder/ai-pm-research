@@ -199,6 +199,29 @@ ${collectedData}`;
       process.exit(1);
     }
 
+    // Validate frontmatter contains required fields
+    const frontmatterMatch = generatedContent.match(/^---\n([\s\S]*?)\n---/);
+    if (!frontmatterMatch) {
+      console.error('   ❌ Error: Could not find closing "---" for frontmatter block');
+      console.error('   Generated content preview:', generatedContent.substring(0, 300));
+      process.exit(1);
+    }
+    const frontmatterBody = frontmatterMatch[1];
+    const missingFields = ['title:', 'date:', 'tags:'].filter(f => !frontmatterBody.includes(f));
+    if (missingFields.length > 0) {
+      console.error(`   ❌ Error: Frontmatter is missing required fields: ${missingFields.join(', ')}`);
+      console.error('   Frontmatter found:', frontmatterBody);
+      process.exit(1);
+    }
+
+    // Detect content accidentally wrapped in a fenced code block
+    // This happens when the model outputs ```markdown ... ``` instead of raw markdown
+    const wrappedMatch = generatedContent.match(/^---[\s\S]*?---\s*\n[\s\S]*?```markdown\s*\n(---[\s\S]*?)\n```\s*$/);
+    if (wrappedMatch) {
+      console.log('   ⚠️  Content was wrapped in a fenced code block — unwrapping...');
+      generatedContent = wrappedMatch[1];
+    }
+
     // Ensure output directory exists and write file
     ensureDirectoryExists(outputDir);
     writeFileSafe(outputFile, generatedContent);

@@ -69,6 +69,22 @@ jobs:
             exit 1
           fi
 
+          # Validate required frontmatter fields are present
+          for FIELD in "title:" "date:" "tags:"; do
+            if ! awk '/^---$/{found++} found==1{print}' "$UPDATE_FILE" | grep -q "^${FIELD}"; then
+              echo "ERROR: Frontmatter is missing required field: ${FIELD}"
+              echo "Frontmatter block:"
+              awk '/^---$/{found++} found==1 && found<3{print}' "$UPDATE_FILE"
+              exit 1
+            fi
+          done
+
+          # Validate content is not wrapped in a fenced code block
+          if grep -q '^\`\`\`markdown' "$UPDATE_FILE"; then
+            echo "ERROR: Content appears to be wrapped in a fenced code block"
+            exit 1
+          fi
+
           echo "Frontmatter validation passed"
 
       - name: Commit and push update
