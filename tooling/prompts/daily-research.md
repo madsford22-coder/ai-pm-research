@@ -311,6 +311,54 @@ Output this message when:
 
 This is a valid and correct outcome. Do not force low-signal content to meet a quota.
 
+### Required format for "no updates" days
+
+When nothing meets the quality bar, use this exact structure:
+
+```markdown
+---
+title: "No Meaningful PM-Relevant Updates Today"
+date: YYYY-MM-DD
+tags:
+  - daily-update
+  - ai-pm-research
+---
+
+# Daily PM Research Update: YYYY-MM-DD
+
+## Analysis
+
+After reviewing today's collected data against the last 14 days of updates and the quality bar in `context/prefs.md`, no items met the criteria for inclusion:
+
+**People Activity:**
+- **[Name]**: [Post or activity] - [Reason it was filtered out]
+- (list every tracked person reviewed, even if no post was found)
+
+**Company Updates:**
+- **[Company]**: [Update found] - [Reason it was filtered out]
+- (list every tracked company reviewed, even if no update was found)
+
+**Deduplication Check:**
+All potentially relevant items either:
+1. Covered topics already analyzed in depth in previous 14 days ([specific dates and topics])
+2. Lacked concrete details, metrics, or novel insights
+3. Fell outside PM-relevant scope per `context/prefs.md` filters ([specific filter that applied])
+
+---
+
+## This Week's Pattern
+
+[1-2 sentences on the continuing pattern from the week, or omit if no clear pattern.]
+
+---
+
+## Reflection Prompt
+
+[Reflection prompt as required — base it on the week's pattern or a prior day's item if nothing new today.]
+
+Complete your reflection in `/content/reflections/daily/YYYY-MM-DD.md`
+```
+
 ## Framing Guidelines
 
 Follow the preferences in `context/prefs.md`:
