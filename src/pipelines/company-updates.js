@@ -37,11 +37,42 @@ async function checkCompanyUpdates(browser, company, options = {}) {
     // Check blogs via RSS
     for (const blogUrl of company.blogs) {
       console.log(`  Checking blog: ${blogUrl}`);
-      
-      // Try to find RSS feed
-      const rssFeed = await findRSSFeedFromBlog(page, blogUrl);
-      if (rssFeed) {
-        console.log(`    Found RSS feed: ${rssFeed}`);
+
+      // Check for explicit feed_url annotation in companies.md
+      const explicitFeed = company.blogFeedUrls && company.blogFeedUrls[blogUrl];
+
+      let rssFeed = null;
+      let useScrape = false;
+
+      if (explicitFeed === 'scrape') {
+        useScrape = true;
+        console.log(`    Using scraper (feed_url: scrape)`);
+      } else if (explicitFeed) {
+        rssFeed = explicitFeed;
+        console.log(`    Using explicit feed URL: ${rssFeed}`);
+      } else {
+        // Auto-discover RSS feed
+        rssFeed = await findRSSFeedFromBlog(page, blogUrl);
+        if (rssFeed) {
+          console.log(`    Found RSS feed: ${rssFeed}`);
+        } else {
+          console.log(`    No RSS feed found, skipping blog`);
+        }
+      }
+
+      if (useScrape) {
+        const entries = await scrapeChangelog(page, blogUrl, { daysBack });
+        updates.push(...entries.map(entry => ({
+          title: entry.title,
+          link: entry.link,
+          published: entry.published,
+          source: 'blog',
+          sourceUrl: blogUrl,
+          description: entry.description,
+          company: company.name,
+          category: company.category,
+        })));
+      } else if (rssFeed) {
         const { posts } = await fetchRSSFeed(page, rssFeed, { daysBack });
         updates.push(...posts.map(item => ({
           title: item.title,
@@ -53,10 +84,8 @@ async function checkCompanyUpdates(browser, company, options = {}) {
           company: company.name,
           category: company.category,
         })));
-      } else {
-        console.log(`    No RSS feed found, skipping blog`);
       }
-      
+
       await new Promise(resolve => setTimeout(resolve, 1000)); // Be polite
     }
     

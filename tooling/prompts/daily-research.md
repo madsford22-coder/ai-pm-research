@@ -328,21 +328,15 @@ tags:
 
 ## Analysis
 
-After reviewing today's collected data against the last 14 days of updates and the quality bar in `context/prefs.md`, no items met the criteria for inclusion:
+After reviewing today's collected data against the last 14 days of updates and the quality bar in `context/prefs.md`, no items met the criteria for inclusion.
 
-**People Activity:**
-- **[Name]**: [Post or activity] - [Reason it was filtered out]
-- (list every tracked person reviewed, even if no post was found)
+**Sources with activity (filtered):**
+- **[Company or Person]**: [Specific post/update title and link] — [Reason filtered: already covered DATE / outside PM scope / no concrete details]
+- Only list sources that actually returned content. Omit sources with no new posts.
 
-**Company Updates:**
-- **[Company]**: [Update found] - [Reason it was filtered out]
-- (list every tracked company reviewed, even if no update was found)
+**Sources checked with no new content:** [comma-separated list of company/person names that returned nothing in the collection window]
 
-**Deduplication Check:**
-All potentially relevant items either:
-1. Covered topics already analyzed in depth in previous 14 days ([specific dates and topics])
-2. Lacked concrete details, metrics, or novel insights
-3. Fell outside PM-relevant scope per `context/prefs.md` filters ([specific filter that applied])
+**Filter summary:** All activity either duplicated topics from [DATE range], lacked concrete product details, or fell outside PM-relevant scope per `context/prefs.md`.
 
 ---
 

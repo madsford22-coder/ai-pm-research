@@ -371,7 +371,7 @@ This file defines which companies and products matter for product management–f
 - Marketing campaigns without product changes
 - Generic AI hype content
 **Primary sources:**
-- https://lovable.dev/blog
+- https://lovable.dev/blog (feed_url: scrape)
 - https://docs.lovable.dev/changelog
 
 ---
@@ -387,8 +387,8 @@ This file defines which companies and products matter for product management–f
 **Ignore unless:**
 - Infrastructure or backend changes without user-facing implications
 **Primary sources:**
-- https://wisprflow.ai/blog
-- https://roadmap.wisprflow.ai/
+- https://wisprflow.ai/blog (feed_url: scrape)
+- https://roadmap.wisprflow.ai/ (feed_url: scrape)
 
 ---
 
@@ -404,8 +404,7 @@ This file defines which companies and products matter for product management–f
 **Ignore unless:**
 - Marketing-only announcements
 **Primary sources:**
-- https://codeium.com/blog
-- https://windsurf.com/blog
+- https://windsurf.com/blog (feed_url: https://windsurf.com/feed.xml)
 - @windsurf_ai on Twitter/X
 
 ---
@@ -423,7 +422,7 @@ This file defines which companies and products matter for product management–f
 - Infrastructure-only updates
 - Community events without product implications
 **Primary sources:**
-- https://blog.replit.com
+- https://blog.replit.com (feed_url: https://blog.replit.com/feed.xml)
 - Replit changelog
 
 ---
@@ -440,7 +439,6 @@ This file defines which companies and products matter for product management–f
 - Speculative or hype-driven episodes
 - Episodes covering only topics already covered in depth that week
 **Primary sources:**
-- https://aidailybrief.beehiiv.com/
-- Apple Podcasts / Spotify (episode summaries)
+- https://aidailybrief.beehiiv.com/ (feed_url: scrape)
 
 ---

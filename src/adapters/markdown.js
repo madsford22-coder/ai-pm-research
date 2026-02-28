@@ -89,17 +89,18 @@ function parseCompaniesFile(filePath, options = {}) {
     const company = {
       name,
       blogs: [],
+      blogFeedUrls: {}, // map of blogUrl -> explicit feed URL (or 'scrape')
       changelogs: [],
       twitter: null,
       category: null,
     };
-    
+
     // Extract category
     const categoryMatch = section.match(/\*\*Category:\*\* (.+)/);
     if (categoryMatch) {
       company.category = categoryMatch[1];
     }
-    
+
     // Extract primary sources
     let inPrimarySources = false;
     for (const line of lines) {
@@ -115,16 +116,31 @@ function parseCompaniesFile(filePath, options = {}) {
         if (line.startsWith('---')) {
           break;
         }
-        
-        // Extract URLs
-        const urlMatch = line.match(/https?:\/\/[^\s\)]+/g);
+
+        // Extract optional feed_url annotation: (feed_url: <url>|scrape)
+        let explicitFeedUrl = null;
+        const feedUrlMatch = line.match(/\(feed_url:\s*([^\)]+)\)/);
+        if (feedUrlMatch) {
+          explicitFeedUrl = feedUrlMatch[1].trim();
+        }
+
+        // Extract URLs (first URL on the line is the source URL)
+        const urlMatch = line.match(/https?:\/\/[^\s\(]+/g);
         if (urlMatch) {
           for (const url of urlMatch) {
             const cleanUrl = url.replace(/\)$/, '').replace(/,$/, '');
-            
+
+            // Skip if this URL is actually the feed_url annotation value
+            if (explicitFeedUrl && cleanUrl === explicitFeedUrl) {
+              continue;
+            }
+
             // Categorize URLs
             if (cleanUrl.includes('blog') || cleanUrl.includes('news') || cleanUrl.includes('updates')) {
               company.blogs.push(cleanUrl);
+              if (explicitFeedUrl) {
+                company.blogFeedUrls[cleanUrl] = explicitFeedUrl;
+              }
             } else if (cleanUrl.includes('changelog') || cleanUrl.includes('release-notes') || cleanUrl.includes('docs/changelog')) {
               company.changelogs.push(cleanUrl);
             } else if (cleanUrl.includes('twitter.com') || cleanUrl.includes('x.com')) {
@@ -132,10 +148,13 @@ function parseCompaniesFile(filePath, options = {}) {
             } else if (!cleanUrl.includes('docs') || cleanUrl.includes('changelog')) {
               // Default to blog if it's not clearly a changelog
               company.blogs.push(cleanUrl);
+              if (explicitFeedUrl) {
+                company.blogFeedUrls[cleanUrl] = explicitFeedUrl;
+              }
             }
           }
         }
-        
+
         // Extract Twitter handles
         const twitterMatch = line.match(/@[\w]+/);
         if (twitterMatch) {
