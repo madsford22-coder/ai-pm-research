@@ -261,9 +261,11 @@ Example format:
 ### Avoiding Duplicates
 
 - **Check previous days' updates** before including an item in detailed analysis OR "Quick Hits"
-- If an item was covered in detail in a previous update, do NOT repeat it in the detailed analysis
+- **Skip only when the SAME event is re-covered**: Same announcement, same URL, same product change already in a prior update. Do NOT skip an item because its "core topic" or product category (e.g. voice-first AI, agents, observability) was mentioned before — a new launch, new platform (e.g. Android), or new pricing from that category is a new event and must be included.
+- **"Covered by a pattern" is NOT a valid reason to skip**: Saying "this is covered by the multi-agent coordination pattern from Feb 24" is thematic filtering, not deduplication. Unless the exact same post or announcement was already included in a prior update, include it.
+- If an item was covered in detail in a previous update (same source/event), do NOT repeat it in the detailed analysis
 - If an item was already listed in a previous day's "Quick Hits" (within past 14 days), do NOT include it again
-- Only include items in detailed analysis that are net-new (not previously covered)
+- Only include items in detailed analysis that are net-new (not the same event already covered)
 - Only include items in "Quick Hits" that are net-new (not previously listed in any "Quick Hits" section within the past 14 days)
 - Remove items that have been listed for 2 consecutive weeks (14 days)
 
@@ -303,13 +305,33 @@ The synthesis should be integrated naturally into the narrative format, not as a
 
 ## When to Output "No meaningful PM-relevant updates today"
 
-Output this message when:
-- No tracked companies made PM-relevant product changes
-- No tracked people posted PM-relevant signals
-- Available updates do not meet the quality bar in `context/prefs.md`
-- All available content is filtered out by the "Ignore Completely" list
+Output this message only when:
+- No tracked companies shipped any user-facing product changes
+- No tracked people posted anything about real product usage, team practices, or AI workflows
+- Every item is either: (a) the exact same event already covered in a prior update, or (b) explicitly on the "Ignore Completely" list in `context/prefs.md`
 
-This is a valid and correct outcome. Do not force low-signal content to meet a quota.
+**Default to including.** When in doubt about whether something is PM-relevant, include it in Quick Hits with a brief description rather than filtering it out. A too-long update is better than a "no updates" output for a day when tracked companies and people were actually active.
+
+Do NOT output "no updates" if:
+- Tracked companies shipped features, even incremental ones
+- Tracked people posted about AI tools, product decisions, or team workflows
+- There are pricing or packaging changes from tracked companies
+- There are new model availabilities or integrations in tracked coding tools
+
+This is a valid outcome only for genuinely quiet days, not as a default when filtering is uncertain.
+
+### Common over-filtering mistakes to avoid
+
+**Do NOT filter based on "no novel architectural patterns" or "incremental without architectural shifts."** Those are not criteria in `context/prefs.md`. The following categories of updates ALWAYS meet the bar if they are shipped and concrete, regardless of whether related topics appeared in previous updates:
+
+- **Pricing and business model changes**: A new pricing tier, removal of seat minimums, changed trial structure, or plan restructuring is always PM-relevant — these reveal growth strategy and inform buy/build/pricing decisions.
+- **Platform expansions with shipped products**: A new mobile app, new OS support, or new integration that is actually available to users is a shipped product change. "Platform expansion without novel patterns" is not a valid filter reason.
+- **Collaborative/team features added to previously solo tools**: When an individual productivity tool ships team-level features (shared vocabulary, team templates, org analytics), that signals a category-level strategic shift worth covering.
+- **Deprecations, removals, or plan restructurings**: These are often more instructive than launches. A company collapsing four pricing tiers into one is a significant product signal.
+- **Incremental feature updates from tracked companies**: GitHub Copilot adding agent capabilities, Vercel shipping a new pricing role, or any tracked company adding features to an existing product is a shipped product change. "Incremental" or "minor iteration" is not a disqualifier — if a tracked company shipped it, read the source and evaluate it on PM relevance.
+- **Posts and content from tracked people**: If a tracked person (Lenny, Simon Willison, Teresa Torres, etc.) posts about real product usage, team practices, or AI workflows — even as a podcast episode, interview, or newsletter — read it and evaluate it on PM relevance. "No concrete frameworks mentioned in title" is not a valid filter reason. Read the actual content first.
+
+**Do NOT filter based on thematic overlap or "core topic" matching.** Deduplication applies only to the SAME event or announcement (same URL, same press release, same changelog entry) being re-covered — not to new events from the same company or in the same product category. Example: Wispr Flow's Android launch is a new event even if "voice-first AI" was discussed in a prior update; include it. A new product launch, platform expansion, or pricing change is never a duplicate of "the same topic was mentioned before."
 
 ### Required format for "no updates" days
 

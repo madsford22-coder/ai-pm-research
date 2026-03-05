@@ -159,8 +159,8 @@ CRITICAL OUTPUT FORMAT: Your response must be raw markdown ONLY. Do NOT wrap in 
 Remember:
 - Maximum 3-5 items in detailed analysis
 - Maximum 5 items in "Quick Hits" section
-- STRICT DEDUPLICATION: The "Previous Updates" section in your system prompt contains the last 14 days of content. Before including ANY item, verify its source URL and topic have NOT appeared in any of those previous updates. If an item's source, company announcement, or core topic was already covered — even under a different framing — skip it entirely.
-- If the collected data contains nothing genuinely new (not covered in the last 14 days), output "No meaningful PM-relevant updates today" rather than repackaging old content.
+- DEDUPLICATION: Skip only the SAME event (same announcement, same URL, same changelog entry). Do NOT skip based on "core topic" or category — e.g. do NOT drop Wispr Flow's Android launch because "voice-first AI" was mentioned in a prior update. New launches, new platforms (Android, iOS, etc.), and pricing/business model changes are always new events, never duplicates of thematic overlap.
+- If the collected data contains nothing genuinely new (no new events not already covered), output "No meaningful PM-relevant updates today" rather than repackaging old content. Pricing changes, platform launches, and business model changes are ALWAYS new events — they are never "already covered" by a thematically similar previous item.
 - Follow all quality bars and brevity requirements from the research prompt
 - Include the Daily Product Reflection Challenge at the end
 - Output file should be saved to: updates/daily/${year}/${dateStr}.md

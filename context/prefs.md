@@ -38,7 +38,6 @@ Surface product-relevant signals that help product managers make better decision
 - Conference talks or presentations unless they reveal new product thinking
 - General industry trends without specific product examples
 - Opinion pieces that don't reference shipped products or decisions
-- Product updates that are minor iterations without strategic implications
 
 ---
 
@@ -74,7 +73,7 @@ Surface product-relevant signals that help product managers make better decision
 
 ## Quality Bar for Inclusion
 
-An item must meet ALL of these criteria to be included:
+An item must meet ALL of these criteria for **detailed analysis**:
 
 1. **PM relevance**: The content informs a product decision, strategy, pattern, or improves PM effectiveness
 2. **Evidence-based**: The information comes from a reliable source (official blog, changelog, verified post, or recognized expert)
@@ -85,19 +84,19 @@ For product changes: Must affect a real product that users interact with.
 
 For PM craft/leadership/productivity content: Must provide concrete frameworks, practices, or insights that PMs can apply to their work.
 
-If any criterion is missing, do not include the item. It is acceptable (and correct) to output "No meaningful PM-relevant updates today" rather than force low-signal content.
+For **Quick Hits**, the bar is lower: criteria 1 and 2 are sufficient. If it's a shipped change or a post from a tracked person about real product work, it belongs in Quick Hits even if you can't complete the full synthesis format.
+
+Do not output "No meaningful PM-relevant updates today" if tracked companies or people were active. Use Quick Hits for marginal items.
 
 ---
 
 ## When in Doubt
 
-- Prefer fewer, higher-signal items over more, lower-signal items
-- If you cannot complete the required synthesis format, exclude the item
-- If a change is interesting but not clearly PM-relevant, exclude it
+- **Default to including**, not excluding. Add to Quick Hits if you're unsure about detailed analysis.
+- If you cannot complete the required synthesis format for a detailed item, put it in Quick Hits instead of excluding it
+- If a change is interesting but marginal on PM-relevance, include it in Quick Hits
 - If multiple sources cover the same change, use the most authoritative source
-- If a tracked person posts something that doesn't meet the quality bar, ignore it
-- If a tracked company makes a change that doesn't meet the quality bar, ignore it
 - When evidence is limited, acknowledge uncertainty rather than speculate
-- If unsure whether something is PM-relevant, ask: "Would a PM use this to make a product decision?" If no, exclude it
+- The question is not "is this definitely PM-relevant?" but "could a PM find this useful?" If yes, include it.
 
 ---
