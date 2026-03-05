@@ -2,8 +2,8 @@
   # Base directory for the build
   base = "web"
 
-  # Copy updates from repo root into web/, then build
-  command = "cp -r ../updates . && npm run build"
+  # Build command - prebuild script will copy updates automatically
+  command = "npm run build"
 
   # Publish directory - relative to base directory
   # The plugin needs this to be set correctly
