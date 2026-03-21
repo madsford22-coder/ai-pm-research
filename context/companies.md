@@ -39,9 +39,8 @@ This file defines which companies and products matter for product management–f
 - Safety research without product implications
 - Academic publications
 **Primary sources:**
-- https://www.anthropic.com/news
-- https://docs.anthropic.com/claude/docs
-- @AnthropicAI on Twitter/X
+- https://www.anthropic.com/news (feed_url: scrape)
+- https://docs.anthropic.com/en/release-notes/api
 
 ---
 

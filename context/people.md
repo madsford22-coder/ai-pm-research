@@ -603,3 +603,49 @@ This file defines whose public thinking and product commentary should be treated
 - Pure IT operations content without product implications
 
 ---
+
+## Amanda Askell
+**Role:** Research lead, Anthropic (Claude's character and values)
+**Why they matter:** Directly shapes how Claude behaves as a product — tone, values, refusals, helpfulness tradeoffs. Posts on AI alignment, model behavior, and what it means to build AI with good character. Rare inside view on the product decisions behind Claude's personality.
+**Signal types to watch for:**
+- Claude character and values decisions
+- AI helpfulness vs. safety tradeoffs in practice
+- Model behavior and alignment insights
+- Product philosophy for AI assistants
+**Primary platforms:**
+- Twitter/X: @amandaaskell
+**Ignore unless:**
+- Pure philosophy or academic content without AI product implications
+
+---
+
+## Zack Witten
+**Role:** Product, Anthropic
+**Why they matter:** Works on Claude product and prompt engineering. Posts practical takes on AI UX, how people actually use Claude, and what makes AI products work. High signal-to-noise ratio on the product side of Anthropic.
+**Signal types to watch for:**
+- Claude product decisions and UX patterns
+- Prompt engineering and AI interaction design
+- AI product strategy and positioning
+- Real-world AI product usage patterns
+**Primary platforms:**
+- Twitter/X: @zackwitten
+**Ignore unless:**
+- Personal content unrelated to AI products
+
+---
+
+## Chris Olah
+**Role:** Researcher, Anthropic (mechanistic interpretability)
+**Why they matter:** Leads interpretability research that increasingly has product implications — understanding what models actually do inside shapes what products can safely promise. Posts when interpretability findings change what's possible or safe to build.
+**Signal types to watch for:**
+- Interpretability findings with product implications
+- What models actually understand vs. appear to understand
+- Safety insights that affect product capability claims
+- Research that changes the AI product design space
+**Primary platforms:**
+- Twitter/X: @ch402
+- Blog: https://colah.github.io
+**Ignore unless:**
+- Pure academic research without product or capability implications
+
+---
