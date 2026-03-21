@@ -128,8 +128,8 @@ if [ -z "$ANTHROPIC_API_KEY" ]; then
     echo "  cursor ${OUTPUT_FILE}"
     echo ""
 else
-    # Run synthesis script
-    node "${SCRIPT_DIR}/synthesize-daily-update.js"
+    # Run orchestrator (synthesizer + QA + patch agents)
+    node "${SCRIPT_DIR}/orchestrate-daily-update.js"
     SYNTHESIS_EXIT_CODE=$?
 fi
 

@@ -156,12 +156,27 @@ Generate the daily research update for today based on the collected data below.
 
 CRITICAL OUTPUT FORMAT: Your response must be raw markdown ONLY. Do NOT wrap in code fences (\`\`\`markdown). Do NOT add any preamble, explanation, or label before the content. The very first characters of your response must be exactly: ---
 
-Remember:
+## IMPORTANT: You are working from pre-collected metadata
+
+The "Collected Research Data" section below contains metadata scraped from RSS feeds and blogs: titles, URLs, publication dates, and summaries where available. You are working offline — you CANNOT and SHOULD NOT attempt to fetch URLs or read external content. Synthesize entirely from what is provided here.
+
+This means:
+- For items WITH a summary or excerpt in the data: use that to write the "What happened" section
+- For items WITHOUT a summary (title + URL only): use the title, source, and publication date to write a concise "What happened" description of what likely shipped or was announced, then add a note that full details are at the source URL
+- DO NOT skip items just because you lack the full article text — use what's available
+- When you cannot complete the full synthesis format for an item, put it in Quick Hits instead of excluding it
+
+## Inclusion rules (these override any filtering instinct)
+
+- DEFAULT TO INCLUDING. If a tracked company or person had any activity, there is ALWAYS at minimum a Quick Hit.
+- Quick Hits bar is low: a shipped product change or post from a tracked person with a title, URL, and date is sufficient — no full synthesis needed.
+- Do NOT output "No meaningful PM-relevant updates today" if the collected data shows any activity from tracked companies or people. If there is activity but you cannot do full synthesis, use Quick Hits.
+- DEDUPLICATION: Skip only the SAME event (same URL already in a prior update). Do NOT skip based on topic overlap.
+- Pricing changes, platform launches, new features, and business model changes are ALWAYS new events.
+
+## Reminders
 - Maximum 3-5 items in detailed analysis
 - Maximum 5 items in "Quick Hits" section
-- DEDUPLICATION: Skip only the SAME event (same announcement, same URL, same changelog entry). Do NOT skip based on "core topic" or category — e.g. do NOT drop Wispr Flow's Android launch because "voice-first AI" was mentioned in a prior update. New launches, new platforms (Android, iOS, etc.), and pricing/business model changes are always new events, never duplicates of thematic overlap.
-- If the collected data contains nothing genuinely new (no new events not already covered), output "No meaningful PM-relevant updates today" rather than repackaging old content. Pricing changes, platform launches, and business model changes are ALWAYS new events — they are never "already covered" by a thematically similar previous item.
-- Follow all quality bars and brevity requirements from the research prompt
 - Include the Daily Product Reflection Challenge at the end
 - Output file should be saved to: updates/daily/${year}/${dateStr}.md
 
@@ -170,7 +185,7 @@ Remember:
 ${collectedData}`;
 
   console.log('🤖 Calling Claude API to synthesize daily update...');
-  console.log(`   Using model: claude-sonnet-4-5\n`);
+  console.log(`   Using model: claude-sonnet-4-6\n`);
 
   const anthropic = new Anthropic({
     apiKey: apiKey,
@@ -178,7 +193,7 @@ ${collectedData}`;
 
   try {
     const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5-20250929',
+      model: 'claude-sonnet-4-6',
       max_tokens: 16000,
       messages: [
         {
