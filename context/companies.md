@@ -20,9 +20,8 @@ This file defines which companies and products matter for product management–f
 - Pure research announcements
 - Partnership announcements without product changes
 **Primary sources:**
-- https://openai.com/blog
+- https://openai.com/blog (feed_url: https://openai.com/news/rss.xml)
 - https://platform.openai.com/docs/changelog
-- @OpenAI on Twitter/X
 
 ---
 
@@ -60,7 +59,7 @@ This file defines which companies and products matter for product management–f
 **Primary sources:**
 - https://blog.google/technology/ai/
 - https://cloud.google.com/vertex-ai/docs/release-notes
-- Google Workspace updates blog
+- https://workspace.google.com/blog (feed_url: https://workspace.google.com/blog/rss)
 
 ---
 
@@ -79,7 +78,7 @@ This file defines which companies and products matter for product management–f
 **Primary sources:**
 - https://blogs.microsoft.com/ai/
 - https://github.blog/category/product/copilot/
-- Azure updates
+- https://azure.microsoft.com/en-us/updates (feed_url: https://azure.microsoft.com/en-us/updates/?feed=rss)
 
 ---
 
@@ -95,8 +94,7 @@ This file defines which companies and products matter for product management–f
 - VR/AR hardware launches (unless AI-focused)
 - Internal research without product implications
 **Primary sources:**
-- https://ai.meta.com/blog/
-- Meta AI research publications with product implications
+- https://ai.meta.com/blog/ (feed_url: scrape)
 
 ---
 
@@ -129,8 +127,7 @@ This file defines which companies and products matter for product management–f
 **Ignore unless:**
 - Marketing-only announcements
 **Primary sources:**
-- Cursor changelog/updates
-- @anysphere (Cursor team) on Twitter/X
+- https://cursor.com/changelog (feed_url: https://cursor.com/changelog/rss.xml)
 
 ---
 
@@ -146,8 +143,8 @@ This file defines which companies and products matter for product management–f
 - Infrastructure-only updates
 - General platform features without AI implications
 **Primary sources:**
-- https://vercel.com/blog
-- https://sdk.vercel.ai/docs
+- https://vercel.com/blog (feed_url: https://vercel.com/atom)
+- https://vercel.com/changelog
 
 ---
 
@@ -162,8 +159,7 @@ This file defines which companies and products matter for product management–f
 **Ignore unless:**
 - Infrastructure-only announcements
 **Primary sources:**
-- https://replicate.com/blog
-- Replicate changelog
+- https://replicate.com/blog (feed_url: https://replicate.com/blog/rss)
 
 ---
 
@@ -180,8 +176,6 @@ This file defines which companies and products matter for product management–f
 - Community events without product implications
 **Primary sources:**
 - https://blog.langchain.dev/
-- LangChain GitHub releases
-- @LangChainAI on Twitter/X
 
 ---
 
@@ -199,9 +193,7 @@ This file defines which companies and products matter for product management–f
 - Marketing-only announcements
 - Community events without product implications
 **Primary sources:**
-- https://mastra.ai/blog (if available)
-- Mastra GitHub releases
-- Mastra changelog/updates
+- https://mastra.ai/blog (feed_url: scrape)
 
 ---
 
@@ -217,8 +209,8 @@ This file defines which companies and products matter for product management–f
 - General product features without AI implications
 - Marketing campaigns
 **Primary sources:**
-- https://www.notion.so/product/updates
-- Notion blog
+- https://www.notion.com/blog (feed_url: scrape)
+- https://www.notion.com/releases (feed_url: https://www.notion.com/releases/rss.xml)
 
 ---
 
@@ -234,8 +226,7 @@ This file defines which companies and products matter for product management–f
 **Ignore unless:**
 - Marketing-only announcements
 **Primary sources:**
-- Perplexity blog/updates
-- @perplexity_ai on Twitter/X
+- https://www.perplexity.ai/hub/blog (feed_url: scrape)
 
 ---
 
@@ -251,8 +242,7 @@ This file defines which companies and products matter for product management–f
 - Marketing campaigns
 - Partnership announcements without product changes
 **Primary sources:**
-- Character.AI blog/updates
-- @character_ai on Twitter/X
+- https://blog.character.ai (feed_url: scrape)
 
 ---
 
@@ -268,8 +258,7 @@ This file defines which companies and products matter for product management–f
 - Community events
 - Art showcases without product implications
 **Primary sources:**
-- Midjourney changelog
-- @midjourney on Twitter/X
+- https://www.midjourney.com/updates (feed_url: scrape)
 
 ---
 
@@ -286,8 +275,7 @@ This file defines which companies and products matter for product management–f
 - Marketing campaigns
 - Partnership announcements without product changes
 **Primary sources:**
-- Runway blog/updates
-- @runwayml on Twitter/X
+- https://runway.com/blog (feed_url: scrape)
 
 ---
 
@@ -302,8 +290,7 @@ This file defines which companies and products matter for product management–f
 - General payment infrastructure updates
 - Non-AI product launches
 **Primary sources:**
-- https://stripe.com/blog
-- Stripe changelog
+- https://stripe.com/blog (feed_url: scrape)
 
 ---
 
@@ -318,8 +305,7 @@ This file defines which companies and products matter for product management–f
 - General infrastructure updates
 - Non-AI product launches
 **Primary sources:**
-- Plaid blog/updates
-- Plaid changelog
+- https://plaid.com/blog/ (feed_url: scrape)
 
 ---
 
@@ -335,8 +321,7 @@ This file defines which companies and products matter for product management–f
 - Research-only announcements
 - Partnership announcements without product changes
 **Primary sources:**
-- Mistral AI blog
-- @MistralAI on Twitter/X
+- https://mistral.ai/news (feed_url: scrape)
 
 ---
 
@@ -352,8 +337,7 @@ This file defines which companies and products matter for product management–f
 - Research-only announcements
 - Partnership announcements without product changes
 **Primary sources:**
-- Cohere blog
-- @CohereAI on Twitter/X
+- https://cohere.com/blog (feed_url: scrape)
 
 ---
 
@@ -404,7 +388,6 @@ This file defines which companies and products matter for product management–f
 - Marketing-only announcements
 **Primary sources:**
 - https://windsurf.com/blog (feed_url: https://windsurf.com/feed.xml)
-- @windsurf_ai on Twitter/X
 
 ---
 
@@ -422,7 +405,6 @@ This file defines which companies and products matter for product management–f
 - Community events without product implications
 **Primary sources:**
 - https://blog.replit.com (feed_url: https://blog.replit.com/feed.xml)
-- Replit changelog
 
 ---
 
