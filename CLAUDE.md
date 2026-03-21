@@ -20,8 +20,8 @@ Every day at 6am PT, GitHub Actions:
 ```
 .github/workflows/daily-update.yml
   └── bash scripts/run-daily-research-data-collection.sh
-        ├── node scripts/check-people-activity.js    → /tmp/daily-research-YYYY-MM-DD.txt
-        ├── node scripts/check-company-updates.js   ↗
+        ├── node scripts/check-people-search.js     → /tmp/daily-research-YYYY-MM-DD.txt
+        ├── node scripts/check-company-updates.js  ↗
         └── node scripts/orchestrate-daily-update.js   ← main synthesis entry point
 ```
 
@@ -30,7 +30,7 @@ Every day at 6am PT, GitHub Actions:
 This is a self-healing multi-agent pipeline with three steps:
 
 **Step 1 — Synthesizer Agent**
-Calls Claude API with the collected metadata + context files + previous 14 days of updates. Produces a draft daily update in markdown.
+Calls Claude API with the collected metadata + context files + previous 7 days of updates. Produces a draft daily update in markdown.
 
 **Step 2 — QA Agent**
 Validates the draft against the raw collected data. Returns a JSON verdict:
@@ -43,7 +43,7 @@ After a major-fail retry, if QA still fails → Patch Agent adds missed items di
 **Step 3 — Executor**
 Validates frontmatter, saves the file, regenerates monthly summary.
 
-**Model fallback:** All Claude API calls try `claude-sonnet-4-6` first. On any model error, they automatically fall back to `claude-haiku-4-5-20251001`.
+**Model fallback:** All Claude API calls try `claude-sonnet-4-6` first. On 429 rate limit errors, they retry with exponential backoff (up to 3x) before falling back to `claude-haiku-4-5-20251001`. Other errors fall back immediately.
 
 ### Why the QA agent exists
 
@@ -56,10 +56,10 @@ The synthesizer was consistently producing "No meaningful PM-relevant updates to
 | File | Purpose |
 |------|---------|
 | `scripts/orchestrate-daily-update.js` | Main synthesis entry point — orchestrator + agents |
-| `scripts/synthesize-daily-update.js` | Legacy single-step synthesizer (kept for reference) |
 | `scripts/run-daily-research-data-collection.sh` | Shell entry point: runs collection then orchestrator |
-| `scripts/check-company-updates.js` | Scrapes RSS/blogs for tracked companies |
-| `scripts/check-people-activity.js` | Scrapes RSS/blogs/Twitter for tracked people |
+| `scripts/check-company-updates.js` | Scrapes RSS/blogs for tracked companies (Puppeteer) |
+| `scripts/check-people-search.js` | Claude web_search agent for tracked people's recent activity |
+| `src/pipelines/people-search.js` | Core people search pipeline — batched, rate-limit resilient |
 | `scripts/generate-monthly-summary.js` | Regenerates monthly rollup from daily files |
 | `context/companies.md` | Tracked companies and their feed URLs |
 | `context/people.md` | Tracked people and their blog/social URLs |
@@ -85,6 +85,7 @@ node scripts/orchestrate-daily-update.js --date 2026-03-20
 
 # Rerun for a past date including data collection
 node scripts/check-company-updates.js --days 3 --format markdown > /tmp/daily-research-2026-03-15.txt
+node scripts/check-people-search.js --days 5 >> /tmp/daily-research-2026-03-15.txt
 node scripts/orchestrate-daily-update.js --date 2026-03-15
 ```
 
