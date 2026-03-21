@@ -37,14 +37,11 @@ Use this data with the research prompt in tooling/prompts/daily-research.md
 ==========================================
 EOF
 
-# Section 1: People Activity
-echo "Collecting people activity data..."
-echo "" >> "$OUTPUT_FILE"
-echo "## People Activity (Last 2 Days)" >> "$OUTPUT_FILE"
-echo "==========================================" >> "$OUTPUT_FILE"
+# Section 1: People Activity (via Claude web search)
+echo "Collecting people activity via web search..."
 echo "" >> "$OUTPUT_FILE"
 
-node scripts/check-people-activity.js --days 2 --format markdown >> "$OUTPUT_FILE" 2>&1 || {
+node scripts/check-people-search.js --days 5 >> "$OUTPUT_FILE" 2>&1 || {
     echo "ERROR: Failed to collect people activity data" >> "$OUTPUT_FILE"
     echo "Continuing with other data sources..."
 }
