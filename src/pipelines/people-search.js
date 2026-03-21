@@ -13,8 +13,11 @@ const { parsePeopleFile } = require('../adapters/markdown');
 
 const DEFAULT_DAYS_BACK = 5;
 const CONCURRENCY = 3;
+const BATCH_DELAY_MS = 3000;   // pause between batches to stay under tokens/min limit
 const MODEL = 'claude-sonnet-4-6';
 const FALLBACK_MODEL = 'claude-haiku-4-5-20251001';
+const MAX_429_RETRIES = 3;
+const RETRY_BASE_DELAY_MS = 15000; // 15s, doubles each retry
 
 /**
  * Strip Claude's reasoning preamble ("I'll search for...", "Let me try...") from
@@ -72,40 +75,50 @@ Rules:
 - Do not explain your search process — output findings only.`;
 
   for (const model of [MODEL, FALLBACK_MODEL]) {
-    try {
-      const response = await anthropic.messages.create({
-        model,
-        max_tokens: 1024,
-        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-        messages: [{ role: 'user', content: userPrompt }],
-      });
+    let attempt = 0;
+    while (true) {
+      try {
+        const response = await anthropic.messages.create({
+          model,
+          max_tokens: 1024,
+          tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+          messages: [{ role: 'user', content: userPrompt }],
+        });
 
-      // Extract text from all text-type content blocks
-      let text = response.content
-        .filter(block => block.type === 'text')
-        .map(block => block.text)
-        .join('\n')
-        .trim();
+        // Extract text from all text-type content blocks
+        let text = response.content
+          .filter(block => block.type === 'text')
+          .map(block => block.text)
+          .join('\n')
+          .trim();
 
-      // Strip reasoning preamble — Claude sometimes emits "I'll search for..."
-      // before the actual findings. Drop everything before the first finding marker.
-      text = stripPreamble(text);
+        text = stripPreamble(text);
 
-      const noActivity =
-        !text ||
-        text.toLowerCase().includes('no recent activity found') ||
-        text.toLowerCase().includes('nothing was published') ||
-        text.toLowerCase().includes('no posts or tweets') ||
-        text.toLowerCase().includes('no direct posts') ||
-        text.length < 40;
+        const noActivity =
+          !text ||
+          text.toLowerCase().includes('no recent activity found') ||
+          text.toLowerCase().includes('nothing was published') ||
+          text.toLowerCase().includes('no posts or tweets') ||
+          text.toLowerCase().includes('no direct posts') ||
+          text.length < 40;
 
-      return { name, text: text || 'No recent activity found.', hasActivity: !noActivity };
-    } catch (err) {
-      if (model === MODEL) {
-        console.warn(`  ⚠️  ${name}: primary model failed (${err.message}), trying fallback...`);
-      } else {
-        console.error(`  ✗ ${name}: both models failed — ${err.message}`);
-        return { name, text: `Search error: ${err.message}`, hasActivity: false };
+        return { name, text: text || 'No recent activity found.', hasActivity: !noActivity };
+      } catch (err) {
+        const is429 = err.status === 429 || err.message?.includes('rate_limit');
+        if (is429 && attempt < MAX_429_RETRIES) {
+          const delay = RETRY_BASE_DELAY_MS * Math.pow(2, attempt);
+          console.warn(`  ⏳ ${name}: rate limited, retrying in ${delay / 1000}s (attempt ${attempt + 1}/${MAX_429_RETRIES})...`);
+          await new Promise(r => setTimeout(r, delay));
+          attempt++;
+          continue;
+        }
+        if (model === MODEL) {
+          console.warn(`  ⚠️  ${name}: primary model failed (${err.message}), trying fallback...`);
+        } else {
+          console.error(`  ✗ ${name}: both models failed — ${err.message}`);
+          return { name, text: `Search error: ${err.message}`, hasActivity: false };
+        }
+        break; // move to fallback model
       }
     }
   }
@@ -143,6 +156,11 @@ async function checkPeopleSearchPipeline(options = {}) {
       batch.map(person => searchPersonActivity(anthropic, person, daysBack))
     );
     results.push(...batchResults);
+
+    // Pause between batches to stay under the tokens/min rate limit
+    if (i + CONCURRENCY < people.length) {
+      await new Promise(r => setTimeout(r, BATCH_DELAY_MS));
+    }
   }
 
   const activeCount = results.filter(r => r.hasActivity).length;

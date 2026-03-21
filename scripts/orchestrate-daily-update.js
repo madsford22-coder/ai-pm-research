@@ -50,24 +50,41 @@ const MODELS = ['claude-sonnet-4-6', 'claude-haiku-4-5-20251001'];
 
 let anthropic;
 
-// ─── Shared Claude caller with model fallback ─────────────────────────────────
+// ─── Shared Claude caller with 429 backoff + model fallback ──────────────────
+const MAX_429_RETRIES = 3;
+const RETRY_BASE_DELAY_MS = 20000; // 20s, doubles each retry
+
 async function callClaude(systemPrompt, userPrompt, maxTokens = 16000) {
   for (let i = 0; i < MODELS.length; i++) {
     const model = MODELS[i];
-    try {
-      if (i > 0) console.log(`   🔄 Falling back to model: ${model}`);
-      const message = await anthropic.messages.create({
-        model,
-        max_tokens: maxTokens,
-        messages: [{ role: 'user', content: userPrompt }],
-        system: systemPrompt,
-      });
-      return { text: message.content[0].text, model, usage: message.usage };
-    } catch (error) {
-      if (i < MODELS.length - 1) {
-        console.warn(`   ⚠️  Model ${model} failed (${error.message}), trying fallback...`);
-      } else {
-        throw error;
+    if (i > 0) console.log(`   🔄 Falling back to model: ${model}`);
+
+    let attempt = 0;
+    while (true) {
+      try {
+        const message = await anthropic.messages.create({
+          model,
+          max_tokens: maxTokens,
+          messages: [{ role: 'user', content: userPrompt }],
+          system: systemPrompt,
+        });
+        return { text: message.content[0].text, model, usage: message.usage };
+      } catch (error) {
+        const is429 = error.status === 429 || error.message?.includes('rate_limit');
+        if (is429 && attempt < MAX_429_RETRIES) {
+          const delay = RETRY_BASE_DELAY_MS * Math.pow(2, attempt);
+          console.warn(`   ⏳ Rate limited on ${model}, retrying in ${delay / 1000}s (attempt ${attempt + 1}/${MAX_429_RETRIES})...`);
+          await new Promise(r => setTimeout(r, delay));
+          attempt++;
+          continue;
+        }
+        // Non-429 error or retries exhausted — try next model
+        if (i < MODELS.length - 1) {
+          console.warn(`   ⚠️  Model ${model} failed (${error.message}), trying fallback...`);
+        } else {
+          throw error;
+        }
+        break;
       }
     }
   }
@@ -202,7 +219,7 @@ Respond with a single JSON object only — no markdown fences, no preamble, noth
 An item belongs in Quick Hits if ALL of these are true:
 - It comes from a tracked company or tracked person in the raw data
 - It represents a shipped product change, new feature, new post, pricing or business model change
-- Its exact URL does NOT already appear in any of the previous 14 days of updates provided
+- Its exact URL does NOT already appear in any of the previous 7 days of updates provided
 
 ## Severity
 - "none": pass=true
@@ -210,7 +227,7 @@ An item belongs in Quick Hits if ALL of these are true:
 - "major": pass=false with meaningful content missed (3+ items, or "no updates" output when activity exists) — retry synthesizer with feedback first
 
 ## Deduplication rule
-An item is a TRUE duplicate ONLY if the exact same URL already appears in a previous update's content.
+An item is a TRUE duplicate ONLY if the exact same URL already appears in the previous 7 days of updates.
 "Same topic", "same category", or "similar pattern" is NOT a valid dedup reason.
 A new post, new feature, or new product launch from a tracked company is always a new event even if the topic was discussed before.`;
 
@@ -323,9 +340,9 @@ async function main() {
   const prefs            = readFileSafe(path.join(projectRoot, 'context/prefs.md'));
   const openQuestions    = readFileSafe(path.join(projectRoot, 'context/open-questions.md'));
 
-  console.log('📖 Reading previous 14 days of updates for deduplication...');
+  console.log('📖 Reading previous 7 days of updates for deduplication...');
   const previousUpdates = [];
-  for (let i = 1; i <= 14; i++) {
+  for (let i = 1; i <= 7; i++) {
     const pastDate = new Date(today);
     pastDate.setDate(pastDate.getDate() - i);
     const pYear  = pastDate.getFullYear();
