@@ -11,14 +11,15 @@ export async function generateStaticParams() {
   try {
     const paths = getAllContentPaths();
     
-    return paths
-      .filter((path) => path !== 'index.md')
-      .map((path) => {
-        const slug = path.replace(/\.md$/, '').split('/');
-        return {
-          slug,
-        };
-      });
+    return [
+      { slug: [] }, // root path → Dashboard
+      ...paths
+        .filter((path) => path !== 'index.md')
+        .map((path) => {
+          const slug = path.replace(/\.md$/, '').split('/');
+          return { slug };
+        }),
+    ];
   } catch (error) {
     console.error('Error generating static params:', error);
     return [];
