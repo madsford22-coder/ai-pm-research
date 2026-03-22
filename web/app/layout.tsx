@@ -9,8 +9,8 @@ import ThemeToggle from "@/components/ThemeToggle";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AI PM Research Hub",
-  description: "Your daily dose of AI product insights, practical patterns, and PM takeaways from the evolving world of AI tools and workflows",
+  title: "Madison's Morning Memo",
+  description: "A daily PM research digest on applied AI — signals over noise, with a special eye on women in tech. By Madison Ford.",
   alternates: {
     types: {
       'application/rss+xml': '/rss.xml',

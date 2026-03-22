@@ -89,7 +89,124 @@ body {
   background-size: 1000px 100%;
 }
 
-/* Markdown content styles - Modern, clean, elevated */
+/* ── Daily update section blocks ─────────────────────────────────── */
+
+.update-section-summary {
+  @apply rounded-2xl border px-6 py-5 mb-10;
+  background: rgba(253, 246, 210, 0.6);
+  border-color: #e8c84a;
+}
+.dark .update-section-summary {
+  background: rgba(42, 30, 0, 0.4);
+  border-color: #6b5200;
+}
+.update-section-summary h2 {
+  color: #7a5c00 !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 0.75rem 0 !important;
+}
+.dark .update-section-summary h2 {
+  color: #c9a020 !important;
+}
+
+.update-item-card {
+  @apply rounded-2xl border mb-8 overflow-hidden;
+  background: #ffffff;
+  border-color: #e7e3dd;
+  border-left: 4px solid #5a7a3a;
+}
+.dark .update-item-card {
+  background: #1e1c16;
+  border-color: #2e2b24;
+  border-left-color: #8db870;
+}
+.update-item-card h3 {
+  @apply px-6 py-4 m-0 text-base font-semibold;
+  background: rgba(238, 244, 232, 0.5);
+  border-bottom: 1px solid #e7e3dd;
+  color: #2d4a1e !important;
+  font-size: 1rem !important;
+  margin: 0 !important;
+}
+.dark .update-item-card h3 {
+  background: rgba(30, 45, 22, 0.5);
+  border-bottom-color: #2e2b24;
+  color: #a3cc83 !important;
+}
+.update-item-card > *:not(h3) {
+  @apply px-6;
+}
+.update-item-card > *:last-child {
+  @apply pb-6;
+}
+
+.update-section-quickhits {
+  @apply rounded-2xl border px-6 py-5 mb-10;
+  background: rgba(253, 237, 226, 0.6);
+  border-color: #e8a870;
+}
+.dark .update-section-quickhits {
+  background: rgba(42, 18, 6, 0.4);
+  border-color: #6b3a10;
+}
+.update-section-quickhits h2 {
+  color: #7a3a00 !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 0.75rem 0 !important;
+}
+.dark .update-section-quickhits h2 {
+  color: #d4844a !important;
+}
+
+.update-section-pattern {
+  @apply rounded-2xl border px-6 py-5 mb-10;
+  background: rgba(248, 238, 245, 0.6);
+  border-color: #d4a8c7;
+}
+.dark .update-section-pattern {
+  background: rgba(38, 18, 34, 0.4);
+  border-color: #5a2e50;
+}
+.update-section-pattern h2 {
+  color: #6b2d5e !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 0.75rem 0 !important;
+}
+.dark .update-section-pattern h2 {
+  color: #c47eb0 !important;
+}
+
+.update-section-reflection {
+  @apply rounded-2xl border px-6 py-5 mb-10;
+  background: rgba(238, 244, 232, 0.7);
+  border-color: #c8d8b8;
+}
+.dark .update-section-reflection {
+  background: rgba(22, 38, 14, 0.4);
+  border-color: #3a5028;
+}
+.update-section-reflection h2 {
+  color: #2d4a1e !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 0.75rem 0 !important;
+}
+.dark .update-section-reflection h2 {
+  color: #8db870 !important;
+}
+
+/* ── Markdown content styles - Modern, clean, elevated ───────────── */
 .prose {
   @apply leading-7;
   color: #1a1a1a;

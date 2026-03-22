@@ -649,3 +649,60 @@ This file defines whose public thinking and product commentary should be treated
 - Pure academic research without product or capability implications
 
 ---
+
+## Gabriel Gonzalez
+**Role:** Software engineer; author of Haskell for All
+**Why they matter:** Long-form technical writing on functional programming, language design, and software correctness. Occasionally writes on developer tooling and productivity patterns that intersect with AI-assisted coding workflows.
+**Signal types to watch for:**
+- Technical depth on language design and correctness
+- Developer tooling and workflow insights
+- Software engineering practices relevant to AI-assisted development
+**Primary platforms:**
+- Blog: https://haskellforall.com
+- RSS Feed: https://haskellforall.com/rss.xml
+
+---
+
+## Maggie Appleton
+**Role:** Designer and developer; researcher on AI and tools for thought
+**Why they matter:** Writes some of the most thoughtful, visually rich pieces on AI product design, digital gardening, and what it means to build tools that genuinely extend human thinking. Brings a design-first lens that most AI PM coverage lacks.
+**Signal types to watch for:**
+- AI product design and UX thinking
+- Tools for thought and knowledge management products
+- Critical takes on AI hype from a design/product perspective
+- Emerging interaction patterns for AI products
+**Primary platforms:**
+- Blog: https://maggieappleton.com
+- RSS Feed: https://maggieappleton.com/rss.xml
+- Twitter/X: @mappletons
+
+---
+
+## Shreya Shankar
+**Role:** ML engineer and researcher; PhD student studying ML in production
+**Why they matter:** Writes from the trenches about what it actually takes to build reliable LLM applications — data pipelines, evaluation, failure modes. One of the clearest voices on the gap between AI demos and production AI products.
+**Signal types to watch for:**
+- LLM application reliability and evaluation in production
+- ML engineering practices that affect product decisions
+- Data quality and pipeline patterns for AI products
+- Real-world failure modes that product teams need to know about
+**Primary platforms:**
+- Blog: https://www.shreya-shankar.com
+- Twitter/X: @sh_reya
+- Newsletter: https://www.dataqualitycamp.com
+
+---
+
+## Kanjun Qiu
+**Role:** CEO and co-founder, Imbue (formerly Generally Intelligent)
+**Why they matter:** Building AI agents that can reason and code — and thinking rigorously about what general intelligence means for product design. Rare voice combining deep technical AI research with real product decisions.
+**Signal types to watch for:**
+- AI agent product decisions and design
+- What it means to build AI that reasons, not just predicts
+- Research-to-product translation in AI companies
+- Founder perspective on building at the frontier
+**Primary platforms:**
+- Twitter/X: @kanjun
+- Blog posts and essays (various)
+
+---

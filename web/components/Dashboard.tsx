@@ -134,10 +134,10 @@ export default function Dashboard() {
             {/* Text */}
             <div className="flex-1 min-w-0">
               <p className="text-xs font-medium tracking-widest uppercase text-[#78716c] dark:text-[#a8a29e] mb-2">
-                AI PM Research
+                Madison&apos;s Morning Memo
               </p>
               <h1 className="text-2xl sm:text-3xl font-semibold text-[#1c1917] dark:text-[#f5f0ea] leading-snug mb-4">
-                Your daily signal from the AI world — no noise required.
+                Your daily signal from the AI world, no noise required.
               </h1>
               <div className="space-y-3 text-[15px] leading-relaxed text-[#44403c] dark:text-[#c8c4bc]">
                 <p>
@@ -272,9 +272,9 @@ export default function Dashboard() {
               >
                 <div className="flex items-start justify-between gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-1.5">
+                    <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                       {update.date && (
-                        <time className="text-xs text-gray-400 dark:text-gray-500 font-medium shrink-0" dateTime={update.date instanceof Date ? update.date.toISOString() : update.date}>
+                        <time className="text-xs text-[#a8a29e] dark:text-[#78716c] font-medium shrink-0" dateTime={update.date instanceof Date ? update.date.toISOString() : update.date}>
                           {(() => {
                             const date = update.date instanceof Date
                               ? update.date
@@ -287,6 +287,11 @@ export default function Dashboard() {
                             });
                           })()}
                         </time>
+                      )}
+                      {update.women_voices != null && update.women_voices > 0 && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#f8eef5] dark:bg-[#2a1528] text-[#8b3a78] dark:text-[#c47eb0] border border-[#e4bcd8] dark:border-[#5a2e50] shrink-0">
+                          {update.women_voices === 1 ? '1 woman featured' : `${update.women_voices} women featured`}
+                        </span>
                       )}
                     </div>
                     <h3 className="text-base sm:text-lg font-semibold text-[#1c1917] dark:text-[#f5f0ea] mb-2 group-hover:text-[#5a7a3a] dark:group-hover:text-[#8db870] transition-colors line-clamp-2">

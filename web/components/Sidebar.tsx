@@ -373,11 +373,11 @@ export default function Sidebar() {
                   />
                 </div>
                 <span className="text-sm font-semibold text-[#1c1917] dark:text-[#f5f0ea] group-hover:text-[#5a7a3a] dark:group-hover:text-[#8db870] transition-colors">
-                  Madison&apos;s AI Research
+                  Madison&apos;s Morning Memo
                 </span>
               </div>
               <p className="text-xs text-[#78716c] dark:text-[#a8a29e] pl-11">
-                Daily PM intelligence
+                Daily AI PM signals
               </p>
             </Link>
             {/* Close button for mobile inside sidebar */}

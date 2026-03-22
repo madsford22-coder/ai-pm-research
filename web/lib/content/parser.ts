@@ -55,6 +55,7 @@ export async function parseMarkdown(
     tags: Array.isArray(data.tags) ? data.tags : undefined,
     summary: data.summary,
     source_url: data.source_url,
+    women_voices: typeof data.women_voices === 'number' ? data.women_voices : undefined,
   };
 
   // Process markdown to HTML
