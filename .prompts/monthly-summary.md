@@ -83,12 +83,9 @@ tags:
 1. **[Source]** — [Descriptive title](URL) — [One-line specific summary.]
 2. **[Source]** — [Descriptive title](URL) — [One-line specific summary.]
 3. **[Source]** — [Descriptive title](URL) — [One-line specific summary.]
-
-
----
-
-*[X] daily updates tracked [Y] items this month. [View all [Month] updates](/?from=[YYYY-MM-01]&to=[YYYY-MM-last-day])*
 ```
+
+Note: Do NOT include a footer line — the pipeline will add it automatically.
 
 **Note:** The "View all updates" link now points to the dashboard with pre-populated date filters for the entire month. Replace `[YYYY-MM-last-day]` with the actual last day of the month (28/29/30/31).
 

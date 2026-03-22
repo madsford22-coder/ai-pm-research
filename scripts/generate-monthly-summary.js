@@ -322,32 +322,28 @@ Use specific examples, company names, and numbers. Write like a human, not corpo
     });
     
     let generatedContent = message.content[0].text;
-    
-    // Ensure frontmatter is first
+
+    // Validate that the model produced real frontmatter with required fields.
+    // If not, fall back to the basic summary rather than saving corrupt output.
+    const hasFrontmatter = /^---\s*\ntitle:/m.test(generatedContent) &&
+      /^date:/m.test(generatedContent);
+    if (!hasFrontmatter) {
+      console.warn('⚠️  AI output missing valid frontmatter — falling back to basic summary');
+      return generateBasicSummary(year, month, monthKey, monthTitle, dailyFiles, allItems, topResources, monthEnd);
+    }
+
+    // Strip any preamble before the opening ---
     const frontmatterIndex = generatedContent.indexOf('---');
     if (frontmatterIndex > 0) {
       generatedContent = generatedContent.substring(frontmatterIndex);
-    } else if (frontmatterIndex === -1) {
-      // Add frontmatter if missing
-      generatedContent = `---
-title: "${monthTitle} Research Summary"
-date: ${monthKey}-01
-tags:
-  - monthly-summary
-  - ai-pm-research
----
+    }
 
-${generatedContent}`;
-    }
-    
-    // Add footer with update count
+    // Add footer with update count (strip any model-generated footer first to avoid duplicates)
     const lastDay = monthEnd.getDate();
-    const footer = `\n---\n\n*${dailyFiles.length} daily updates tracked ${allItems.length} items this month. [View all ${monthTitle.split(' ')[0]} updates](/?from=${monthKey}-01&to=${monthKey}-${String(lastDay).padStart(2, '0')})*`;
-    
-    // Only add footer if not already present
-    if (!generatedContent.includes('*[')) {
-      generatedContent += footer;
-    }
+    const footerText = `*${dailyFiles.length} daily updates tracked ${allItems.length} items this month. [View all ${monthTitle.split(' ')[0]} updates](/?from=${monthKey}-01&to=${monthKey}-${String(lastDay).padStart(2, '0')})*`;
+    // Remove any existing footer line (model may have templated its own)
+    generatedContent = generatedContent.replace(/\n\*\d+ daily updates tracked.*\n?$/m, '').trimEnd();
+    generatedContent += `\n\n${footerText}\n`;
     
     const outputFile = path.join(path.join(__dirname, '..', 'updates', 'monthly'), `${monthKey}.md`);
     writeFileSafe(outputFile, generatedContent);
@@ -394,8 +390,6 @@ ${topResources.length > 0 ? `\n## Essential Resources (${topResources.length})\n
   const domain = new URL(item.url).hostname.replace('www.', '');
   return `${idx + 1}. **${item.source}** — [${item.title}](${item.url}) — ${item.description.substring(0, 100)}...`;
 }).join('\n')}\n` : ''}
-
----
 
 *${dailyFiles.length} daily updates tracked ${allItems.length} items this month. [View all ${monthTitle.split(' ')[0]} updates](/?from=${monthKey}-01&to=${monthKey}-${String(lastDay).padStart(2, '0')})*
 `;
