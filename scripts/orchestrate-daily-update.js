@@ -277,7 +277,7 @@ CRITICAL OUTPUT FORMAT: Return the complete patched markdown document. Raw markd
 
 Rules:
 - Add missing items to the "## Quick Hits" section
-- If "## Quick Hits" does not exist, create it before "## This Week's Pattern" or "## Reflection Prompt" (whichever comes first), or before the final "---" separator
+- If "## Quick Hits" does not exist, create it before "## The Thread" or "## Sit With This" (whichever comes first), or before the final "---" separator
 - Format for each new Quick Hit: "- **Company/Author**: [Brief description of what shipped or was posted] (Date if available): URL"
 - Do not modify existing content — only add the missing Quick Hits entries
 - Keep Quick Hits to a maximum of 5 items total; if adding would exceed 5, prioritize by PM relevance and drop the lowest-signal existing item`;

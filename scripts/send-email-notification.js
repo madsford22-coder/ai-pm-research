@@ -115,8 +115,10 @@ async function sendEmail(subject, htmlBody) {
 function parseItemsFromMarkdown(fileContent) {
   const items = [];
 
-  // Extract the items section
-  const itemsMatch = fileContent.match(/## Items\n\n([\s\S]*?)(?:\n\n---\n\n## Other Notable Updates|\n\n---\n\n## Daily Product|$)/);
+  // Extract items — legacy files used "## Items"; new files have h3s directly after the summary
+  const legacyItemsMatch = fileContent.match(/## Items\n\n([\s\S]*?)(?:\n\n---\n\n## Other Notable Updates|\n\n---\n\n## Daily Product|$)/);
+  const itemsMatch = legacyItemsMatch ||
+    fileContent.match(/## (?:The Short Version|One-Line Summary)[^\n]*\n\n[^\n]+\n\n([\s\S]*?)(?=\n## Quick Hits|\n## The Thread|\n## This Week|$)/);
   if (!itemsMatch) return items;
 
   const itemsSection = itemsMatch[1];

@@ -52,12 +52,19 @@ function extractResources(content) {
 function extractItems(content) {
   const items = [];
   
-  // Match item blocks in ## Items section (### Title ... until next ### or ##)
-  // Only extract from Items section, not Quick Hits
-  const itemsSectionMatch = content.match(/## Items\s*\n([\s\S]*?)(?=\n##|$)/);
-  if (!itemsSectionMatch) return items;
-  
-  const itemsContent = itemsSectionMatch[1];
+  // Items are h3 blocks that appear before ## Quick Hits (no longer under a ## Items heading)
+  // Fall back to ## Items for older files
+  let itemsContent;
+  const legacyMatch = content.match(/## Items\s*\n([\s\S]*?)(?=\n##|$)/);
+  if (legacyMatch) {
+    itemsContent = legacyMatch[1];
+  } else {
+    // Extract everything between the summary section and Quick Hits
+    const beforeQuickHits = content.split(/\n## Quick Hits/)[0];
+    const afterSummary = beforeQuickHits.split(/\n## (?:The Short Version|One-Line Summary)[^\n]*\n/)[1] || beforeQuickHits;
+    itemsContent = afterSummary;
+  }
+  if (!itemsContent) return items;
   const itemRegex = /###\s+([^\n]+)\n([\s\S]*?)(?=\n###|\n##|$)/g;
   let match;
   
@@ -103,14 +110,14 @@ function extractItems(content) {
 }
 
 function extractOneLineSummary(content) {
-  // Extract the one-line summary from ## One-Line Summary section
-  const summaryMatch = content.match(/## One-Line Summary\s*\n\s*\n([^\n]+(?:\n[^#][^\n]+)*)/);
+  // Support both new (## The Short Version) and old (## One-Line Summary) header names
+  const summaryMatch = content.match(/## (?:The Short Version|One-Line Summary)\s*\n\s*\n([^\n]+(?:\n[^#][^\n]+)*)/);
   return summaryMatch ? summaryMatch[1].trim() : null;
 }
 
 function extractWeeklyPattern(content) {
-  // Extract "This Week's Pattern" section
-  const patternMatch = content.match(/## This Week's Pattern\s*\n\s*\n\*\*([^\n]+)\*\*\s*\n\s*\n([\s\S]+?)(?=\n---|\n##|$)/);
+  // Support both new (## The Thread) and old (## This Week's Pattern) header names
+  const patternMatch = content.match(/## (?:The Thread|This Week's Pattern)\s*\n\s*\n\*\*([^\n]+)\*\*\s*\n\s*\n([\s\S]+?)(?=\n---|\n##|$)/);
   if (patternMatch) {
     return {
       title: patternMatch[1].trim(),
