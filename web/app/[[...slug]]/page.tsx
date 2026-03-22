@@ -29,8 +29,11 @@ export async function generateStaticParams() {
 }
 
 function processUpdateHTML(html: string): string {
+  // Strip horizontal rules — colored blocks provide visual separation
+  const stripped = html.replace(/<hr\s*\/?>/gi, '');
+
   // Wrap h3 item sections in styled cards first
-  const h3Parts = html.split(/(?=<h3[ >])/);
+  const h3Parts = stripped.split(/(?=<h3[ >])/);
   const withCards = h3Parts.map((part) => {
     if (!part.startsWith('<h3')) return part;
     return `<div class="update-item-card">${part}</div>`;
@@ -42,10 +45,12 @@ function processUpdateHTML(html: string): string {
     if (!part.startsWith('<h2')) return part;
     const idMatch = part.match(/<h2[^>]*\sid="([^"]+)"/);
     const id = idMatch?.[1] ?? '';
-    if (id.includes('one-line-summary')) return `<div class="update-section-summary">${part}</div>`;
+    // Support both old and new header names for backward compat
+    if (id.includes('short-version') || id.includes('one-line-summary')) return `<div class="update-section-summary">${part}</div>`;
     if (id.includes('quick-hits')) return `<div class="update-section-quickhits">${part}</div>`;
-    if (id.includes('pattern')) return `<div class="update-section-pattern">${part}</div>`;
-    if (id.includes('reflection')) return `<div class="update-section-reflection">${part}</div>`;
+    if (id.includes('thread') || id.includes('pattern')) return `<div class="update-section-pattern">${part}</div>`;
+    if (id.includes('sit-with') || id.includes('reflection')) return `<div class="update-section-reflection">${part}</div>`;
+    if (id === 'items') return ''; // hide bare "Items" heading — cards are self-labeled
     return part;
   }).join('');
 }

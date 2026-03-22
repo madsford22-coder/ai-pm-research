@@ -195,9 +195,9 @@ Examples of bad titles (too long or awkward):
 
 Each daily update must follow this exact format:
 
-**1. One-Line Summary (Required)**
+**1. The Short Version (Required)**
 ```markdown
-## One-Line Summary
+## The Short Version
 
 [A single sentence that captures the day's most important insights, connecting the main items together. Should be substantive and specific, not generic.]
 ```
@@ -209,8 +209,6 @@ Each daily update must follow this exact format:
 Each item must follow this detailed format:
 
 ```markdown
-## Items
-
 ### [Company/Product Name or Author Name] - [Brief, Descriptive Title]
 **Source:** [Link to source]
 **Credibility:** [High/Medium/Low] ([Brief justification - e.g., "first-party announcement", "controlled benchmark with methodology", "production case study"])
@@ -303,9 +301,9 @@ Example format:
 - **Company Name**: [Brief description] (Date): URL
 ```
 
-### This Week's Pattern Section
+### The Thread Section
 
-After "Quick Hits", include a section titled "## This Week's Pattern" that:
+After "Quick Hits", include a section titled "## The Thread" that:
 - Identifies a broader pattern or trend observed across multiple items from the current week
 - Connects insights from today's research to patterns from recent days
 - Should be substantive and specific, not generic observations
@@ -313,7 +311,7 @@ After "Quick Hits", include a section titled "## This Week's Pattern" that:
 
 Example format:
 ```markdown
-## This Week's Pattern
+## The Thread
 
 **Pattern description.** [1-2 sentences explaining the pattern, referencing specific examples from the week.]
 ```
@@ -424,13 +422,13 @@ After reviewing today's collected data against the last 14 days of updates and t
 
 ---
 
-## This Week's Pattern
+## The Thread
 
 [1-2 sentences on the continuing pattern from the week, or omit if no clear pattern.]
 
 ---
 
-## Reflection Prompt
+## Sit With This
 
 [Reflection prompt as required — base it on the week's pattern or a prior day's item if nothing new today.]
 
@@ -484,18 +482,18 @@ Do not include anything from the "Ignore Completely" list in `context/prefs.md`:
    - Do NOT summarize based on titles or metadata alone
    - If you cannot access the full content, note this in the item
 8. Synthesize remaining items using the detailed format:
-   - One-Line Summary (connecting the main items)
+   - The Short Version (connecting the main items)
    - Items with full enriched analysis (source, credibility, what happened, key details, PM relevance, critical questions, action items)
    - Quick Hits (if applicable, maximum 5 items)
-   - This Week's Pattern (if applicable)
-   - Reflection Prompt (required)
+   - The Thread (if applicable)
+   - Sit With This (required)
 9. Create the daily markdown file at the specified path with frontmatter first
 10. Ensure maximum 3-5 items in detailed analysis (or "No meaningful PM-relevant updates today")
-11. Include all required sections: One-Line Summary, Items, Quick Hits (if applicable), This Week's Pattern (if applicable), Reflection Prompt
+11. Include all required sections: The Short Version, Items, Quick Hits (if applicable), The Thread (if applicable), Sit With This
 
 Remember: Your goal is NOT to summarize AI news. Your goal is to surface product-relevant signals and translate them into actionable insights for product management.
 
-## Reflection Prompt
+## Sit With This
 
 After completing the daily update, you MUST generate a reflection prompt at the end of the file.
 
@@ -517,7 +515,7 @@ Add this section at the very end of the daily update file:
 ```markdown
 ---
 
-## Reflection Prompt
+## Sit With This
 
 [Brief context from one of today's items that sets up the reflection question.]
 
@@ -540,7 +538,7 @@ The prompt must:
 ```markdown
 ---
 
-## Reflection Prompt
+## Sit With This
 
 Healio's research revealed physicians wanted AI for "patient communication and empathy"—not diagnostics. Their assumptions about user needs were fundamentally wrong.
 
