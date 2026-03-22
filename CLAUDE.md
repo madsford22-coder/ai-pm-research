@@ -139,3 +139,27 @@ tags:
 ```
 
 If the frontmatter is missing or malformed, the orchestrator exits with code 1 and GitHub Actions fails (no commit). This is intentional — a corrupt file would break the site.
+
+### YAML frontmatter pitfalls
+
+- **Values starting with `*` must be quoted.** YAML interprets `*word` as an alias. This bit us in monthly summary files where the footer `*28 daily updates...` appeared before the frontmatter was properly closed — the YAML parser threw `unidentified alias`. Always quote strings starting with `*`, or better, keep them in the markdown body after the closing `---`.
+- **Never use `---` as a visual separator in the body of a file that may be re-parsed as frontmatter.** A bare `---` line creates a new YAML document delimiter. The monthly summary generator previously appended `\n---\n\n*footer*` which sometimes ended up before any real frontmatter, producing corrupt files. The generator now appends the footer as plain text with no `---`.
+- **Monthly summaries are regenerated daily** by `generate-monthly-summary.js` as part of the pipeline. If a monthly file looks wrong, re-run: `node scripts/generate-monthly-summary.js YYYY M`.
+
+---
+
+## Web / Netlify site
+
+The site lives in `web/` and is a Next.js 14 App Router site deployed on Netlify via `@netlify/plugin-nextjs`.
+
+### Architecture
+
+- **Static generation**: All pages are prerendered at build time via `generateStaticParams`. Content is fully known at deploy time (the `prebuild` script copies `../updates/` into `web/updates/`). Do **not** add `force-dynamic` or `revalidate = 0` to content pages or API routes — this forces serverless SSR on every request, kills CDN caching, and causes intermittent 500s on Netlify.
+- **Catch-all route**: `web/app/[[...slug]]/page.tsx` handles all content URLs. The root path `/` (empty slug) renders the `Dashboard` component.
+- **`useSearchParams()` requires `<Suspense>`**: Any component using `useSearchParams()` must be wrapped in a `<Suspense>` boundary in the page that statically prerenderers it. Without it, Next.js throws during build. The `Dashboard` component uses this hook — it's wrapped in `<Suspense>` in the catch-all page.
+
+### Debugging a broken Netlify build
+
+1. If you see `YAMLException: unidentified alias` — a monthly summary file has a `*word` value in its frontmatter. Regenerate it: `node scripts/generate-monthly-summary.js YYYY M`.
+2. If you see `useSearchParams() should be wrapped in a suspense boundary` — a client component using that hook is missing `<Suspense>` in its parent page.
+3. If you see `Error occurred prerendering page "/"` — the homepage prerender is failing. Check that the root path `{ slug: [] }` is in `generateStaticParams` and that `<Dashboard>` is wrapped in `<Suspense>`.
