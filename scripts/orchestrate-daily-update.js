@@ -45,8 +45,9 @@ const month = String(today.getMonth() + 1).padStart(2, '0');
 const day = String(today.getDate()).padStart(2, '0');
 const dateStr = `${year}-${month}-${day}`;
 
-// ─── Models — primary first, fallback second ─────────────────────────────────
-const MODELS = ['claude-sonnet-4-6', 'claude-haiku-4-5-20251001'];
+// ─── Models ──────────────────────────────────────────────────────────────────
+const SONNET = 'claude-sonnet-4-6';
+const HAIKU  = 'claude-haiku-4-5-20251001';
 
 let anthropic;
 
@@ -54,9 +55,9 @@ let anthropic;
 const MAX_429_RETRIES = 3;
 const RETRY_BASE_DELAY_MS = 20000; // 20s, doubles each retry
 
-async function callClaude(systemPrompt, userPrompt, maxTokens = 16000) {
-  for (let i = 0; i < MODELS.length; i++) {
-    const model = MODELS[i];
+async function callClaude(systemPrompt, userPrompt, maxTokens = 8000, models = [SONNET, HAIKU]) {
+  for (let i = 0; i < models.length; i++) {
+    const model = models[i];
     if (i > 0) console.log(`   🔄 Falling back to model: ${model}`);
 
     let attempt = 0;
@@ -79,7 +80,7 @@ async function callClaude(systemPrompt, userPrompt, maxTokens = 16000) {
           continue;
         }
         // Non-429 error or retries exhausted — try next model
-        if (i < MODELS.length - 1) {
+        if (i < models.length - 1) {
           console.warn(`   ⚠️  Model ${model} failed (${error.message}), trying fallback...`);
         } else {
           throw error;
@@ -136,7 +137,7 @@ async function runSynthesizer(context, qaFeedback = null) {
 ${companies}
 
 ## context/people.md
-${people}
+Activity from tracked people is pre-collected in the research data. Include any item from a tracked person that appears in the collected data — do not filter based on unfamiliarity with who they are.
 
 ## context/prefs.md
 ${prefs}
@@ -234,7 +235,7 @@ A new post, new feature, or new product launch from a tracked company is always 
 async function runQA(rawData, draft, previousUpdates) {
   const previousUpdatesStr = previousUpdates.length > 0
     ? previousUpdates.map(u => `### ${u.date}\n${u.content}`).join('\n\n')
-    : 'None — no previous updates in the 14-day window.';
+    : 'None — no previous updates in the 7-day window.';
 
   const userPrompt = `Validate this synthesizer draft against the raw collected data.
 
@@ -244,12 +245,12 @@ ${rawData}
 ## Synthesizer Draft
 ${draft}
 
-## Previous 14 Days of Updates (for deduplication checking)
+## Previous Updates (for deduplication checking)
 ${previousUpdatesStr}
 
 Return your JSON report.`;
 
-  const result = await callClaude(QA_SYSTEM_PROMPT, userPrompt, 4096);
+  const result = await callClaude(QA_SYSTEM_PROMPT, userPrompt, 4096, [HAIKU, SONNET]);
 
   try {
     return JSON.parse(result.text.trim());
@@ -291,7 +292,7 @@ ${draft}
 
 Return the complete patched document.`;
 
-  const result = await callClaude(systemPrompt, userPrompt);
+  const result = await callClaude(systemPrompt, userPrompt, 8000, [HAIKU, SONNET]);
   console.log(`   Patch model: ${result.model} | Tokens: ${result.usage.input_tokens} in, ${result.usage.output_tokens} out`);
   return result.text;
 }
@@ -340,9 +341,9 @@ async function main() {
   const prefs            = readFileSafe(path.join(projectRoot, 'context/prefs.md'));
   const openQuestions    = readFileSafe(path.join(projectRoot, 'context/open-questions.md'));
 
-  console.log('📖 Reading previous 7 days of updates for deduplication...');
+  console.log('📖 Reading previous 4 days of updates for deduplication...');
   const previousUpdates = [];
-  for (let i = 1; i <= 7; i++) {
+  for (let i = 1; i <= 4; i++) {
     const pastDate = new Date(today);
     pastDate.setDate(pastDate.getDate() - i);
     const pYear  = pastDate.getFullYear();

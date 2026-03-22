@@ -14,8 +14,8 @@ const { parsePeopleFile } = require('../adapters/markdown');
 const DEFAULT_DAYS_BACK = 5;
 const CONCURRENCY = 3;
 const BATCH_DELAY_MS = 3000;   // pause between batches to stay under tokens/min limit
-const MODEL = 'claude-sonnet-4-6';
-const FALLBACK_MODEL = 'claude-haiku-4-5-20251001';
+const MODEL = 'claude-haiku-4-5-20251001';
+const FALLBACK_MODEL = 'claude-sonnet-4-6';
 const MAX_429_RETRIES = 3;
 const RETRY_BASE_DELAY_MS = 15000; // 15s, doubles each retry
 
