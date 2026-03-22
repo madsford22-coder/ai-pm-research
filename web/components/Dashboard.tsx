@@ -195,7 +195,7 @@ export default function Dashboard() {
               {startDate || endDate ? 'Filtered Updates' : 'Latest Updates'}
             </h2>
             <Link
-              href="/updates/daily"
+              href="/"
               className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium text-sm transition-colors group"
             >
               View all

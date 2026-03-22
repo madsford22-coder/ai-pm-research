@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import Link from 'next/link';
 import { getContentByPath, getAllContentPaths, getAllContentMetadata } from '@/lib/content/loader';
 import { notFound } from 'next/navigation';
 import TableOfContents from '@/components/TableOfContents';
@@ -85,6 +86,15 @@ export default async function ContentPage({ params }: PageProps) {
 
   return (
     <div className="space-y-6 sm:space-y-8 animate-fade-in">
+      <Link
+        href="/"
+        className="lg:hidden inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+        Home
+      </Link>
       {isDailyUpdate && content.date && availableDates.length > 0 && (
         <DateNavigator
           currentDate={content.date instanceof Date ? content.date.toISOString().split('T')[0] : content.date}
