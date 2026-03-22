@@ -11,13 +11,15 @@
 const path = require('path');
 const { parsePeopleFile } = require('../adapters/markdown');
 
-const DEFAULT_DAYS_BACK = 5;
+const DEFAULT_DAYS_BACK = 3;
 const CONCURRENCY = 3;
-const BATCH_DELAY_MS = 3000;   // pause between batches to stay under tokens/min limit
+const BATCH_DELAY_MS = 3000;    // pause between batches to stay under tokens/min limit
 const MODEL = 'claude-haiku-4-5-20251001';
 const FALLBACK_MODEL = 'claude-sonnet-4-6';
-const MAX_429_RETRIES = 3;
-const RETRY_BASE_DELAY_MS = 15000; // 15s, doubles each retry
+const MAX_429_RETRIES = 2;      // reduced: 2 retries max (was 3)
+const RETRY_BASE_DELAY_MS = 10000; // 10s base, doubles each retry (was 15s)
+const PERSON_TIMEOUT_MS = 50000;   // 50s hard timeout per person
+const TOTAL_TIMEOUT_MS = 7 * 60 * 1000; // 7 min total — bail out with partial results
 
 /**
  * Strip Claude's reasoning preamble ("I'll search for...", "Let me try...") from
@@ -47,7 +49,7 @@ function stripPreamble(text) {
  * @param {number} daysBack
  * @returns {Promise<{name: string, text: string, hasActivity: boolean}>}
  */
-async function searchPersonActivity(anthropic, person, daysBack) {
+async function searchPersonActivityCore(anthropic, person, daysBack) {
   const { name, twitter, blog, rss_feed } = person;
 
   const profiles = [
@@ -125,6 +127,21 @@ Rules:
 }
 
 /**
+ * Wrapper: run searchPersonActivityCore with a hard per-person timeout.
+ */
+async function searchPersonActivity(anthropic, person, daysBack) {
+  const timeout = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('per-person timeout')), PERSON_TIMEOUT_MS)
+  );
+  try {
+    return await Promise.race([searchPersonActivityCore(anthropic, person, daysBack), timeout]);
+  } catch (err) {
+    console.warn(`  ⏰ ${person.name}: ${err.message} — skipping`);
+    return { name: person.name, text: 'No recent activity found.', hasActivity: false };
+  }
+}
+
+/**
  * Main pipeline: search all tracked people for recent activity.
  * @param {Object} options
  * @param {number}  options.daysBack   - Days to look back (default 2)
@@ -146,8 +163,15 @@ async function checkPeopleSearchPipeline(options = {}) {
 
   const results = [];
   const totalBatches = Math.ceil(people.length / CONCURRENCY);
+  const deadline = Date.now() + TOTAL_TIMEOUT_MS;
 
   for (let i = 0; i < people.length; i += CONCURRENCY) {
+    if (Date.now() >= deadline) {
+      const remaining = people.slice(i).map(p => p.name);
+      console.warn(`  ⏰ Total timeout reached — skipping remaining: ${remaining.join(', ')}`);
+      break;
+    }
+
     const batch = people.slice(i, i + CONCURRENCY);
     const batchNum = Math.floor(i / CONCURRENCY) + 1;
     console.log(`  Batch ${batchNum}/${totalBatches}: ${batch.map(p => p.name).join(', ')}`);

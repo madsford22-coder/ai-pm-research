@@ -41,7 +41,7 @@ EOF
 echo "Collecting people activity via web search..."
 echo "" >> "$OUTPUT_FILE"
 
-node scripts/check-people-search.js --days 5 >> "$OUTPUT_FILE" 2>&1 || {
+node scripts/check-people-search.js --days 3 >> "$OUTPUT_FILE" 2>&1 || {
     echo "ERROR: Failed to collect people activity data" >> "$OUTPUT_FILE"
     echo "Continuing with other data sources..."
 }

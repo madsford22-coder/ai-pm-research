@@ -49,8 +49,9 @@ async function main() {
     const result = await checkPeopleSearchPipeline({ daysBack, peopleFile, anthropic });
     console.log(result.output);
   } catch (error) {
-    console.error(`Error running people search: ${error.message}`);
-    process.exit(1);
+    // Log the error but exit cleanly so the shell script doesn't discard partial output
+    console.error(`## People Activity\n\nPeople search encountered an error: ${error.message}\n`);
+    process.exit(0);
   }
 }
 
