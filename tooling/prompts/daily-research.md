@@ -431,8 +431,6 @@ After reviewing today's collected data against the last 14 days of updates and t
 ## Sit With This
 
 [Reflection prompt as required — base it on the week's pattern or a prior day's item if nothing new today.]
-
-Complete your reflection in `/content/reflections/daily/YYYY-MM-DD.md`
 ```
 
 ## Framing Guidelines
@@ -520,8 +518,6 @@ Add this section at the very end of the daily update file:
 [Brief context from one of today's items that sets up the reflection question.]
 
 **For your [product/team/context]:** [One reflection question that challenges product judgment and requires a concrete decision or evaluation.]
-
-Complete your reflection in `/content/reflections/daily/YYYY-MM-DD.md`
 ```
 
 ### Requirements
@@ -543,7 +539,5 @@ The prompt must:
 Healio's research revealed physicians wanted AI for "patient communication and empathy"—not diagnostics. Their assumptions about user needs were fundamentally wrong.
 
 **For your AI product:** What assumptions are you making about what users want AI to help with? How would you discover if those assumptions are wrong before building?
-
-Complete your reflection in `/content/reflections/daily/2026-01-22.md`
 ```
 

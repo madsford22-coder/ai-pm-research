@@ -142,7 +142,7 @@ export function getAllContentMetadata(): ContentMetadata[] {
     // Extract summary from frontmatter, or fall back to a summary section in the body
     let summary = data.summary;
     if (!summary) {
-      const match = markdown.match(/##\s+(?:One-Line )?Summary\s*\n\n([^\n]+)/);
+      const match = markdown.match(/##\s+(?:The Short Version|(?:One-Line )?Summary)\s*\n\n([^\n]+)/);
       if (match) summary = match[1].trim();
     }
 
