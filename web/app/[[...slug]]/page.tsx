@@ -32,9 +32,12 @@ function processUpdateHTML(html: string): string {
   // Strip horizontal rules — colored blocks provide visual separation
   const stripped = html.replace(/<hr\s*\/?>/gi, '');
 
-  // Wrap h3 item sections in styled cards first
-  const h3Parts = stripped.split(/(?=<h3[ >])/);
-  const withCards = h3Parts.map((part) => {
+  // Split on h2 OR h3 boundaries so each part only contains its own content
+  // (splitting on h3 alone would let h3 parts swallow subsequent h2 sections)
+  const parts = stripped.split(/(?=<h[23][ >])/);
+
+  // Wrap h3 parts in cards
+  const withCards = parts.map((part) => {
     if (!part.startsWith('<h3')) return part;
     return `<div class="update-item-card">${part}</div>`;
   }).join('');
@@ -45,12 +48,18 @@ function processUpdateHTML(html: string): string {
     if (!part.startsWith('<h2')) return part;
     const idMatch = part.match(/<h2[^>]*\sid="([^"]+)"/);
     const id = idMatch?.[1] ?? '';
-    // Support both old and new header names for backward compat
-    if (id.includes('short-version') || id.includes('one-line-summary')) return `<div class="update-section-summary">${part}</div>`;
+    if (id.includes('short-version') || id.includes('one-line-summary')) {
+      // Only wrap the h2 + its summary text, not any cards that follow
+      const cardStart = part.indexOf('<div class="update-item-card"');
+      if (cardStart >= 0) {
+        return `<div class="update-section-summary">${part.slice(0, cardStart)}</div>${part.slice(cardStart)}`;
+      }
+      return `<div class="update-section-summary">${part}</div>`;
+    }
     if (id.includes('quick-hits')) return `<div class="update-section-quickhits">${part}</div>`;
     if (id.includes('thread') || id.includes('pattern')) return `<div class="update-section-pattern">${part}</div>`;
     if (id.includes('sit-with') || id.includes('reflection')) return `<div class="update-section-reflection">${part}</div>`;
-    if (id === 'items') return ''; // hide bare "Items" heading — cards are self-labeled
+    if (id === 'items') return '';
     return part;
   }).join('');
 }

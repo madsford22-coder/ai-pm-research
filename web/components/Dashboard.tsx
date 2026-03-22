@@ -92,7 +92,7 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="space-y-8 animate-fade-in">
+      <div className="space-y-8 animate-fade-in max-w-4xl mx-auto">
         <div className="bg-[#f3f0ea] dark:bg-[#1e1c16] rounded-2xl p-8 border border-[#e7e3dd] dark:border-[#2e2b24] overflow-hidden">
           <div className="h-8 animate-shimmer rounded w-1/3 mb-3"></div>
           <div className="h-4 animate-shimmer rounded w-2/3 mb-6"></div>
@@ -112,7 +112,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-8 animate-fade-in">
+    <div className="space-y-4 sm:space-y-8 animate-fade-in max-w-4xl mx-auto">
       {/* Hero / Intro Section */}
       <div className="rounded-2xl sm:rounded-3xl overflow-hidden bg-[#f3f0ea] dark:bg-[#1e1c16] border border-[#e7e3dd] dark:border-[#2e2b24]">
         <div className="px-6 sm:px-10 pt-8 sm:pt-10 pb-6 sm:pb-8">
