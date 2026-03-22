@@ -161,11 +161,11 @@ export default async function ContentPage({ params }: PageProps) {
                   </a>
                 </>
               )}
-              {isDailyUpdate && content.women_voices != null && content.women_voices > 0 && (
+              {isDailyUpdate && content.underrepresented_voices != null && content.underrepresented_voices > 0 && (
                 <>
                   <span className="text-[#e7e3dd] dark:text-[#2e2b24]">·</span>
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#f8eef5] dark:bg-[#2a1528] text-[#8b3a78] dark:text-[#c47eb0] border border-[#e4bcd8] dark:border-[#5a2e50]">
-                    {content.women_voices === 1 ? '1 woman featured' : `${content.women_voices} women featured`}
+                    {content.underrepresented_voices === 1 ? '1 underrepresented voice' : `${content.underrepresented_voices} underrepresented voices`}
                   </span>
                 </>
               )}

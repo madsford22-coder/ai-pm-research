@@ -152,7 +152,7 @@ export function getAllContentMetadata(): ContentMetadata[] {
       tags: Array.isArray(data.tags) ? data.tags : undefined,
       summary,
       source_url: data.source_url,
-      women_voices: typeof data.women_voices === 'number' ? data.women_voices : undefined,
+      underrepresented_voices: typeof data.underrepresented_voices === 'number' ? data.underrepresented_voices : typeof data.women_voices === 'number' ? data.women_voices : undefined,
       slug,
       path: filePath,
       url,

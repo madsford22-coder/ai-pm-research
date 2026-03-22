@@ -4,7 +4,7 @@ export interface ContentFrontmatter {
   tags?: string[];
   summary?: string;
   source_url?: string;
-  women_voices?: number;
+  underrepresented_voices?: number;
 }
 
 export interface ContentMetadata extends ContentFrontmatter {

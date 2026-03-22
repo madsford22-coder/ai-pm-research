@@ -153,7 +153,7 @@ export default function Dashboard() {
                 <p>
                   Every morning it pulls signals from the companies and people shaping applied AI and
                   distills it into something you can read over coffee. I pay special attention to voices
-                  that don&apos;t always make the front page: women in tech, builders outside the spotlight.
+                  that don&apos;t always make the front page: underrepresented voices in tech, builders outside the spotlight.
                   This is my quiet corner of the internet. I hope it becomes useful to you too.
                 </p>
               </div>
@@ -288,9 +288,9 @@ export default function Dashboard() {
                           })()}
                         </time>
                       )}
-                      {update.women_voices != null && update.women_voices > 0 && (
+                      {update.underrepresented_voices != null && update.underrepresented_voices > 0 && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#f8eef5] dark:bg-[#2a1528] text-[#8b3a78] dark:text-[#c47eb0] border border-[#e4bcd8] dark:border-[#5a2e50] shrink-0">
-                          {update.women_voices === 1 ? '1 woman featured' : `${update.women_voices} women featured`}
+                          {update.underrepresented_voices === 1 ? '1 underrepresented voice' : `${update.underrepresented_voices} underrepresented voices`}
                         </span>
                       )}
                     </div>

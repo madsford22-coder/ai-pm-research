@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Madison's Morning Memo",
-  description: "A daily PM research digest on applied AI — signals over noise, with a special eye on women in tech. By Madison Ford.",
+  description: "A daily PM research digest on applied AI — signals over noise, with a special eye on underrepresented voices in tech. By Madison Ford.",
   alternates: {
     types: {
       'application/rss+xml': '/rss.xml',
