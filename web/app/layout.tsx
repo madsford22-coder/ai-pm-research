@@ -26,10 +26,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 overflow-x-hidden">
+        <div className="flex min-h-screen bg-[#faf8f5] dark:bg-[#18160f] overflow-x-hidden">
           <Sidebar />
           <main className="flex-1 lg:ml-64 min-w-0">
-            <div className="sticky top-0 z-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-gray-200 dark:border-slate-700 px-4 sm:px-6 lg:px-8 py-4 shadow-sm">
+            <div className="sticky top-0 z-10 bg-[#faf8f5]/90 dark:bg-[#18160f]/90 backdrop-blur-xl border-b border-[#e7e3dd] dark:border-[#2e2b24] px-4 sm:px-6 lg:px-8 py-4 shadow-sm">
               <div className="flex items-center justify-between gap-4">
                 <Link
                   href="/"

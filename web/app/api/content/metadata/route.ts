@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getAllContentMetadata } from '@/lib/content/loader';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const metadata = getAllContentMetadata();

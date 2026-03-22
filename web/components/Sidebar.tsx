@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { ContentMetadata } from '@/lib/content/types';
 
@@ -241,8 +242,8 @@ function renderTree(node: TreeNode, pathname: string, level: number = 0): React.
           href={node.url}
           className={`block px-3 py-2 rounded-md text-sm transition-all relative ${
             isActive
-              ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium border-l-2 border-blue-600 dark:border-blue-400 pl-2.5'
-              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-gray-100'
+              ? 'bg-[#eef4e8] dark:bg-[#1e2d16] text-[#4a6830] dark:text-[#8db870] font-medium border-l-2 border-[#5a7a3a] dark:border-[#8db870] pl-2.5'
+              : 'text-[#78716c] dark:text-[#a8a29e] hover:bg-[#f0ede8] dark:hover:bg-[#2e2b24] hover:text-[#1c1917] dark:hover:text-[#f5f0ea]'
           }`}
         >
           {node.title.replace(/^#+\s+/, '').trim()}
@@ -255,14 +256,14 @@ function renderTree(node: TreeNode, pathname: string, level: number = 0): React.
                 href={node.url}
                 className={`block px-3 py-2 rounded-md text-sm font-semibold transition-all ${
                   isActive
-                    ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-gray-100'
+                    ? 'bg-[#eef4e8] dark:bg-[#1e2d16] text-[#4a6830] dark:text-[#8db870]'
+                    : 'text-[#44403c] dark:text-[#c8c4bc] hover:bg-[#f0ede8] dark:hover:bg-[#2e2b24] hover:text-[#1c1917] dark:hover:text-[#f5f0ea]'
                 }`}
               >
                 {node.name}
               </Link>
               {hasChildren && (
-                <ul className="ml-2 mt-1 space-y-0.5 border-l-2 border-gray-200 dark:border-slate-700 pl-3">
+                <ul className="ml-2 mt-1 space-y-0.5 border-l-2 border-[#e7e3dd] dark:border-[#2e2b24] pl-3">
                   {Array.from(node.children.values())
                     .sort((a, b) => {
                       // Summary first, then daily updates
@@ -280,7 +281,7 @@ function renderTree(node: TreeNode, pathname: string, level: number = 0): React.
             </>
           ) : (
             <>
-              <div className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <div className="px-3 py-2 text-xs font-semibold text-[#78716c] dark:text-[#a8a29e] uppercase tracking-wider">
                 {node.name}
               </div>
               {hasChildren && (
@@ -331,7 +332,7 @@ export default function Sidebar() {
       {/* Mobile menu button - improved touch target */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-4 left-4 z-20 p-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all text-gray-700 dark:text-gray-300"
+        className="lg:hidden fixed top-4 left-4 z-20 p-3 bg-[#faf8f5] dark:bg-[#1e1c16] border border-[#e7e3dd] dark:border-[#2e2b24] rounded-lg shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all text-[#44403c] dark:text-[#c8c4bc]"
         aria-label="Toggle menu"
         style={{ minWidth: '44px', minHeight: '44px' }}
       >
@@ -354,27 +355,43 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-full w-64 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-700 z-10 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed left-0 top-0 h-full w-64 bg-[#faf8f5] dark:bg-[#18160f] border-r border-[#e7e3dd] dark:border-[#2e2b24] z-10 transform transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } lg:translate-x-0 shadow-xl lg:shadow-none`}
       >
         <div className="p-6">
-          <div className="flex items-center justify-between mb-8">
-            <Link href="/" className="block">
-              <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">AI PM Research Hub</h1>
+          <div className="flex items-start justify-between mb-8">
+            <Link href="/" className="block group">
+              <div className="flex items-center gap-3 mb-1">
+                <div className="w-8 h-8 rounded-full overflow-hidden ring-1 ring-[#c8d8b8] dark:ring-[#4a6830] shrink-0">
+                  <Image
+                    src="/madison.jpeg"
+                    alt="Madison"
+                    width={32}
+                    height={32}
+                    className="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <span className="text-sm font-semibold text-[#1c1917] dark:text-[#f5f0ea] group-hover:text-[#5a7a3a] dark:group-hover:text-[#8db870] transition-colors">
+                  Madison&apos;s AI Research
+                </span>
+              </div>
+              <p className="text-xs text-[#78716c] dark:text-[#a8a29e] pl-11">
+                Daily PM intelligence
+              </p>
             </Link>
             {/* Close button for mobile inside sidebar */}
             <button
               onClick={() => setIsOpen(false)}
-              className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+              className="lg:hidden p-2 hover:bg-[#f0ede8] dark:hover:bg-[#2e2b24] rounded-lg transition-colors"
               aria-label="Close menu"
             >
-              <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-[#78716c] dark:text-[#a8a29e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
-          <nav className="overflow-y-auto max-h-[calc(100vh-8rem)]">
+          <nav className="overflow-y-auto max-h-[calc(100vh-14rem)]">
             {tree ? (
               renderTree(tree, pathname)
             ) : (
@@ -385,6 +402,32 @@ export default function Sidebar() {
               </div>
             )}
           </nav>
+          <div className="absolute bottom-0 left-0 right-0 px-6 py-4 border-t border-[#e7e3dd] dark:border-[#2e2b24] bg-[#faf8f5] dark:bg-[#18160f]">
+            <div className="flex items-center gap-3">
+              <a
+                href="mailto:madsford22@gmail.com"
+                className="flex items-center gap-1.5 text-xs text-[#78716c] dark:text-[#a8a29e] hover:text-[#5a7a3a] dark:hover:text-[#8db870] transition-colors"
+                title="Email Madison"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Say hello
+              </a>
+              <span className="text-[#e7e3dd] dark:text-[#2e2b24]">·</span>
+              <a
+                href="https://www.linkedin.com/in/madison-ford-31897872/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-xs text-[#78716c] dark:text-[#a8a29e] hover:text-[#5a7a3a] dark:hover:text-[#8db870] transition-colors"
+              >
+                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+                LinkedIn
+              </a>
+            </div>
+          </div>
         </div>
       </aside>
 

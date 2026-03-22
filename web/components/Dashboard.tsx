@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ContentMetadata } from '@/lib/content/types';
 
 export default function Dashboard() {
@@ -92,14 +93,14 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="space-y-8 animate-fade-in">
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 rounded-2xl p-8 border border-blue-100 dark:border-blue-900 overflow-hidden">
+        <div className="bg-[#f3f0ea] dark:bg-[#1e1c16] rounded-2xl p-8 border border-[#e7e3dd] dark:border-[#2e2b24] overflow-hidden">
           <div className="h-8 animate-shimmer rounded w-1/3 mb-3"></div>
           <div className="h-4 animate-shimmer rounded w-2/3 mb-6"></div>
           <div className="h-10 animate-shimmer rounded w-32"></div>
         </div>
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 p-6 overflow-hidden">
+            <div key={i} className="bg-white dark:bg-[#1e1c16] rounded-lg border border-[#e7e3dd] dark:border-[#2e2b24] p-6 overflow-hidden">
               <div className="h-6 animate-shimmer rounded w-3/4 mb-3"></div>
               <div className="h-4 animate-shimmer rounded w-full mb-2"></div>
               <div className="h-4 animate-shimmer rounded w-5/6"></div>
@@ -112,40 +113,98 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-4 sm:space-y-8 animate-fade-in">
-      {/* Hero Section */}
-      <div className="relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950 rounded-2xl sm:rounded-3xl -z-10"></div>
-        <div className="px-4 sm:px-8 py-5 sm:py-7 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shrink-0">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
+      {/* Hero / Intro Section */}
+      <div className="rounded-2xl sm:rounded-3xl overflow-hidden bg-[#f3f0ea] dark:bg-[#1e1c16] border border-[#e7e3dd] dark:border-[#2e2b24]">
+        <div className="px-6 sm:px-10 pt-8 sm:pt-10 pb-6 sm:pb-8">
+          <div className="flex flex-col sm:flex-row sm:items-start gap-6 sm:gap-8">
+            {/* Photo */}
+            <div className="shrink-0 self-start">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden ring-2 ring-[#c8d8b8] dark:ring-[#4a6830] shadow-md">
+                <Image
+                  src="/madison.jpeg"
+                  alt="Madison"
+                  width={96}
+                  height={96}
+                  className="w-full h-full object-cover object-top"
+                  priority
+                />
+              </div>
             </div>
-            <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
-              AI PM Research Hub
-            </h1>
+
+            {/* Text */}
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-medium tracking-widest uppercase text-[#78716c] dark:text-[#a8a29e] mb-2">
+                AI PM Research
+              </p>
+              <h1 className="text-2xl sm:text-3xl font-semibold text-[#1c1917] dark:text-[#f5f0ea] leading-snug mb-4">
+                Your daily signal from the AI world — no noise required.
+              </h1>
+              <div className="space-y-3 text-[15px] leading-relaxed text-[#44403c] dark:text-[#c8c4bc]">
+                <p>
+                  Hi, I&apos;m Madison. I&apos;m a Senior PM at Rocket Money, where I build AI products
+                  that help millions of people manage their finances. It&apos;s work that feels personal:
+                  I grew up on financial aid and know firsthand what it means to stretch a dollar.
+                </p>
+                <p>
+                  I&apos;m also deeply curious about where AI is going, but I&apos;m not on social media
+                  and I don&apos;t want to be. I wanted a way to stay informed without the endless scroll,
+                  something intentional and actually useful. So I built this.
+                </p>
+                <p>
+                  Every morning it pulls signals from the companies and people shaping applied AI and
+                  distills it into something you can read over coffee. I pay special attention to voices
+                  that don&apos;t always make the front page: women in tech, builders outside the spotlight.
+                  This is my quiet corner of the internet. I hope it becomes useful to you too.
+                </p>
+              </div>
+            </div>
           </div>
-          {allUpdates.length > 0 && (
-            <Link
-              href={allUpdates[0].url}
-              className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
-            >
-              Today&apos;s update
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          )}
+
+          {/* CTA + contact */}
+          <div className="mt-6 pt-6 border-t border-[#ddd9d2] dark:border-[#2e2b24] flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="flex items-center gap-4 flex-1">
+              <a
+                href="mailto:madsford22@gmail.com"
+                className="inline-flex items-center gap-1.5 text-sm text-[#78716c] dark:text-[#a8a29e] hover:text-[#5a7a3a] dark:hover:text-[#8db870] transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Say hello
+              </a>
+              <a
+                href="https://www.linkedin.com/in/madison-ford-31897872/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm text-[#78716c] dark:text-[#a8a29e] hover:text-[#5a7a3a] dark:hover:text-[#8db870] transition-colors"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+                LinkedIn
+              </a>
+            </div>
+            {allUpdates.length > 0 && (
+              <Link
+                href={allUpdates[0].url}
+                className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 bg-[#5a7a3a] hover:bg-[#4a6830] text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
+              >
+                Today&apos;s update
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Date Range Filter */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-3 sm:p-6 overflow-hidden">
+      <div className="bg-white dark:bg-[#1e1c16] rounded-xl border border-[#e7e3dd] dark:border-[#2e2b24] p-3 sm:p-6 overflow-hidden">
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-end">
           <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 w-full min-w-0">
             <div className="min-w-0">
-              <label htmlFor="start-date" className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+              <label htmlFor="start-date" className="block text-xs sm:text-sm font-medium text-[#44403c] dark:text-[#c8c4bc] mb-1 sm:mb-2">
                 From
               </label>
               <input
@@ -153,11 +212,11 @@ export default function Dashboard() {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full min-w-0 px-1.5 sm:px-3 py-1.5 sm:py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
+                className="w-full min-w-0 px-1.5 sm:px-3 py-1.5 sm:py-2 border border-[#e7e3dd] dark:border-[#2e2b24] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#5a7a3a] dark:focus:ring-[#8db870] bg-[#faf8f5] dark:bg-[#18160f] text-[#1c1917] dark:text-[#f5f0ea]"
               />
             </div>
             <div className="min-w-0">
-              <label htmlFor="end-date" className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+              <label htmlFor="end-date" className="block text-xs sm:text-sm font-medium text-[#44403c] dark:text-[#c8c4bc] mb-1 sm:mb-2">
                 To
               </label>
               <input
@@ -165,7 +224,7 @@ export default function Dashboard() {
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full min-w-0 px-1.5 sm:px-3 py-1.5 sm:py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
+                className="w-full min-w-0 px-1.5 sm:px-3 py-1.5 sm:py-2 border border-[#e7e3dd] dark:border-[#2e2b24] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#5a7a3a] dark:focus:ring-[#8db870] bg-[#faf8f5] dark:bg-[#18160f] text-[#1c1917] dark:text-[#f5f0ea]"
               />
             </div>
           </div>
@@ -196,7 +255,7 @@ export default function Dashboard() {
             </h2>
             <Link
               href="/"
-              className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium text-sm transition-colors group"
+              className="inline-flex items-center gap-1 text-[#5a7a3a] dark:text-[#8db870] hover:text-[#4a6830] dark:hover:text-[#a3cc83] font-medium text-sm transition-colors group"
             >
               View all
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,7 +268,7 @@ export default function Dashboard() {
               <Link
                 key={update.url}
                 href={update.url}
-                className="group relative bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-4 sm:p-6 hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-lg hover:shadow-blue-100/50 dark:hover:shadow-blue-900/30 hover:-translate-y-0.5 transition-all duration-200"
+                className="group relative bg-white dark:bg-[#1e1c16] border border-[#e7e3dd] dark:border-[#2e2b24] rounded-xl p-4 sm:p-6 hover:border-[#c8d8b8] dark:hover:border-[#4a6830] hover:shadow-lg hover:shadow-[#c8d8b8]/40 dark:hover:shadow-[#2a3d1a]/30 hover:-translate-y-0.5 transition-all duration-200"
               >
                 <div className="flex items-start justify-between gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
@@ -230,7 +289,7 @@ export default function Dashboard() {
                         </time>
                       )}
                     </div>
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+                    <h3 className="text-base sm:text-lg font-semibold text-[#1c1917] dark:text-[#f5f0ea] mb-2 group-hover:text-[#5a7a3a] dark:group-hover:text-[#8db870] transition-colors line-clamp-2">
                       {update.title.replace(/^#+\s+/, '').trim()}
                     </h3>
                     {update.summary && (
@@ -239,8 +298,8 @@ export default function Dashboard() {
                       </p>
                     )}
                   </div>
-                  <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gray-50 dark:bg-slate-700 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 flex items-center justify-center transition-colors">
-                    <svg className="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-[#f3f0ea] dark:bg-[#2e2b24] group-hover:bg-[#eef4e8] dark:group-hover:bg-[#1e2d16] flex items-center justify-center transition-colors">
+                    <svg className="w-4 h-4 text-[#a8a29e] dark:text-[#78716c] group-hover:text-[#5a7a3a] dark:group-hover:text-[#8db870] group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </div>
