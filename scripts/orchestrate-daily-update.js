@@ -125,11 +125,39 @@ function validateAndCleanContent(content) {
   return { valid: true, content };
 }
 
+// ─── Extract people items from collected data ─────────────────────────────────
+function extractPeopleItems(collectedData) {
+  const sectionMatch = collectedData.match(/## People Activity[\s\S]*?(?=\n## |\n={5,}|$)/);
+  if (!sectionMatch) return [];
+  const section = sectionMatch[0];
+  const items = [];
+  const personMatches = section.matchAll(/### ([^\n]+)\n([\s\S]*?)(?=\n### |\n\*No activity|\n## |$)/g);
+  for (const match of personMatches) {
+    const name = match[1].trim();
+    const text = match[2].trim();
+    if (text && !text.toLowerCase().startsWith('no recent activity')) {
+      items.push({ name, text });
+    }
+  }
+  return items;
+}
+
 // ─── Synthesizer Agent ────────────────────────────────────────────────────────
 async function runSynthesizer(context, qaFeedback = null) {
   const { researchPrompt, companies, people, prefs, openQuestions, previousUpdates, collectedData } = context;
 
-  const systemPrompt = `${researchPrompt}
+  const systemPrompt = `## OFFLINE SYNTHESIS MODE — READ THIS FIRST
+
+You are operating in OFFLINE synthesis mode. The research prompt below was written for an interactive Cursor workflow with full web access. You have NO web access. Override rules for this mode:
+
+1. You CANNOT fetch URLs. Do not attempt to access any link. Synthesize entirely from the pre-collected metadata provided in the user message.
+2. The "Actually read the sources" and "Fetch and analyze full content" instructions in the research prompt DO NOT APPLY. Treat the pre-collected metadata (titles, URLs, dates, excerpts) as the full evidence available.
+3. People posts are PRE-APPROVED for Quick Hits. Any tracked person listed in the "Tracked People With Activity" section MUST appear in Quick Hits. You do not need to apply the full quality bar — a name, title, URL, and date is sufficient. Do not filter people posts out.
+4. The only valid reason to exclude a people item is if its exact URL already appears in a previous update.
+
+---
+
+${researchPrompt}
 
 # Context Files
 
@@ -137,7 +165,7 @@ async function runSynthesizer(context, qaFeedback = null) {
 ${companies}
 
 ## context/people.md
-Activity from tracked people is pre-collected in the research data. Include any item from a tracked person that appears in the collected data — do not filter based on unfamiliarity with who they are.
+Activity from tracked people is pre-collected. Include any item from a tracked person that appears in the collected data.
 
 ## context/prefs.md
 ${prefs}
@@ -148,35 +176,46 @@ ${openQuestions}
 # Previous Updates (for deduplication)
 ${previousUpdates.length > 0 ? previousUpdates.map(u => `## ${u.date}\n${u.content}`).join('\n\n') : 'No previous updates found.'}`;
 
+  // Pre-extract people items so the synthesizer doesn't have to hunt for them
+  const peopleItems = extractPeopleItems(collectedData);
+
   let userPrompt = `Today is ${dateStr}.
 
 Generate the daily research update for today based on the collected data below.
 
 CRITICAL OUTPUT FORMAT: Your response must be raw markdown ONLY. Do NOT wrap in code fences (\`\`\`markdown). Do NOT add any preamble, explanation, or label before the content. The very first characters of your response must be exactly: ---
 
-## IMPORTANT: You are working from pre-collected metadata
+## You are working from pre-collected metadata (offline)
 
-The "Collected Research Data" section below contains metadata scraped from RSS feeds and blogs: titles, URLs, publication dates, and summaries where available. You are working offline — you CANNOT and SHOULD NOT attempt to fetch URLs or read external content. Synthesize entirely from what is provided here.
+The "Collected Research Data" section contains metadata scraped from RSS feeds and web search: titles, URLs, publication dates, and excerpts. Synthesize entirely from this — do not attempt to fetch any URLs.
 
-This means:
-- For items WITH a summary or excerpt in the data: use that to write the "What happened" section
-- For items WITHOUT a summary (title + URL only): use the title, source, and publication date to write a concise "What happened" based on what the title suggests shipped or was announced, then note full details are at the URL
+- For items WITH an excerpt: use it to write the analysis
+- For items WITHOUT an excerpt (title + URL only): write a concise description based on what the title suggests, then note full details are at the URL
 - DO NOT skip items just because you lack the full article text — use what's available
-- When you cannot complete the full synthesis format for an item, put it in Quick Hits instead of excluding it
+- When you cannot complete the full synthesis format, put the item in Quick Hits instead of excluding it
 
-## Inclusion rules (these override any filtering instinct)
+## Inclusion rules (override any filtering instinct)
 
 - DEFAULT TO INCLUDING. If a tracked company or person had any activity, there is ALWAYS at minimum a Quick Hit.
-- Quick Hits bar is low: a shipped product change or post from a tracked person with a title, URL, and date is sufficient — no full synthesis needed.
-- Do NOT output "No meaningful PM-relevant updates today" if the collected data shows any activity from tracked companies or people. Use Quick Hits instead.
-- DEDUPLICATION: Skip only the SAME event (same URL already in a prior update). Do NOT skip based on topic overlap.
-- Pricing changes, platform launches, new features, and business model changes are ALWAYS new events.
+- Do NOT output "No meaningful PM-relevant updates today" if the collected data shows any activity from tracked companies or people.
+- DEDUPLICATION: Skip only items whose exact URL already appears in a prior update. Topic overlap is NOT a valid reason to skip.
 
-## Reminders
-- Maximum 3-5 items in detailed analysis
-- Maximum 5 items in "Quick Hits" section
-- Include the Daily Product Reflection Challenge at the end
-- Output file should be saved to: updates/daily/${year}/${dateStr}.md`;
+## Quick Hits — REQUIRED inclusions
+
+Quick Hits must contain the top 5 most PM-relevant items from the list below. These are pre-approved — include them without applying the full quality bar.`;
+
+  if (peopleItems.length > 0) {
+    userPrompt += `\n\n### Tracked People With Activity Today (${peopleItems.length} people — pick top 5 for Quick Hits by PM relevance)\n\n`;
+    userPrompt += peopleItems.map(p => `**${p.name}**\n${p.text}`).join('\n\n');
+  } else {
+    userPrompt += `\n\n*(No tracked people had activity today — Quick Hits should come from company updates.)*`;
+  }
+
+  userPrompt += `\n\n## Other reminders
+- Maximum 3-5 items in detailed analysis (choose the highest-signal company or people items)
+- Maximum 5 items in Quick Hits (people items take priority — fill remaining slots with company updates)
+- Include Sit With This at the end
+- Output file: updates/daily/${year}/${dateStr}.md`;
 
   if (qaFeedback) {
     userPrompt += `\n\n## ⚠️ QA Review Found Issues with Previous Attempt\n\n${qaFeedback}\n\nPlease revise your output to address the above. Ensure all listed items are included at minimum in Quick Hits.`;
@@ -222,10 +261,13 @@ An item belongs in Quick Hits if ALL of these are true:
 - It represents a shipped product change, new feature, new post, pricing or business model change
 - Its exact URL does NOT already appear in any of the previous 7 days of updates provided
 
+## Quick Hits cap
+Quick Hits is limited to 5 items. If more than 5 qualifying items exist, the synthesizer picks the top 5 by PM relevance — this is correct behavior. Do NOT flag items as missed solely because Quick Hits is already full with 5 high-signal items. Only flag an item as missed if it is higher signal than one already in Quick Hits and should have displaced it, OR if Quick Hits has fewer than 5 items when more qualifying items were available.
+
 ## Severity
 - "none": pass=true
 - "minor": pass=false, only 1-2 Quick Hits missed — patch directly without retrying synthesizer
-- "major": pass=false with meaningful content missed (3+ items, or "no updates" output when activity exists) — retry synthesizer with feedback first
+- "major": pass=false with meaningful content missed (3+ items missed, Quick Hits has fewer than 5 when 5+ qualifying items existed, or "no updates" output when activity exists) — retry synthesizer with feedback first
 
 ## Deduplication rule
 An item is a TRUE duplicate ONLY if the exact same URL already appears in the previous 7 days of updates.
