@@ -423,6 +423,13 @@ body {
   border-color: #e5e7eb;
 }
 
+.prose h1 > a,
+.prose h2 > a,
+.prose h3 > a,
+.prose h4 > a {
+  border-bottom: none !important;
+}
+
 .prose .anchor-link {
   @apply ml-2 no-underline;
   color: #9ca3af;

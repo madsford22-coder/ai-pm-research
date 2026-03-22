@@ -101,18 +101,19 @@ function slugToTitle(slug: string): string {
 
 async function processMarkdown(markdown: string): Promise<string> {
   // Remove the first h1 if it exists (we use frontmatter title instead)
+  // Remove the first h1 wherever it appears (content often starts with a blank line before the h1)
   const lines = markdown.split('\n');
-  let skipFirstH1 = false;
-  const processedLines = lines.filter((line, index) => {
-    if (index === 0 && line.match(/^#+\s+/)) {
-      skipFirstH1 = true;
+  let removedH1 = false;
+  const processedLines = lines.filter((line) => {
+    if (!removedH1 && line.match(/^#\s+/)) {
+      removedH1 = true;
       return false;
     }
     return true;
   });
-  
+
   const processedMarkdown = processedLines.join('\n');
-  
+
   const result = await unified()
     .use(remarkParse)
     .use(remarkGfm)
@@ -142,17 +143,17 @@ async function processMarkdown(markdown: string): Promise<string> {
 export function processMarkdownSync(markdown: string): string {
   // Remove the first h1 if it exists (we use frontmatter title instead)
   const lines = markdown.split('\n');
-  let skipFirstH1 = false;
-  const processedLines = lines.filter((line, index) => {
-    if (index === 0 && line.match(/^#+\s+/)) {
-      skipFirstH1 = true;
+  let removedH1 = false;
+  const processedLines = lines.filter((line) => {
+    if (!removedH1 && line.match(/^#\s+/)) {
+      removedH1 = true;
       return false;
     }
     return true;
   });
-  
+
   const processedMarkdown = processedLines.join('\n');
-  
+
   const result = unified()
     .use(remarkParse)
     .use(remarkGfm)

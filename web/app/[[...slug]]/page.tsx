@@ -129,18 +129,21 @@ export default async function ContentPage({ params }: PageProps) {
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1c1917] dark:text-[#f5f0ea] leading-[1.1] mb-4 sm:mb-6 tracking-[-0.025em]">
               {formattedTitle}
             </h1>
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-sm text-[#78716c] dark:text-[#a8a29e] mb-4">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-sm mb-4">
               {content.date && (
-                <time dateTime={content.date instanceof Date ? content.date.toISOString() : content.date} className="font-medium">
+                <time
+                  dateTime={content.date instanceof Date ? content.date.toISOString() : content.date}
+                  className="text-xs font-medium tracking-wide uppercase text-[#78716c] dark:text-[#a8a29e]"
+                >
                   {(() => {
                     const date = content.date instanceof Date
                       ? content.date
                       : (content.date.includes('T') ? new Date(content.date) : new Date(content.date + 'T00:00:00'));
                     return date.toLocaleDateString('en-US', {
-                      weekday: 'long',
-                      year: 'numeric',
                       month: 'long',
                       day: 'numeric',
+                      year: 'numeric',
+                      timeZone: 'UTC',
                     });
                   })()}
                 </time>
