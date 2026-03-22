@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { getContentByPath, getAllContentPaths, getAllContentMetadata } from '@/lib/content/loader';
 import { notFound } from 'next/navigation';
 import TableOfContents from '@/components/TableOfContents';
@@ -32,7 +33,11 @@ export default async function ContentPage({ params }: PageProps) {
   // Handle root route - show dashboard
   if (!slug || slug.length === 0) {
     const Dashboard = (await import('@/components/Dashboard')).default;
-    return <Dashboard />;
+    return (
+      <Suspense>
+        <Dashboard />
+      </Suspense>
+    );
   }
   
   const filePath = `${slug.join('/')}.md`;
