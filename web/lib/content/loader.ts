@@ -127,23 +127,30 @@ export function getAllContentMetadata(): ContentMetadata[] {
       }
     }
 
-    const { data } = matter(content);
-    
+    const { data, content: markdown } = matter(content);
+
     const slug = filePath.replace(/\.md$/, '');
     const url = slug === 'index' ? '/' : `/${slug}`;
     let title = data.title || slugToTitle(slug);
-    
+
     // Ensure "AI" is always capitalized correctly
     title = title.replace(/\bAi\b/gi, 'AI');
     title = title.replace(/\bai\b/gi, 'AI');
     // Ensure "PMs" is always capitalized correctly
     title = title.replace(/\bPms\b/g, 'PMs');
 
+    // Extract summary from frontmatter, or fall back to a summary section in the body
+    let summary = data.summary;
+    if (!summary) {
+      const match = markdown.match(/##\s+(?:One-Line )?Summary\s*\n\n([^\n]+)/);
+      if (match) summary = match[1].trim();
+    }
+
     return {
       title,
       date: data.date,
       tags: Array.isArray(data.tags) ? data.tags : undefined,
-      summary: data.summary,
+      summary,
       source_url: data.source_url,
       slug,
       path: filePath,

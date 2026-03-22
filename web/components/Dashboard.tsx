@@ -115,20 +115,28 @@ export default function Dashboard() {
       {/* Hero Section */}
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950 rounded-2xl sm:rounded-3xl -z-10"></div>
-        <div className="px-4 sm:px-8 py-8 sm:py-12">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-              <svg className="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="px-4 sm:px-8 py-5 sm:py-7 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shrink-0">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
+            <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
               AI PM Research Hub
             </h1>
           </div>
-          <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl">
-            Your daily dose of AI product insights, practical patterns, and PM takeaways from the evolving world of AI tools and workflows
-          </p>
+          {allUpdates.length > 0 && (
+            <Link
+              href={allUpdates[0].url}
+              className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
+            >
+              Today's update
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          )}
         </div>
       </div>
 
@@ -205,23 +213,30 @@ export default function Dashboard() {
               >
                 <div className="flex items-start justify-between gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-1.5">
+                      {update.date && (
+                        <time className="text-xs text-gray-400 dark:text-gray-500 font-medium shrink-0" dateTime={update.date instanceof Date ? update.date.toISOString() : update.date}>
+                          {(() => {
+                            const date = update.date instanceof Date
+                              ? update.date
+                              : (update.date.includes('T') ? new Date(update.date) : new Date(update.date + 'T00:00:00'));
+                            return date.toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
+                              timeZone: 'UTC',
+                            });
+                          })()}
+                        </time>
+                      )}
+                    </div>
                     <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
                       {update.title.replace(/^#+\s+/, '').trim()}
                     </h3>
-                    {update.date && (
-                      <time className="text-sm text-gray-500 dark:text-gray-400 font-medium" dateTime={update.date instanceof Date ? update.date.toISOString() : update.date}>
-                        {(() => {
-                          const date = update.date instanceof Date
-                            ? update.date
-                            : (update.date.includes('T') ? new Date(update.date) : new Date(update.date + 'T00:00:00'));
-                          return date.toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric',
-                            timeZone: 'UTC',
-                          });
-                        })()}
-                      </time>
+                    {update.summary && (
+                      <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
+                        {update.summary}
+                      </p>
                     )}
                   </div>
                   <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gray-50 dark:bg-slate-700 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 flex items-center justify-center transition-colors">
