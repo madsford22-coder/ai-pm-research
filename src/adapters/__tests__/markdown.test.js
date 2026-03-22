@@ -73,6 +73,7 @@ describe('markdown adapters', () => {
         name: 'Example Corp',
         category: 'AI Platform',
         blogs: ['https://example.com/blog'],
+        blogFeedUrls: {},
         changelogs: ['https://example.com/changelog'],
         twitter: 'https://twitter.com/examplecorp',
       });
@@ -80,6 +81,7 @@ describe('markdown adapters', () => {
         name: 'Another Company',
         category: 'Tools',
         blogs: ['https://another.com/news'],
+        blogFeedUrls: {},
         changelogs: [],
         twitter: null,
       });
