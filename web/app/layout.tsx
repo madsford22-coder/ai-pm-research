@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import Search from "@/components/Search";
@@ -30,6 +31,15 @@ export default function RootLayout({
           <main className="flex-1 lg:ml-64 min-w-0">
             <div className="sticky top-0 z-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-gray-200 dark:border-slate-700 px-4 sm:px-6 lg:px-8 py-4 shadow-sm">
               <div className="flex items-center justify-between gap-4">
+                <Link
+                  href="/"
+                  className="lg:hidden flex-shrink-0 p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+                  aria-label="Home"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                  </svg>
+                </Link>
                 <div className="flex-1 max-w-2xl min-w-0">
                   <Search />
                 </div>
