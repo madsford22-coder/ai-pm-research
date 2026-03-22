@@ -59,7 +59,7 @@ function processUpdateHTML(html: string): string {
     if (id.includes('quick-hits')) return `<div class="update-section-quickhits">${part}</div>`;
     if (id.includes('thread') || id.includes('pattern')) return `<div class="update-section-pattern">${part}</div>`;
     if (id.includes('sit-with') || id.includes('reflection')) return `<div class="update-section-reflection">${part}</div>`;
-    if (id === 'items') return '';
+    if (id === 'items') return part.replace(/<h2[^>]*>.*?<\/h2>/, '');
     return part;
   }).join('');
 }
