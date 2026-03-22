@@ -107,9 +107,13 @@ Rules:
         return { name, text: text || 'No recent activity found.', hasActivity: !noActivity };
       } catch (err) {
         const is429 = err.status === 429 || err.message?.includes('rate_limit');
-        if (is429 && attempt < MAX_429_RETRIES) {
+        const isTransient = err.code === 'ECONNRESET' || err.code === 'ETIMEDOUT' ||
+          err.message?.includes('network') || err.message?.includes('connect');
+
+        if ((is429 || isTransient) && attempt < MAX_429_RETRIES) {
           const delay = RETRY_BASE_DELAY_MS * Math.pow(2, attempt);
-          console.warn(`  ⏳ ${name}: rate limited, retrying in ${delay / 1000}s (attempt ${attempt + 1}/${MAX_429_RETRIES})...`);
+          const reason = is429 ? 'rate limited' : 'transient error';
+          console.warn(`  ⏳ ${name}: ${reason}, retrying in ${delay / 1000}s (attempt ${attempt + 1}/${MAX_429_RETRIES})...`);
           await new Promise(r => setTimeout(r, delay));
           attempt++;
           continue;
@@ -118,7 +122,7 @@ Rules:
           console.warn(`  ⚠️  ${name}: primary model failed (${err.message}), trying fallback...`);
         } else {
           console.error(`  ✗ ${name}: both models failed — ${err.message}`);
-          return { name, text: `Search error: ${err.message}`, hasActivity: false };
+          return { name, text: `Search error: ${err.message}`, hasActivity: false, errored: true };
         }
         break; // move to fallback model
       }
@@ -137,7 +141,7 @@ async function searchPersonActivity(anthropic, person, daysBack) {
     return await Promise.race([searchPersonActivityCore(anthropic, person, daysBack), timeout]);
   } catch (err) {
     console.warn(`  ⏰ ${person.name}: ${err.message} — skipping`);
-    return { name: person.name, text: 'No recent activity found.', hasActivity: false };
+    return { name: person.name, text: `Search error: ${err.message}`, hasActivity: false, errored: true };
   }
 }
 
@@ -187,13 +191,19 @@ async function checkPeopleSearchPipeline(options = {}) {
     }
   }
 
-  const activeCount = results.filter(r => r.hasActivity).length;
-  console.log(`\n  Found activity for ${activeCount}/${people.length} people\n`);
+  const active   = results.filter(r => r.hasActivity);
+  const errored  = results.filter(r => r.errored);
+  const inactive = results.filter(r => !r.hasActivity && !r.errored);
+
+  console.log(`\n  Found activity for ${active.length}/${people.length} people (${errored.length} errored, ${inactive.length} no activity)\n`);
+  if (errored.length > 0) {
+    console.warn(`  ⚠️  Errored: ${errored.map(r => r.name).join(', ')}`);
+  }
 
   // Format as markdown section
   const lines = [`## People Activity (Last ${daysBack} Days)`];
+  lines.push(`*Searched: ${people.length} people — ${active.length} with activity, ${inactive.length} quiet, ${errored.length} errored*`);
 
-  const active = results.filter(r => r.hasActivity);
   if (active.length === 0) {
     lines.push('\nNo recent activity found for any tracked people.');
   } else {
@@ -203,10 +213,11 @@ async function checkPeopleSearchPipeline(options = {}) {
     }
   }
 
-  // Append quiet list of people with no activity for transparency
-  const inactive = results.filter(r => !r.hasActivity).map(r => r.name);
   if (inactive.length > 0) {
-    lines.push(`\n*No activity found for: ${inactive.join(', ')}*`);
+    lines.push(`\n*No activity found for: ${inactive.map(r => r.name).join(', ')}*`);
+  }
+  if (errored.length > 0) {
+    lines.push(`\n*Search errors (will retry tomorrow): ${errored.map(r => r.name).join(', ')}*`);
   }
 
   return { results, output: lines.join('\n') };

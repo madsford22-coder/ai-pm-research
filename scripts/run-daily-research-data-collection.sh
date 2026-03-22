@@ -10,6 +10,12 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
 cd "$PROJECT_ROOT"
 
+# Load ANTHROPIC_API_KEY from .env if not already set (for local runs — GitHub Actions uses secrets)
+if [ -z "$ANTHROPIC_API_KEY" ] && [ -f "$PROJECT_ROOT/.env" ]; then
+  ANTHROPIC_API_KEY=$(grep "^ANTHROPIC_API_KEY=" "$PROJECT_ROOT/.env" | head -1 | cut -d'=' -f2- | tr -d '"'"'"' ')
+  export ANTHROPIC_API_KEY
+fi
+
 # Set environment variables to disable Chrome crashpad (avoids permission issues)
 export CHROME_CRASHPAD_HANDLER_PATH=""
 export GOOGLE_CHROME_CRASHPAD_HANDLER_PATH=""

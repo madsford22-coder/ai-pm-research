@@ -250,15 +250,26 @@ ${previousUpdatesStr}
 
 Return your JSON report.`;
 
-  const result = await callClaude(QA_SYSTEM_PROMPT, userPrompt, 4096, [HAIKU, SONNET]);
+  async function attempt(prompt) {
+    const result = await callClaude(QA_SYSTEM_PROMPT, prompt, 4096, [HAIKU, SONNET]);
+    let raw = result.text.trim();
+    // Strip markdown fences if model wrapped the JSON despite instructions
+    const fenceMatch = raw.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
+    if (fenceMatch) raw = fenceMatch[1].trim();
+    return JSON.parse(raw);
+  }
 
   try {
-    return JSON.parse(result.text.trim());
+    return await attempt(userPrompt);
   } catch (e) {
-    // If QA can't produce valid JSON, don't block the pipeline
-    console.warn(`   ⚠️  QA response was not valid JSON — defaulting to pass`);
-    console.warn(`   QA raw output: ${result.text.substring(0, 200)}`);
-    return { pass: true, severity: 'none', issues: [], feedback_for_synthesizer: null };
+    // Retry once with an explicit format reminder
+    console.warn(`   ⚠️  QA response was not valid JSON — retrying with format reminder...`);
+    try {
+      return await attempt(userPrompt + '\n\nCRITICAL: Your previous response was not valid JSON. Return ONLY a raw JSON object — no markdown fences, no preamble, no explanation. Start your response with { and end with }.');
+    } catch (e2) {
+      console.warn(`   ⚠️  QA retry also failed — defaulting to pass`);
+      return { pass: true, severity: 'none', issues: [], feedback_for_synthesizer: null };
+    }
   }
 }
 
@@ -294,7 +305,12 @@ Return the complete patched document.`;
 
   const result = await callClaude(systemPrompt, userPrompt, 8000, [HAIKU, SONNET]);
   console.log(`   Patch model: ${result.model} | Tokens: ${result.usage.input_tokens} in, ${result.usage.output_tokens} out`);
-  return result.text;
+  const { valid, content } = validateAndCleanContent(result.text);
+  if (!valid) {
+    console.warn('   ⚠️  Patch output failed validation — keeping pre-patch draft');
+    return draft;
+  }
+  return content;
 }
 
 // ─── Main Orchestrator ────────────────────────────────────────────────────────
@@ -399,10 +415,16 @@ async function main() {
 
   // ── Step 3: Validate & save ──────────────────────────────────────────────
   console.log('\n💾 [Step 3/3] Validating and saving...');
-  const { valid, error, content } = validateAndCleanContent(draft);
+  let { valid, error, content } = validateAndCleanContent(draft);
 
   if (!valid) {
-    console.error(`❌ Content validation failed: ${error}`);
+    console.warn(`   ⚠️  Content validation failed: ${error} — retrying synthesizer with format correction...`);
+    draft = await runSynthesizer(context, `Your previous output failed content validation with this error: "${error}". CRITICAL: The very first characters of your response must be exactly: ---\nDo not wrap in code fences. Do not add any preamble.`);
+    ({ valid, error, content } = validateAndCleanContent(draft));
+  }
+
+  if (!valid) {
+    console.error(`❌ Content validation failed after retry: ${error}`);
     console.error('   Content preview:', draft.substring(0, 300));
     process.exit(1);
   }
