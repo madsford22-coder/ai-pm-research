@@ -144,7 +144,7 @@ function extractPeopleItems(collectedData) {
 
 // ─── Synthesizer Agent ────────────────────────────────────────────────────────
 async function runSynthesizer(context, qaFeedback = null) {
-  const { researchPrompt, companies, people, prefs, openQuestions, previousUpdates, collectedData } = context;
+  const { researchPrompt, companies, people, prefs, openQuestions, previousUrlList, collectedData } = context;
 
   const systemPrompt = `## OFFLINE SYNTHESIS MODE — READ THIS FIRST
 
@@ -173,8 +173,8 @@ ${prefs}
 ## context/open-questions.md
 ${openQuestions}
 
-# Previous Updates (for deduplication)
-${previousUpdates.length > 0 ? previousUpdates.map(u => `## ${u.date}\n${u.content}`).join('\n\n') : 'No previous updates found.'}`;
+# URLs already covered in the last 14 days — skip any item whose exact URL appears here:
+${previousUrlList}`;
 
   // Pre-extract people items so the synthesizer doesn't have to hunt for them
   const peopleItems = extractPeopleItems(collectedData);
@@ -198,7 +198,7 @@ The "Collected Research Data" section contains metadata scraped from RSS feeds a
 
 - DEFAULT TO INCLUDING. If a tracked company or person had any activity, there is ALWAYS at minimum a Quick Hit.
 - Do NOT output "No meaningful PM-relevant updates today" if the collected data shows any activity from tracked companies or people.
-- DEDUPLICATION: Skip only items whose exact URL already appears in a prior update. Topic overlap is NOT a valid reason to skip.
+- DEDUPLICATION: Skip only items whose exact URL already appears in the "URLs already covered" list in your system prompt. Topic overlap is NOT a valid reason to skip.
 
 ## Quick Hits — REQUIRED inclusions
 
@@ -228,131 +228,48 @@ Quick Hits must contain the top 5 most PM-relevant items from the list below. Th
   return result.text;
 }
 
-// ─── QA Agent ────────────────────────────────────────────────────────────────
-const QA_SYSTEM_PROMPT = `You are a Quality Assurance agent for a daily PM research update pipeline.
+// ─── QA Check (structural, no LLM) ───────────────────────────────────────────
+// The original LLM-based QA was catching one failure mode: synthesizer outputs
+// "No meaningful PM-relevant updates today" when real data exists. The synthesizer
+// prompt has since been heavily patched against that. The complex item-counting
+// logic was causing false positives on good outputs (Haiku couldn't reliably
+// cross-reference 25K tokens of raw data against the draft), triggering an
+// unnecessary Sonnet retry every single day.
+//
+// This structural check catches the actual failure modes without any API call:
+// 1. Empty / "no updates" output when raw data has content
+// 2. Missing frontmatter
+// 3. Draft has no items at all (no ### headers and no Quick Hits bullets)
+function runQA(rawData, draft) {
+  const issues = [];
 
-Your job: validate the synthesizer's draft against the raw collected data and return a JSON report.
-
-## Output format
-Respond with a single JSON object only — no markdown fences, no preamble, nothing else. Schema:
-{
-  "pass": boolean,
-  "severity": "none" | "minor" | "major",
-  "issues": [
-    {
-      "type": "missed_item" | "over_filtering" | "format_error",
-      "description": string,
-      "item_title": string,
-      "item_url": string
-    }
-  ],
-  "feedback_for_synthesizer": string | null
-}
-
-## Pass criteria — return pass=true ONLY if ALL are true:
-1. The draft starts with valid YAML frontmatter (--- block) containing title, date, and tags fields
-2. The draft is NOT a bare "No meaningful PM-relevant updates today" response when the raw data contains activity from tracked companies or people
-3. Items from the raw data that meet the Quick Hits bar appear in the draft (in detailed analysis OR Quick Hits)
-4. No items are filtered solely due to "topic overlap" with previous updates — only same-URL duplicates are valid filter reasons
-
-## Quick Hits bar (low threshold)
-An item belongs in Quick Hits if ALL of these are true:
-- It comes from a tracked company or tracked person in the raw data
-- It represents a shipped product change, new feature, new post, pricing or business model change
-- Its exact URL does NOT already appear in any of the previous 7 days of updates provided
-
-## Quick Hits cap
-Quick Hits is limited to 5 items. If more than 5 qualifying items exist, the synthesizer picks the top 5 by PM relevance — this is correct behavior. Do NOT flag items as missed solely because Quick Hits is already full with 5 high-signal items. Only flag an item as missed if it is higher signal than one already in Quick Hits and should have displaced it, OR if Quick Hits has fewer than 5 items when more qualifying items were available.
-
-## Severity
-- "none": pass=true
-- "minor": pass=false, only 1-2 Quick Hits missed — patch directly without retrying synthesizer
-- "major": pass=false with meaningful content missed (3+ items missed, Quick Hits has fewer than 5 when 5+ qualifying items existed, or "no updates" output when activity exists) — retry synthesizer with feedback first
-
-## Deduplication rule
-An item is a TRUE duplicate ONLY if the exact same URL already appears in the previous 7 days of updates.
-"Same topic", "same category", or "similar pattern" is NOT a valid dedup reason.
-A new post, new feature, or new product launch from a tracked company is always a new event even if the topic was discussed before.`;
-
-async function runQA(rawData, draft, previousUpdates) {
-  const previousUpdatesStr = previousUpdates.length > 0
-    ? previousUpdates.map(u => `### ${u.date}\n${u.content}`).join('\n\n')
-    : 'None — no previous updates in the 7-day window.';
-
-  const userPrompt = `Validate this synthesizer draft against the raw collected data.
-
-## Raw Collected Data
-${rawData}
-
-## Synthesizer Draft
-${draft}
-
-## Previous Updates (for deduplication checking)
-${previousUpdatesStr}
-
-Return your JSON report.`;
-
-  async function attempt(prompt) {
-    const result = await callClaude(QA_SYSTEM_PROMPT, prompt, 4096, [HAIKU, SONNET]);
-    let raw = result.text.trim();
-    // Strip markdown fences if model wrapped the JSON despite instructions
-    const fenceMatch = raw.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
-    if (fenceMatch) raw = fenceMatch[1].trim();
-    return JSON.parse(raw);
+  // Check 1: frontmatter present
+  if (!draft.trimStart().startsWith('---')) {
+    issues.push({ type: 'format_error', description: 'Missing YAML frontmatter', item_title: '', item_url: '' });
+    return { pass: false, severity: 'major', issues, feedback_for_synthesizer: 'Your output is missing the required YAML frontmatter. The very first characters must be exactly: ---' };
   }
 
-  try {
-    return await attempt(userPrompt);
-  } catch (e) {
-    // Retry once with an explicit format reminder
-    console.warn(`   ⚠️  QA response was not valid JSON — retrying with format reminder...`);
-    try {
-      return await attempt(userPrompt + '\n\nCRITICAL: Your previous response was not valid JSON. Return ONLY a raw JSON object — no markdown fences, no preamble, no explanation. Start your response with { and end with }.');
-    } catch (e2) {
-      console.warn(`   ⚠️  QA retry also failed — defaulting to pass`);
-      return { pass: true, severity: 'none', issues: [], feedback_for_synthesizer: null };
-    }
-  }
-}
-
-// ─── QA Patch Agent ───────────────────────────────────────────────────────────
-async function runQAPatch(draft, issues, rawData) {
-  const missedItems = issues.filter(i => i.type === 'missed_item' || i.type === 'over_filtering');
-
-  if (missedItems.length === 0) {
-    console.log('   No missed items to patch.');
-    return draft;
+  // Check 2: "no updates" output when data exists
+  const isNoUpdates = /no meaningful (pm-relevant )?updates today/i.test(draft);
+  const dataHasContent = rawData.length > 500; // raw data file with real content is always much larger
+  if (isNoUpdates && dataHasContent) {
+    issues.push({ type: 'over_filtering', description: 'Synthesizer output "no updates" when raw data has content', item_title: '', item_url: '' });
+    return {
+      pass: false,
+      severity: 'major',
+      issues,
+      feedback_for_synthesizer: 'You output "No meaningful PM-relevant updates today" but the collected data contains real activity from tracked companies and people. You MUST synthesize from the pre-collected metadata — do not refuse because you lack web access. Default to including. At minimum, every tracked company or person with activity gets a Quick Hit.',
+    };
   }
 
-  const systemPrompt = `You are a patch agent. Add missing Quick Hits items to an existing daily PM research update.
-
-CRITICAL OUTPUT FORMAT: Return the complete patched markdown document. Raw markdown only — no fences, no preamble. The very first characters must be: ---
-
-Rules:
-- Add missing items to the "## Quick Hits" section
-- If "## Quick Hits" does not exist, create it before "## The Thread" or "## Sit With This" (whichever comes first), or before the final "---" separator
-- Format for each new Quick Hit: "- **Company/Author**: [Brief description of what shipped or was posted] (Date if available): URL"
-- Do not modify existing content — only add the missing Quick Hits entries
-- Keep Quick Hits to a maximum of 5 items total; if adding would exceed 5, prioritize by PM relevance and drop the lowest-signal existing item`;
-
-  const userPrompt = `Add these missed items to the Quick Hits section of the draft below.
-
-## Items to add as Quick Hits
-${missedItems.map(i => `- **${i.item_title}**\n  URL: ${i.item_url}\n  Context: ${i.description}`).join('\n\n')}
-
-## Current Draft
-${draft}
-
-Return the complete patched document.`;
-
-  const result = await callClaude(systemPrompt, userPrompt, 8000, [HAIKU, SONNET]);
-  console.log(`   Patch model: ${result.model} | Tokens: ${result.usage.input_tokens} in, ${result.usage.output_tokens} out`);
-  const { valid, content } = validateAndCleanContent(result.text);
-  if (!valid) {
-    console.warn('   ⚠️  Patch output failed validation — keeping pre-patch draft');
-    return draft;
+  // Check 3: draft has actual content (at least one item header or Quick Hit bullet)
+  const hasItems = /^#{2,3}\s+\S/m.test(draft) || /^- \*\*/m.test(draft);
+  if (!hasItems) {
+    issues.push({ type: 'format_error', description: 'Draft contains no items or Quick Hits', item_title: '', item_url: '' });
+    return { pass: false, severity: 'major', issues, feedback_for_synthesizer: 'Your output contains no items. Include at least 1 detailed item and 1 Quick Hit based on the collected data.' };
   }
-  return content;
+
+  return { pass: true, severity: 'none', issues: [], feedback_for_synthesizer: null };
 }
 
 // ─── Main Orchestrator ────────────────────────────────────────────────────────
@@ -399,9 +316,10 @@ async function main() {
   const prefs            = readFileSafe(path.join(projectRoot, 'context/prefs.md'));
   const openQuestions    = readFileSafe(path.join(projectRoot, 'context/open-questions.md'));
 
-  console.log('📖 Reading previous 4 days of updates for deduplication...');
-  const previousUpdates = [];
-  for (let i = 1; i <= 4; i++) {
+  console.log('📖 Reading previous 14 days of updates for deduplication...');
+  const seenUrls = new Set();
+  let daysFound = 0;
+  for (let i = 1; i <= 14; i++) {
     const pastDate = new Date(today);
     pastDate.setDate(pastDate.getDate() - i);
     const pYear  = pastDate.getFullYear();
@@ -411,15 +329,21 @@ async function main() {
     const pastFile = path.join(projectRoot, 'updates', 'daily', String(pYear), `${pDateStr}.md`);
     if (fileExists(pastFile)) {
       try {
-        previousUpdates.push({ date: pDateStr, content: readFileSafe(pastFile) });
+        const content = readFileSafe(pastFile);
+        const urls = content.match(/https?:\/\/[^\s\)>\]"]+/g) || [];
+        urls.forEach(u => seenUrls.add(u));
+        daysFound++;
       } catch (e) {
         // skip unreadable files
       }
     }
   }
-  console.log(`   Found ${previousUpdates.length} previous updates\n`);
+  const previousUrlList = seenUrls.size > 0
+    ? [...seenUrls].join('\n')
+    : '(none)';
+  console.log(`   Extracted ${seenUrls.size} URLs from ${daysFound} previous updates\n`);
 
-  const context = { researchPrompt, companies, people, prefs, openQuestions, previousUpdates, collectedData };
+  const context = { researchPrompt, companies, people, prefs, openQuestions, previousUrlList, collectedData };
 
   // ── Step 1: Synthesizer ──────────────────────────────────────────────────
   console.log('🤖 [Step 1/3] Running Synthesizer Agent...');
@@ -427,7 +351,7 @@ async function main() {
 
   // ── Step 2: QA validation ────────────────────────────────────────────────
   console.log('\n🔍 [Step 2/3] Running QA Agent...');
-  let qaResult = await runQA(collectedData, draft, previousUpdates);
+  let qaResult = runQA(collectedData, draft);
   console.log(`   Result: ${qaResult.pass ? '✅ PASS' : `❌ FAIL (${qaResult.severity})`}`);
 
   if (!qaResult.pass) {
@@ -444,14 +368,8 @@ async function main() {
       draft = await runSynthesizer(context, qaResult.feedback_for_synthesizer);
 
       console.log('\n🔍 Re-running QA on revised draft...');
-      qaResult = await runQA(collectedData, draft, previousUpdates);
-      console.log(`   Result: ${qaResult.pass ? '✅ PASS' : `❌ FAIL (${qaResult.severity}) — switching to patch mode`}`);
-    }
-
-    if (!qaResult.pass && qaResult.issues && qaResult.issues.length > 0) {
-      // Still failing after retry (or was minor to begin with): patch directly
-      console.log('\n🩹 Applying QA patch for missed items...');
-      draft = await runQAPatch(draft, qaResult.issues, collectedData);
+      qaResult = runQA(collectedData, draft);
+      console.log(`   Result: ${qaResult.pass ? '✅ PASS' : `❌ FAIL (${qaResult.severity}) — skipping to save`}`);
     }
   }
 

@@ -10,6 +10,7 @@
 
 const path = require('path');
 const { parsePeopleFile } = require('../adapters/markdown');
+const { fetchRSSFeedDirect } = require('../adapters/rss');
 
 const DEFAULT_DAYS_BACK = 3;
 const CONCURRENCY = 3;
@@ -43,6 +44,32 @@ function stripPreamble(text) {
 }
 
 /**
+ * Fetch a person's recent activity from their RSS feed — no API calls.
+ * @param {Object} person - Person object with rss_feed
+ * @param {number} daysBack
+ * @returns {Promise<{name: string, text: string, hasActivity: boolean, source: string}>}
+ */
+async function fetchPersonFromRSS(person, daysBack) {
+  const { name, rss_feed } = person;
+  const { posts, error } = await fetchRSSFeedDirect(rss_feed, { daysBack });
+
+  if (error || posts.length === 0) {
+    const reason = error ? `RSS error: ${error}` : 'No recent activity found.';
+    return { name, text: reason, hasActivity: false, source: 'rss' };
+  }
+
+  const lines = posts.slice(0, 5).map(post => {
+    const date = post.published ? new Date(post.published).toISOString().split('T')[0] : '';
+    const desc = post.description
+      ? ' — ' + post.description.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().slice(0, 200)
+      : '';
+    return `- [${post.title}](${post.link})${date ? ' (' + date + ')' : ''}${desc}`;
+  });
+
+  return { name, text: lines.join('\n'), hasActivity: true, source: 'rss' };
+}
+
+/**
  * Search for a single person's recent public activity.
  * @param {Object} anthropic - Anthropic client instance
  * @param {Object} person - Person object from parsePeopleFile
@@ -68,6 +95,7 @@ Their public profiles:
 ${profiles.length > 0 ? profiles.join('\n') : '(search by name)'}
 
 Rules:
+- Use at most 2 web searches total. Stop after 2 searches regardless of results.
 - Only include content directly published by ${name} — their own tweets, blog posts, newsletters, or public statements
 - Do NOT include third-party articles ABOUT them, news coverage of their company, or analyst writeups
 - Focus on: product thinking, AI product decisions, PM frameworks, product launches, strategic takes
@@ -163,22 +191,30 @@ async function checkPeopleSearchPipeline(options = {}) {
   if (!anthropic) throw new Error('anthropic client is required');
 
   const people = parsePeopleFile(peopleFile);
-  console.log(`Searching activity for ${people.length} people (last ${daysBack} days)...\n`);
+  const rssEnabled = people.filter(p => p.rss_feed);
+  const searchOnly = people.filter(p => !p.rss_feed);
+  console.log(`Fetching RSS for ${rssEnabled.length} people, searching ${searchOnly.length} via web (last ${daysBack} days)...\n`);
 
-  const results = [];
-  const totalBatches = Math.ceil(people.length / CONCURRENCY);
+  // ── Step 1: RSS fetches (free, parallel) ──────────────────────────────────
+  const rssResults = await Promise.all(rssEnabled.map(p => fetchPersonFromRSS(p, daysBack)));
+  const rssActive = rssResults.filter(r => r.hasActivity).length;
+  console.log(`  [RSS] ${rssActive}/${rssEnabled.length} with activity\n`);
+
+  // ── Step 2: Web search for people without RSS ─────────────────────────────
+  const results = [...rssResults];
+  const totalBatches = Math.ceil(searchOnly.length / CONCURRENCY);
   const deadline = Date.now() + TOTAL_TIMEOUT_MS;
 
-  for (let i = 0; i < people.length; i += CONCURRENCY) {
+  for (let i = 0; i < searchOnly.length; i += CONCURRENCY) {
     if (Date.now() >= deadline) {
-      const remaining = people.slice(i).map(p => p.name);
+      const remaining = searchOnly.slice(i).map(p => p.name);
       console.warn(`  ⏰ Total timeout reached — skipping remaining: ${remaining.join(', ')}`);
       break;
     }
 
-    const batch = people.slice(i, i + CONCURRENCY);
+    const batch = searchOnly.slice(i, i + CONCURRENCY);
     const batchNum = Math.floor(i / CONCURRENCY) + 1;
-    console.log(`  Batch ${batchNum}/${totalBatches}: ${batch.map(p => p.name).join(', ')}`);
+    console.log(`  [Search] Batch ${batchNum}/${totalBatches}: ${batch.map(p => p.name).join(', ')}`);
 
     const batchResults = await Promise.all(
       batch.map(person => searchPersonActivity(anthropic, person, daysBack))
@@ -186,7 +222,7 @@ async function checkPeopleSearchPipeline(options = {}) {
     results.push(...batchResults);
 
     // Pause between batches to stay under the tokens/min rate limit
-    if (i + CONCURRENCY < people.length) {
+    if (i + CONCURRENCY < searchOnly.length) {
       await new Promise(r => setTimeout(r, BATCH_DELAY_MS));
     }
   }

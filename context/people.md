@@ -566,7 +566,7 @@ This file defines whose public thinking and product commentary should be treated
 - Technical product insights
 **Primary platforms:**
 - Blog: https://simonwillison.net
-- RSS Feed: https://simonwillison.net/feeds/rss/
+- RSS Feed: https://simonwillison.net/atom/everything/
 - GitHub: https://github.com/simonw
 
 ---

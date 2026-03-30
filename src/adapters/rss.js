@@ -154,9 +154,56 @@ async function findRSSFeedFromBlog(page, blogUrl) {
   }
 }
 
+/**
+ * Fetch RSS feed using Node's built-in http/https — no browser needed.
+ * Used for people with known RSS feed URLs.
+ * @param {string} feedUrl - URL of the RSS feed
+ * @param {Object} options
+ * @param {number} options.daysBack
+ * @param {number} [options._redirectDepth] - internal redirect counter
+ * @returns {Promise<{posts: import('../domain/types').Post[], error: string|null}>}
+ */
+async function fetchRSSFeedDirect(feedUrl, options = {}) {
+  const { daysBack = 30, _redirectDepth = 0 } = options;
+  if (_redirectDepth > 3) return { posts: [], error: 'too many redirects' };
+
+  return new Promise((resolve) => {
+    let parsedUrl;
+    try {
+      parsedUrl = new (require('url').URL)(feedUrl);
+    } catch {
+      return resolve({ posts: [], error: 'invalid URL' });
+    }
+
+    const lib = parsedUrl.protocol === 'https:' ? require('https') : require('http');
+    const req = lib.get(feedUrl, {
+      timeout: 10000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; rss-reader/1.0)' },
+    }, (res) => {
+      if (res.statusCode === 301 || res.statusCode === 302 || res.statusCode === 307) {
+        const location = res.headers.location;
+        res.resume();
+        if (!location) return resolve({ posts: [], error: 'redirect missing location' });
+        const redirectUrl = location.startsWith('http') ? location : new (require('url').URL)(location, feedUrl).href;
+        return fetchRSSFeedDirect(redirectUrl, { daysBack, _redirectDepth: _redirectDepth + 1 }).then(resolve);
+      }
+      if (res.statusCode !== 200) {
+        res.resume();
+        return resolve({ posts: [], error: `HTTP ${res.statusCode}` });
+      }
+      let data = '';
+      res.on('data', chunk => { data += chunk; });
+      res.on('end', () => resolve(parseRSSFeed(data, { daysBack })));
+    });
+    req.on('error', (err) => resolve({ posts: [], error: err.message }));
+    req.on('timeout', () => { req.destroy(); resolve({ posts: [], error: 'timeout' }); });
+  });
+}
+
 module.exports = {
   parseRSSFeed,
   fetchRSSFeed,
+  fetchRSSFeedDirect,
   findRSSFeedFromBlog,
 };
 
