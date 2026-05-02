@@ -2,18 +2,17 @@
 /**
  * Send Email Notification for Daily Research Status
  *
- * This script sends an email notification with the status of the daily research run.
- * It uses Gmail API for reliable delivery.
+ * Generates a newsletter-style preview email with the day's content.
+ * Supports two modes:
+ *   - Direct send via Gmail OAuth (local use)
+ *   - --generate-only --output <path>: writes HTML to a file (for CI)
  */
 
 const fs = require('fs');
 const path = require('path');
 
-// Add tooling/node_modules to module path so googleapis can be found
-// This allows the script to use dependencies installed in tooling/
 const toolingNodeModules = path.join(__dirname, '..', 'tooling', 'node_modules');
 if (fs.existsSync(toolingNodeModules)) {
-  // Add to NODE_PATH so require() can find modules in tooling/node_modules
   if (!process.env.NODE_PATH) {
     process.env.NODE_PATH = toolingNodeModules;
   } else if (!process.env.NODE_PATH.includes(toolingNodeModules)) {
@@ -24,51 +23,31 @@ if (fs.existsSync(toolingNodeModules)) {
 
 const { google } = require('googleapis');
 
-// Configuration
 const CONFIG = {
   recipientEmail: process.env.NOTIFICATION_EMAIL || 'YOUR_EMAIL@gmail.com',
+  siteUrl: (process.env.SITE_URL || '').replace(/\/$/, ''),
   tokenPath: path.join(__dirname, '..', '.gmail-token.json'),
   credentialsPath: path.join(__dirname, '..', '.gmail-credentials.json'),
 };
 
-/**
- * Create OAuth2 client
- */
 function getOAuth2Client() {
   const credentials = JSON.parse(fs.readFileSync(CONFIG.credentialsPath, 'utf-8'));
   const { client_secret, client_id, redirect_uris } = credentials.installed || credentials.web;
-
-  return new google.auth.OAuth2(
-    client_id,
-    client_secret,
-    redirect_uris[0]
-  );
+  return new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
 }
 
-/**
- * Get authenticated Gmail client
- */
 async function getGmailClient() {
   const oAuth2Client = getOAuth2Client();
-
-  // Check if we have a token
   if (!fs.existsSync(CONFIG.tokenPath)) {
     throw new Error('No token found. Run setup first: node scripts/setup-gmail-notifications.js');
   }
-
   const token = JSON.parse(fs.readFileSync(CONFIG.tokenPath, 'utf-8'));
   oAuth2Client.setCredentials(token);
-
   return google.gmail({ version: 'v1', auth: oAuth2Client });
 }
 
-/**
- * Create email message
- */
 function createMessage(to, subject, body) {
-  // Encode subject line properly for UTF-8 characters (including emojis)
   const encodedSubject = `=?UTF-8?B?${Buffer.from(subject).toString('base64')}?=`;
-
   const message = [
     `To: ${to}`,
     'Content-Type: text/html; charset=utf-8',
@@ -77,29 +56,14 @@ function createMessage(to, subject, body) {
     '',
     body
   ].join('\n');
-
-  return Buffer.from(message)
-    .toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
+  return Buffer.from(message).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-/**
- * Send email
- */
 async function sendEmail(subject, htmlBody) {
   try {
     const gmail = await getGmailClient();
     const raw = createMessage(CONFIG.recipientEmail, subject, htmlBody);
-
-    const result = await gmail.users.messages.send({
-      userId: 'me',
-      requestBody: {
-        raw: raw,
-      },
-    });
-
+    const result = await gmail.users.messages.send({ userId: 'me', requestBody: { raw } });
     console.log('✅ Email sent successfully!');
     console.log(`   Message ID: ${result.data.id}`);
     return result;
@@ -109,215 +73,211 @@ async function sendEmail(subject, htmlBody) {
   }
 }
 
-/**
- * Parse items from markdown file
- */
-function parseItemsFromMarkdown(fileContent) {
+function parseFrontmatterTitle(fileContent) {
+  const match = fileContent.match(/^---\n[\s\S]*?^title:\s*["']?(.+?)["']?\s*$/m);
+  return match ? match[1].trim() : null;
+}
+
+function parseShortVersion(fileContent) {
+  const match = fileContent.match(/## (?:The Short Version|One-Line Summary)[^\n]*\n\n([\s\S]*?)(?=\n---\n|\n## |$)/);
+  return match ? match[1].trim() : null;
+}
+
+function parseItems(fileContent) {
   const items = [];
+  const sectionMatch = fileContent.match(/## Items\n\n([\s\S]*?)(?=\n## Quick Hits|\n## The Thread|\n## Sit With This|$)/) ||
+    fileContent.match(/## (?:The Short Version|One-Line Summary)[^\n]*\n\n[^\n]+\n\n([\s\S]*?)(?=\n## Quick Hits|\n## The Thread|$)/);
+  if (!sectionMatch) return items;
 
-  // Extract items — legacy files used "## Items"; new files have h3s directly after the summary
-  const legacyItemsMatch = fileContent.match(/## Items\n\n([\s\S]*?)(?:\n\n---\n\n## Other Notable Updates|\n\n---\n\n## Daily Product|$)/);
-  const itemsMatch = legacyItemsMatch ||
-    fileContent.match(/## (?:The Short Version|One-Line Summary)[^\n]*\n\n[^\n]+\n\n([\s\S]*?)(?=\n## Quick Hits|\n## The Thread|\n## This Week|$)/);
-  if (!itemsMatch) return items;
-
-  const itemsSection = itemsMatch[1];
-
-  // Split by ### headers to get individual items
-  const itemTexts = itemsSection.split(/\n### /).filter(text => text.trim());
-
+  const itemTexts = sectionMatch[1].split(/\n### /).filter(t => t.trim());
   for (const itemText of itemTexts) {
     const lines = itemText.split('\n');
     const title = lines[0].trim();
-
-    // Extract author/source and tl;dr
-    const authorMatch = itemText.match(/\*\*(?:Author|Source):\*\* (.+)/);
     const tldrMatch = itemText.match(/\*\*tl;dr:\*\* (.+)/);
-
     if (title && tldrMatch) {
-      items.push({
-        title,
-        author: authorMatch ? authorMatch[1] : '',
-        tldr: tldrMatch[1]
-      });
+      items.push({ title, tldr: tldrMatch[1].trim() });
     }
   }
-
   return items;
 }
 
-/**
- * Generate status email HTML
- */
-function generateStatusEmail(status) {
-  const { success, date, summary, errors, filePath, tokensUsed, items = [] } = status;
-
-  const statusEmoji = success ? '✅' : '❌';
-  const statusText = success ? 'Success' : 'Failed';
-  const statusColor = success ? '#10b981' : '#ef4444';
-
-  return `
-<!DOCTYPE html>
-<html>
-<head>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: ${statusColor}; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-    .header h1 { margin: 0; font-size: 24px; }
-    .header p { margin: 5px 0 0 0; opacity: 0.9; }
-    .section { background: #f9fafb; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-    .section h2 { margin: 0 0 10px 0; font-size: 16px; color: #1f2937; }
-    .summary { font-size: 14px; line-height: 1.6; }
-    .item { background: white; padding: 15px; border-radius: 6px; margin-bottom: 12px; border-left: 3px solid #3b82f6; }
-    .item-title { font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 8px; }
-    .item-meta { font-size: 13px; color: #6b7280; margin-bottom: 8px; }
-    .item-tldr { font-size: 14px; color: #374151; }
-    .errors { background: #fee2e2; border-left: 4px solid #ef4444; padding: 10px; margin-top: 10px; }
-    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .stat { background: white; padding: 10px; border-radius: 4px; }
-    .stat-label { font-size: 12px; color: #6b7280; text-transform: uppercase; }
-    .stat-value { font-size: 18px; font-weight: bold; color: #1f2937; margin-top: 5px; }
-    .footer { text-align: center; color: #6b7280; font-size: 12px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; }
-    a { color: #3b82f6; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <h1>${statusEmoji} Daily Research ${statusText}</h1>
-    <p>${date}</p>
-  </div>
-
-  ${success ? `
-  <div class="section">
-    <h2>📊 Summary</h2>
-    <div class="summary">${summary || 'Research update generated successfully.'}</div>
-  </div>
-
-  ${items.length > 0 ? `
-  <div class="section">
-    <h2>📰 Today's Updates</h2>
-    ${items.map(item => `
-      <div class="item">
-        <div class="item-title">${item.title}</div>
-        ${item.author ? `<div class="item-meta">${item.author}</div>` : ''}
-        <div class="item-tldr">${item.tldr}</div>
-      </div>
-    `).join('')}
-  </div>
-  ` : ''}
-
-  <div class="section">
-    <h2>📈 Stats</h2>
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-label">${items.length > 0 ? 'Items' : 'Tokens Used'}</div>
-        <div class="stat-value">${items.length > 0 ? items.length : (tokensUsed || 'N/A')}</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Status</div>
-        <div class="stat-value">Complete</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <h2>📄 Generated File</h2>
-    <p><code>${filePath || 'updates/daily/YYYY/YYYY-MM-DD.md'}</code></p>
-    <p style="font-size: 14px; color: #6b7280;">View the full update in your repository.</p>
-  </div>
-  ` : `
-  <div class="section">
-    <h2>❌ Errors</h2>
-    <div class="errors">
-      ${errors || 'Unknown error occurred.'}
-    </div>
-  </div>
-  `}
-
-  <div class="footer">
-    <p>AI PM Research • Automated Daily Updates</p>
-    <p>To disable notifications, remove the email script from your cron job.</p>
-  </div>
-</body>
-</html>
-  `;
+function parseQuickHits(fileContent) {
+  const match = fileContent.match(/## Quick Hits\n\n([\s\S]*?)(?=\n## |\n---\n|$)/);
+  if (!match) return [];
+  return match[1]
+    .split('\n')
+    .filter(l => l.trim().startsWith('-'))
+    .map(l => {
+      const boldMatch = l.match(/\*\*([^*]+)\*\*/);
+      return boldMatch ? boldMatch[1].trim() : null;
+    })
+    .filter(Boolean);
 }
 
-/**
- * Main function
- */
+function formatDate(dateStr) {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+}
+
+function generatePreviewEmail({ date, title, shortVersion, items, quickHits, readMoreUrl }) {
+  const formattedDate = formatDate(date);
+  const previewItems = items.slice(0, 3);
+
+  const itemsHtml = previewItems.length > 0 ? `
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 32px;">
+      ${previewItems.map(item => `
+      <tr>
+        <td style="padding:20px 0; border-bottom:1px solid #f0f0f0;">
+          <p style="margin:0 0 8px; font-size:15px; font-weight:bold; color:#1a1a1a; line-height:1.4;">${escapeHtml(item.title)}</p>
+          <p style="margin:0; font-size:14px; line-height:1.6; color:#444;">${escapeHtml(item.tldr)}</p>
+        </td>
+      </tr>`).join('')}
+    </table>` : '';
+
+  const quickHitsHtml = quickHits.length > 0 ? `
+    <div style="background:#f9f9f9; border-radius:6px; padding:20px 24px; margin:0 0 32px;">
+      <p style="margin:0 0 12px; font-size:11px; font-weight:bold; letter-spacing:0.08em; text-transform:uppercase; color:#888;">Also today</p>
+      <ul style="margin:0; padding-left:18px;">
+        ${quickHits.map(h => `<li style="font-size:13px; line-height:1.7; color:#555;">${escapeHtml(h)}</li>`).join('')}
+      </ul>
+    </div>` : '';
+
+  const ctaBlock = readMoreUrl ? `
+    <div style="text-align:center; margin:40px 0;">
+      <a href="${readMoreUrl}" style="display:inline-block; background:#1a1a1a; color:#ffffff; text-decoration:none; padding:14px 36px; font-size:14px; font-weight:600; border-radius:4px; letter-spacing:0.02em;">Read the full update →</a>
+    </div>` : '';
+
+  return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body style="margin:0; padding:0; background:#ffffff;">
+  <div style="max-width:600px; margin:0 auto; padding:40px 24px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; color:#1a1a1a;">
+
+    <div style="border-bottom:2px solid #1a1a1a; padding-bottom:12px; margin-bottom:32px;">
+      <p style="margin:0; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:#888; font-weight:600;">AI PM Research</p>
+      <p style="margin:4px 0 0; font-size:13px; color:#888;">${formattedDate}</p>
+    </div>
+
+    <h1 style="font-size:24px; line-height:1.35; margin:0 0 20px; font-weight:700;">${escapeHtml(title || 'Daily PM Research Update')}</h1>
+
+    ${shortVersion ? `<p style="font-size:16px; line-height:1.75; color:#222; margin:0 0 32px; border-left:3px solid #1a1a1a; padding-left:16px;">${escapeHtml(shortVersion)}</p>` : ''}
+
+    ${itemsHtml ? `<hr style="border:none; border-top:1px solid #ebebeb; margin:0 0 32px;">` : ''}
+    ${itemsHtml}
+    ${quickHitsHtml}
+    ${ctaBlock}
+
+    <div style="border-top:1px solid #ebebeb; padding-top:20px; margin-top:32px;">
+      <p style="margin:0; font-size:12px; color:#aaa;">AI PM Research &middot; Daily updates on AI products and strategy</p>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
+function generateFailureEmail({ date, errors }) {
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0; padding:0; background:#ffffff;">
+  <div style="max-width:600px; margin:0 auto; padding:40px 24px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+    <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:20px 24px; margin-bottom:24px;">
+      <h2 style="margin:0 0 8px; font-size:18px; color:#b91c1c;">Daily Research Failed</h2>
+      <p style="margin:0; font-size:14px; color:#7f1d1d;">${date}</p>
+    </div>
+    ${errors ? `<pre style="background:#f9fafb; padding:16px; border-radius:6px; font-size:12px; color:#374151; overflow:auto; white-space:pre-wrap;">${escapeHtml(errors)}</pre>` : ''}
+  </div>
+</body>
+</html>`;
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function buildEmailFromFile(date, success, errors) {
+  const filePath = path.join(__dirname, '..', `updates/daily/${date.split('-')[0]}/${date}.md`);
+
+  if (!success) {
+    return {
+      subject: `Daily Research Failed — ${date}`,
+      html: generateFailureEmail({ date, errors }),
+    };
+  }
+
+  let title = null;
+  let shortVersion = null;
+  let items = [];
+  let quickHits = [];
+
+  if (fs.existsSync(filePath)) {
+    const content = fs.readFileSync(filePath, 'utf-8');
+    title = parseFrontmatterTitle(content);
+    shortVersion = parseShortVersion(content);
+    items = parseItems(content);
+    quickHits = parseQuickHits(content);
+  }
+
+  const year = date.split('-')[0];
+  const readMoreUrl = CONFIG.siteUrl
+    ? `${CONFIG.siteUrl}/updates/daily/${year}/${date}`
+    : null;
+
+  const subject = title || `Daily PM Research — ${date}`;
+
+  return {
+    subject,
+    html: generatePreviewEmail({ date, title, shortVersion, items, quickHits, readMoreUrl }),
+  };
+}
+
 async function main() {
   const args = process.argv.slice(2);
 
-  // Parse status from command line args or read from log file
-  const statusArg = args.find(arg => arg.startsWith('--status='));
-  const dateArg = args.find(arg => arg.startsWith('--date='));
-  const logFileArg = args.find(arg => arg.startsWith('--log='));
+  const statusArg = args.find(a => a.startsWith('--status='));
+  const dateArg = args.find(a => a.startsWith('--date='));
+  const generateOnly = args.includes('--generate-only');
+  const outputArg = args.find(a => a.startsWith('--output='));
+  const logFileArg = args.find(a => a.startsWith('--log='));
 
   const today = dateArg ? dateArg.split('=')[1] : new Date().toISOString().split('T')[0];
+  const success = statusArg ? statusArg.split('=')[1] === 'success' : true;
 
-  let status = {
-    success: statusArg ? statusArg.split('=')[1] === 'success' : true,
-    date: today,
-    summary: null,
-    errors: null,
-    filePath: `updates/daily/${today.split('-')[0]}/${today}.md`,
-    tokensUsed: null,
-    items: [],
-  };
-
-  // Always try to read the generated file first
-  const outputFilePath = path.join(__dirname, '..', status.filePath);
-  if (fs.existsSync(outputFilePath)) {
-    const fileContent = fs.readFileSync(outputFilePath, 'utf-8');
-
-    // Extract summary
-    const summaryMatch = fileContent.match(/## Summary\n\n([\s\S]*?)\n\n---/);
-    if (summaryMatch) {
-      status.summary = summaryMatch[1].trim();
-    }
-
-    // Parse items
-    status.items = parseItemsFromMarkdown(fileContent);
-  }
-
-  // If log file provided, parse it for additional details
+  let errors = null;
   if (logFileArg) {
     const logFile = logFileArg.split('=')[1];
     if (fs.existsSync(logFile)) {
       const logContent = fs.readFileSync(logFile, 'utf-8');
-
-      // Extract tokens used
-      const tokensMatch = logContent.match(/Tokens used: (\d+) input, (\d+) output/);
-      if (tokensMatch) {
-        status.tokensUsed = `${tokensMatch[1]} in, ${tokensMatch[2]} out`;
-      }
-
-      // Check for errors
       if (logContent.includes('❌') || logContent.includes('Error')) {
-        status.success = false;
-        const errorLines = logContent.split('\n').filter(line =>
-          line.includes('❌') || line.includes('Error')
-        );
-        status.errors = errorLines.join('\n');
+        errors = logContent.split('\n').filter(l => l.includes('❌') || l.includes('Error')).join('\n');
       }
     }
   }
 
-  // Generate email
-  const subject = status.success
-    ? `✅ Daily Research Complete - ${status.date}`
-    : `❌ Daily Research Failed - ${status.date}`;
+  const { subject, html } = buildEmailFromFile(today, success, errors);
 
-  const htmlBody = generateStatusEmail(status);
+  if (generateOnly) {
+    const outputPath = outputArg ? outputArg.split('=')[1] : '/tmp/email-preview.html';
+    fs.writeFileSync(outputPath, html, 'utf-8');
+    fs.writeFileSync(outputPath + '.subject', subject, 'utf-8');
+    console.log(`✅ Email HTML written to ${outputPath}`);
+    console.log(`   Subject: ${subject}`);
+    return;
+  }
 
-  // Send email
   console.log(`\n📧 Sending notification email to ${CONFIG.recipientEmail}...`);
-  await sendEmail(subject, htmlBody);
+  await sendEmail(subject, html);
 }
 
-// Run if called directly
 if (require.main === module) {
   main().catch(error => {
     console.error('❌ Error:', error.message);
@@ -325,4 +285,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { sendEmail, generateStatusEmail };
+module.exports = { buildEmailFromFile, generatePreviewEmail, generateFailureEmail };

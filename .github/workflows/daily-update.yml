@@ -140,6 +140,27 @@ jobs:
 
           echo "Update committed and pushed successfully"
 
+      - name: Generate email preview
+        if: always()
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+        run: |
+          export TZ=America/Los_Angeles
+          TODAY=$(date +%Y-%m-%d)
+          echo "TODAY=$TODAY" >> $GITHUB_ENV
+          if [ "${{ job.status }}" = "success" ]; then
+            STATUS_ARG="success"
+          else
+            STATUS_ARG="failure"
+          fi
+          node scripts/send-email-notification.js \
+            --status=$STATUS_ARG \
+            --date=$TODAY \
+            --generate-only \
+            --output=/tmp/email-preview.html
+          SUBJECT=$(cat /tmp/email-preview.html.subject 2>/dev/null || echo "Daily PM Research — $TODAY")
+          echo "EMAIL_SUBJECT=$SUBJECT" >> $GITHUB_ENV
+
       - name: Send email notification on success
         if: success()
         uses: dawidd6/action-send-mail@v3
@@ -148,14 +169,10 @@ jobs:
           server_port: 587
           username: ${{ secrets.GMAIL_USERNAME }}
           password: ${{ secrets.GMAIL_APP_PASSWORD }}
-          subject: "✅ Daily Research Update - ${{ env.TODAY }}"
+          subject: ${{ env.EMAIL_SUBJECT }}
           to: ${{ secrets.NOTIFICATION_EMAIL }}
-          from: AI PM Research Bot
-          html_body: |
-            <h2>Daily Research Update Complete</h2>
-            <p>The daily research update for <strong>${{ env.TODAY }}</strong> has been generated successfully.</p>
-            <p><a href="https://github.com/${{ github.repository }}/blob/main/updates/daily/${{ env.YEAR }}/${{ env.TODAY }}.md">View the update</a></p>
-            <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View workflow run</a></p>
+          from: AI PM Research
+          html_body: file:///tmp/email-preview.html
 
       - name: Send email notification on failure
         if: failure()
@@ -165,10 +182,7 @@ jobs:
           server_port: 587
           username: ${{ secrets.GMAIL_USERNAME }}
           password: ${{ secrets.GMAIL_APP_PASSWORD }}
-          subject: "❌ Daily Research Update Failed - ${{ env.TODAY }}"
+          subject: "Daily Research Failed — ${{ env.TODAY }}"
           to: ${{ secrets.NOTIFICATION_EMAIL }}
-          from: AI PM Research Bot
-          html_body: |
-            <h2>Daily Research Update Failed</h2>
-            <p>The daily research update for <strong>${{ env.TODAY }}</strong> failed to generate.</p>
-            <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View workflow run for details</a></p>
+          from: AI PM Research
+          html_body: file:///tmp/email-preview.html
