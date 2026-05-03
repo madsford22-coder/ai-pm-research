@@ -212,7 +212,8 @@ export default function Dashboard() {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full min-w-0 px-1.5 sm:px-3 py-1.5 sm:py-2 border border-[#e7e3dd] dark:border-[#2e2b24] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#5a7a3a] dark:focus:ring-[#8db870] bg-[#faf8f5] dark:bg-[#18160f] text-[#1c1917] dark:text-[#f5f0ea]"
+                onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+                className="w-full min-w-0 px-1.5 sm:px-3 py-1.5 sm:py-2 border border-[#e7e3dd] dark:border-[#2e2b24] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#5a7a3a] dark:focus:ring-[#8db870] bg-[#faf8f5] dark:bg-[#18160f] text-[#1c1917] dark:text-[#f5f0ea] cursor-pointer"
               />
             </div>
             <div className="min-w-0">
@@ -224,7 +225,8 @@ export default function Dashboard() {
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full min-w-0 px-1.5 sm:px-3 py-1.5 sm:py-2 border border-[#e7e3dd] dark:border-[#2e2b24] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#5a7a3a] dark:focus:ring-[#8db870] bg-[#faf8f5] dark:bg-[#18160f] text-[#1c1917] dark:text-[#f5f0ea]"
+                onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+                className="w-full min-w-0 px-1.5 sm:px-3 py-1.5 sm:py-2 border border-[#e7e3dd] dark:border-[#2e2b24] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#5a7a3a] dark:focus:ring-[#8db870] bg-[#faf8f5] dark:bg-[#18160f] text-[#1c1917] dark:text-[#f5f0ea] cursor-pointer"
               />
             </div>
           </div>
