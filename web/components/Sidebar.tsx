@@ -417,7 +417,7 @@ export default function Sidebar() {
             </div>
             <div className="flex items-center gap-3">
               <a
-                href="mailto:madsford22@gmail.com"
+                href="mailto:hello@madisoncford.com"
                 className="flex items-center gap-1.5 text-xs text-[#78716c] dark:text-[#a8a29e] hover:text-[#5a7a3a] dark:hover:text-[#8db870] transition-colors"
                 title="Email Madison"
               >
