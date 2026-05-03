@@ -7,28 +7,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'invalid_email' }, { status: 400 });
   }
 
-  const apiKey = process.env.BUTTONDOWN_API_KEY;
-  if (!apiKey) {
-    return NextResponse.json({ error: 'not_configured' }, { status: 500 });
-  }
-
-  const res = await fetch('https://api.buttondown.email/v1/subscribers', {
+  const body = new URLSearchParams({ email });
+  const res = await fetch('https://buttondown.com/api/emails/embed-subscribe/madsford22', {
     method: 'POST',
-    headers: {
-      Authorization: `Token ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email }),
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: body.toString(),
   });
 
-  if (res.status === 201) {
+  const text = await res.text().catch(() => '');
+  const isAlreadySubscribed = text.toLowerCase().includes('already');
+
+  if (res.ok || res.status === 201) {
     return NextResponse.json({ success: true });
   }
-
-  const data = await res.json().catch(() => ({}));
-  const isAlreadySubscribed =
-    res.status === 400 &&
-    JSON.stringify(data).toLowerCase().includes('already');
 
   if (isAlreadySubscribed) {
     return NextResponse.json({ error: 'already_subscribed' }, { status: 400 });

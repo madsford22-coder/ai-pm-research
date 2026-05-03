@@ -10,18 +10,17 @@ export default function SubscribeForm() {
     e.preventDefault();
     setStatus('loading');
     try {
-      const body = new FormData();
-      body.append('email', email);
-      const res = await fetch('https://buttondown.com/api/emails/embed-subscribe/madsford22', {
+      const res = await fetch('/api/subscribe', {
         method: 'POST',
-        body,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
       });
-      if (res.ok || res.status === 201) {
+      if (res.ok) {
         setStatus('success');
         setEmail('');
       } else {
-        const text = await res.text().catch(() => '');
-        setStatus(text.toLowerCase().includes('already') ? 'duplicate' : 'error');
+        const data = await res.json().catch(() => ({}));
+        setStatus(data.error === 'already_subscribed' ? 'duplicate' : 'error');
       }
     } catch {
       setStatus('error');
