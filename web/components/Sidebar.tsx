@@ -420,6 +420,13 @@ export default function Sidebar() {
               </a>
               <span className="text-[#e7e3dd] dark:text-[#2e2b24]">·</span>
               <a
+                href="/feedback"
+                className="flex items-center gap-1.5 text-xs text-[#78716c] dark:text-[#a8a29e] hover:text-[#5a7a3a] dark:hover:text-[#8db870] transition-colors"
+              >
+                Feedback
+              </a>
+              <span className="text-[#e7e3dd] dark:text-[#2e2b24]">·</span>
+              <a
                 href="https://www.linkedin.com/in/madison-ford-31897872/"
                 target="_blank"
                 rel="noopener noreferrer"
