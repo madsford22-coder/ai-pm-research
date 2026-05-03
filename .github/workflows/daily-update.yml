@@ -140,6 +140,16 @@ jobs:
 
           echo "Update committed and pushed successfully"
 
+      - name: Send Buttondown broadcast
+        if: success()
+        env:
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+        run: |
+          export TZ=America/Los_Angeles
+          TODAY=$(date +%Y-%m-%d)
+          node scripts/send-buttondown-broadcast.js --date=$TODAY
+
       - name: Generate email preview
         if: always()
         env:

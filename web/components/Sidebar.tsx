@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { ContentMetadata } from '@/lib/content/types';
+import SubscribeForm from './SubscribeForm';
 
 interface TreeNode {
   name: string;
@@ -403,6 +404,9 @@ export default function Sidebar() {
             )}
           </nav>
           <div className="absolute bottom-0 left-0 right-0 px-6 py-4 border-t border-[#e7e3dd] dark:border-[#2e2b24] bg-[#faf8f5] dark:bg-[#18160f]">
+            <div className="mb-3">
+              <SubscribeForm />
+            </div>
             <div className="flex items-center gap-3">
               <a
                 href="mailto:madsford22@gmail.com"
