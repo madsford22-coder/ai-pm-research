@@ -15,15 +15,15 @@ export async function POST(request: NextRequest) {
   });
 
   const text = await res.text().catch(() => '');
-  const isAlreadySubscribed = text.toLowerCase().includes('already');
+  console.log('[subscribe] Buttondown status:', res.status, 'body:', text);
 
   if (res.ok || res.status === 201) {
     return NextResponse.json({ success: true });
   }
 
-  if (isAlreadySubscribed) {
+  if (text.toLowerCase().includes('already')) {
     return NextResponse.json({ error: 'already_subscribed' }, { status: 400 });
   }
 
-  return NextResponse.json({ error: 'failed' }, { status: 500 });
+  return NextResponse.json({ error: 'failed', detail: text }, { status: 500 });
 }
