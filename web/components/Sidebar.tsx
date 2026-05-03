@@ -404,8 +404,16 @@ export default function Sidebar() {
             )}
           </nav>
           <div className="absolute bottom-0 left-0 right-0 px-6 py-4 border-t border-[#e7e3dd] dark:border-[#2e2b24] bg-[#faf8f5] dark:bg-[#18160f]">
-            <div className="mb-3">
+            <div className="mb-2">
               <SubscribeForm />
+            </div>
+            <div className="mb-3">
+              <a
+                href="/feedback"
+                className="text-xs text-[#78716c] dark:text-[#a8a29e] hover:text-[#5a7a3a] dark:hover:text-[#8db870] transition-colors"
+              >
+                Share feedback →
+              </a>
             </div>
             <div className="flex items-center gap-3">
               <a
@@ -417,13 +425,6 @@ export default function Sidebar() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 Say hello
-              </a>
-              <span className="text-[#e7e3dd] dark:text-[#2e2b24]">·</span>
-              <a
-                href="/feedback"
-                className="flex items-center gap-1.5 text-xs text-[#78716c] dark:text-[#a8a29e] hover:text-[#5a7a3a] dark:hover:text-[#8db870] transition-colors"
-              >
-                Feedback
               </a>
               <span className="text-[#e7e3dd] dark:text-[#2e2b24]">·</span>
               <a
