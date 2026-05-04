@@ -12,18 +12,18 @@ export async function POST(request: NextRequest) {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: body.toString(),
+    redirect: 'manual',
   });
 
-  const text = await res.text().catch(() => '');
-  console.log('[subscribe] Buttondown status:', res.status, 'body:', text);
-
-  if (res.ok || res.status === 201) {
+  // Buttondown redirects on success (302/303) — treat any redirect or 2xx as success
+  if (res.ok || res.status === 302 || res.status === 303 || res.status === 201) {
     return NextResponse.json({ success: true });
   }
 
+  const text = await res.text().catch(() => '');
   if (text.toLowerCase().includes('already')) {
     return NextResponse.json({ error: 'already_subscribed' }, { status: 400 });
   }
 
-  return NextResponse.json({ error: 'failed', detail: text }, { status: 500 });
+  return NextResponse.json({ error: 'failed' }, { status: 500 });
 }
