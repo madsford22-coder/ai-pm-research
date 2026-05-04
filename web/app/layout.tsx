@@ -5,6 +5,7 @@ import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import Search from "@/components/Search";
 import ThemeToggle from "@/components/ThemeToggle";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -49,6 +50,7 @@ export default function RootLayout({
             <div className="w-full max-w-none px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
               {children}
             </div>
+            <Footer />
           </main>
         </div>
       </body>
