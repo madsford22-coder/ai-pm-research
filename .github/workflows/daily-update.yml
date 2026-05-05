@@ -38,6 +38,7 @@ jobs:
           npx puppeteer browsers install chrome
 
       - name: Run data collection
+        id: data-collection
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
@@ -88,6 +89,7 @@ jobs:
           echo "Frontmatter validation passed"
 
       - name: Commit and push update
+        id: commit
         run: |
           export TZ=America/Los_Angeles
           TODAY=$(date +%Y-%m-%d)
@@ -141,6 +143,7 @@ jobs:
           echo "Update committed and pushed successfully"
 
       - name: Send Buttondown broadcast
+        id: buttondown
         if: success()
         env:
           BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
@@ -166,6 +169,10 @@ jobs:
           node scripts/send-email-notification.js \
             --status=$STATUS_ARG \
             --date=$TODAY \
+            --step-data-collection=${{ steps.data-collection.outcome }} \
+            --step-commit=${{ steps.commit.outcome }} \
+            --step-buttondown=${{ steps.buttondown.outcome }} \
+            --run-url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             --generate-only \
             --output=/tmp/email-preview.html
           SUBJECT=$(cat /tmp/email-preview.html.subject 2>/dev/null || echo "Daily PM Research — $TODAY")

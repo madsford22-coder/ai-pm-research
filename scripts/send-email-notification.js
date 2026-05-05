@@ -180,17 +180,58 @@ function generatePreviewEmail({ date, title, shortVersion, items, quickHits, rea
 </html>`;
 }
 
-function generateFailureEmail({ date, errors }) {
+function generateFailureEmail({ date, steps = {}, runUrl }) {
+  const STEPS = [
+    {
+      key: 'data-collection',
+      label: 'Data collection & synthesis',
+      fix: 'Check the <code>ANTHROPIC_API_KEY</code> secret. If the key is valid, the Claude API may have been rate-limited or returned an error — run manually: <code>bash scripts/run-daily-research-data-collection.sh</code>',
+    },
+    {
+      key: 'commit',
+      label: 'Commit & push to GitHub',
+      fix: 'The post was generated but failed to save. Check GitHub Actions write permissions on the repo.',
+    },
+    {
+      key: 'buttondown',
+      label: 'Buttondown subscriber broadcast',
+      fix: 'Subscribers didn\'t receive today\'s email. Check the <code>BUTTONDOWN_API_KEY</code> secret and that the Buttondown account is approved.',
+    },
+  ];
+
+  const stepRows = STEPS.map(s => {
+    const outcome = steps[s.key] || 'skipped';
+    const icon = outcome === 'success' ? '✅' : outcome === 'failure' ? '❌' : '⏭️';
+    const color = outcome === 'success' ? '#166534' : outcome === 'failure' ? '#991b1b' : '#78716c';
+    const bg = outcome === 'success' ? '#f0fdf4' : outcome === 'failure' ? '#fef2f2' : '#f9fafb';
+    const fix = outcome === 'failure' ? `<div style="margin-top:8px; font-size:12px; color:#374151; background:#fff; border-radius:4px; padding:10px 12px;">${s.fix}</div>` : '';
+    return `
+      <div style="background:${bg}; border-radius:6px; padding:12px 16px; margin-bottom:10px;">
+        <div style="font-size:14px; color:${color}; font-weight:600;">${icon} ${escapeHtml(s.label)}</div>
+        ${fix}
+      </div>`;
+  }).join('');
+
+  const runLink = runUrl
+    ? `<p style="margin:24px 0 0;"><a href="${runUrl}" style="font-size:13px; color:#3b82f6;">View full run logs →</a></p>`
+    : '';
+
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"></head>
 <body style="margin:0; padding:0; background:#ffffff;">
   <div style="max-width:600px; margin:0 auto; padding:40px 24px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-    <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:20px 24px; margin-bottom:24px;">
-      <h2 style="margin:0 0 8px; font-size:18px; color:#b91c1c;">Daily Research Failed</h2>
-      <p style="margin:0; font-size:14px; color:#7f1d1d;">${date}</p>
+    <div style="border-bottom:2px solid #1a1a1a; padding-bottom:12px; margin-bottom:28px;">
+      <p style="margin:0; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:#888; font-weight:600;">AI PM Research</p>
+      <p style="margin:4px 0 0; font-size:13px; color:#888;">${escapeHtml(date)}</p>
     </div>
-    ${errors ? `<pre style="background:#f9fafb; padding:16px; border-radius:6px; font-size:12px; color:#374151; overflow:auto; white-space:pre-wrap;">${escapeHtml(errors)}</pre>` : ''}
+    <h2 style="margin:0 0 20px; font-size:20px; color:#1a1a1a;">Pipeline issue detected</h2>
+    <p style="margin:0 0 20px; font-size:14px; color:#555;">One or more steps failed in today's run. Here's what happened:</p>
+    ${stepRows}
+    ${runLink}
+    <div style="border-top:1px solid #ebebeb; padding-top:16px; margin-top:32px;">
+      <p style="margin:0; font-size:12px; color:#aaa;">AI PM Research &middot; Daily pipeline alert</p>
+    </div>
   </div>
 </body>
 </html>`;
@@ -204,13 +245,13 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-function buildEmailFromFile(date, success, errors) {
+function buildEmailFromFile(date, success, errors, steps = {}, runUrl = null) {
   const filePath = path.join(__dirname, '..', `updates/daily/${date.split('-')[0]}/${date}.md`);
 
   if (!success) {
     return {
       subject: `Daily Research Failed — ${date}`,
-      html: generateFailureEmail({ date, errors }),
+      html: generateFailureEmail({ date, steps, runUrl }),
     };
   }
 
@@ -248,6 +289,12 @@ async function main() {
   const generateOnly = args.includes('--generate-only');
   const outputArg = args.find(a => a.startsWith('--output='));
   const logFileArg = args.find(a => a.startsWith('--log='));
+  const runUrlArg = args.find(a => a.startsWith('--run-url='));
+  const steps = {
+    'data-collection': (args.find(a => a.startsWith('--step-data-collection=')) || '').split('=')[1],
+    'commit': (args.find(a => a.startsWith('--step-commit=')) || '').split('=')[1],
+    'buttondown': (args.find(a => a.startsWith('--step-buttondown=')) || '').split('=')[1],
+  };
 
   const today = dateArg ? dateArg.split('=')[1] : new Date().toISOString().split('T')[0];
   const success = statusArg ? statusArg.split('=')[1] === 'success' : true;
@@ -263,7 +310,8 @@ async function main() {
     }
   }
 
-  const { subject, html } = buildEmailFromFile(today, success, errors);
+  const runUrl = runUrlArg ? runUrlArg.split('=').slice(1).join('=') : null;
+  const { subject, html } = buildEmailFromFile(today, success, errors, steps, runUrl);
 
   if (generateOnly) {
     const outputPath = outputArg ? outputArg.split('=')[1] : '/tmp/email-preview.html';
