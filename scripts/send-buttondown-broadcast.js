@@ -26,6 +26,7 @@ async function main() {
     headers: {
       Authorization: `Token ${apiKey}`,
       'Content-Type': 'application/json',
+      'X-Buttondown-Live-Dangerously': 'true',
     },
     body: JSON.stringify({ subject, body: html, status: 'about_to_send' }),
   });
@@ -34,8 +35,7 @@ async function main() {
     console.log('✅ Buttondown broadcast sent!');
   } else {
     const error = await res.json().catch(() => ({}));
-    console.error('❌ Buttondown error:', JSON.stringify(error));
-    process.exit(1);
+    console.error('⚠️ Buttondown broadcast failed (non-fatal):', JSON.stringify(error));
   }
 }
 

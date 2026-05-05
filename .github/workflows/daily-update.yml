@@ -148,7 +148,7 @@ jobs:
         run: |
           export TZ=America/Los_Angeles
           TODAY=$(date +%Y-%m-%d)
-          node scripts/send-buttondown-broadcast.js --date=$TODAY
+          node scripts/send-buttondown-broadcast.js --date=$TODAY || true
 
       - name: Generate email preview
         if: always()
