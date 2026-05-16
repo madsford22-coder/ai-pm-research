@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
     "gray-matter": "^4.0.3",
+    "jose": "^5.0.0",
     "next": "^14.2.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
@@ -34,7 +36,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:watch": "concurrently \"npm run dev\" \"node scripts/watch-content.js\"",
-    "prebuild": "cp -r ../updates . || true",
+    "prebuild": "cp -r ../updates . || true && cp -r ../presentation public/presentation || true",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

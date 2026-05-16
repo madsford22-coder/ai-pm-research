@@ -148,6 +148,56 @@ If the frontmatter is missing or malformed, the orchestrator exits with code 1 a
 
 ---
 
+## Query widget (subscriber AI chat)
+
+The site has a subscriber-gated query widget (`web/components/QueryWidget.tsx`) that lets confirmed Buttondown subscribers ask questions about the research archive. Claude streams answers via `web/app/api/query/route.ts`.
+
+### Voice and tone
+
+The query assistant uses the same voice as the digest itself — warm, direct, older-sibling energy. The smart friend who actually read the thing. When editing the system prompt in `route.ts`, keep these principles:
+
+- Have opinions. "This is mostly marketing" and "this is the real deal" are both valid takes.
+- Don't hedge when you don't need to. One sharp sentence beats three cautious ones.
+- Speak like a person, not a press release. Never: "It could be argued that..." or "This represents a significant development in..."
+- Be specific — dates, companies, concrete details.
+- If something isn't in the archive, say so plainly rather than guessing.
+
+### Key files
+
+| File | Purpose |
+|------|---------|
+| `web/app/api/auth/verify/route.ts` | Checks Buttondown subscription, issues 30-day JWT cookie |
+| `web/app/api/auth/me/route.ts` | Validates session cookie, returns auth state |
+| `web/app/api/query/route.ts` | Verifies session, loads archive context, streams Claude response |
+| `web/components/QueryWidget.tsx` | Client component — auth form + streaming chat UI |
+
+### How auth works
+
+1. User enters email → `POST /api/auth/verify` checks Buttondown API for `type === 'regular'`
+2. On success, a 30-day HttpOnly JWT cookie (`aipm_session`) is set
+3. Every query hits `POST /api/query`, which verifies the cookie before loading context
+
+Buttondown subscriber types: `regular` = confirmed subscriber (gets access), `unactivated` = signed up but hasn't clicked confirmation email (denied with `not_activated` error).
+
+### Context loading
+
+- **Dashboard widget** (no date prop): loads the 30 most recent daily updates
+- **Individual post widget** (date prop set to post's date): loads that date plus the 13 preceding days — enough context for comparison questions
+
+The query route injects today's date and the archive's most recent date into the system prompt so Claude can correctly interpret "this week" and "recently."
+
+### Local dev note
+
+In dev, `web/updates/` must be manually synced from `../updates/` — the prebuild script only runs on `npm run build`. After pulling new daily files, run:
+
+```bash
+cp -r ../updates web/
+```
+
+from the `web/` directory (or restart the dev server if the module-level path resolution has already cached the old state).
+
+---
+
 ## Web / Netlify site
 
 The site lives in `web/` and is a Next.js 14 App Router site deployed on Netlify via `@netlify/plugin-nextjs`.

@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ContentMetadata } from '@/lib/content/types';
+import QueryWidget from '@/components/QueryWidget';
 
 export default function Dashboard() {
   const searchParams = useSearchParams();
@@ -198,6 +199,9 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Ask the research */}
+      <QueryWidget />
 
       {/* Date Range Filter */}
       <div className="bg-white dark:bg-[#1e1c16] rounded-xl border border-[#e7e3dd] dark:border-[#2e2b24] p-3 sm:p-6 overflow-hidden">

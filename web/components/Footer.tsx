@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="border-t border-[#e7e3dd] dark:border-[#2e2b24] mt-16 px-4 sm:px-6 lg:px-8 py-10 bg-[#faf8f5] dark:bg-[#18160f]">
       <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-8">
 
-        <div>
+        <div id="subscribe">
           <p className="text-xs font-semibold uppercase tracking-widest text-[#78716c] dark:text-[#a8a29e] mb-3">Stay in the loop</p>
           <SubscribeForm />
         </div>

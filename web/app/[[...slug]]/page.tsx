@@ -4,6 +4,7 @@ import { getContentByPath, getAllContentPaths, getAllContentMetadata } from '@/l
 import { notFound } from 'next/navigation';
 import TableOfContents from '@/components/TableOfContents';
 import DateNavigator from '@/components/DateNavigator';
+import QueryWidget from '@/components/QueryWidget';
 
 interface PageProps {
   params: Promise<{ slug?: string[] }>;
@@ -189,6 +190,13 @@ export default async function ContentPage({ params }: PageProps) {
         </article>
         <TableOfContents html={content.html} />
       </div>
+      {isDailyUpdate && content.date && (
+        <div className="mt-10">
+          <QueryWidget
+            date={content.date instanceof Date ? content.date.toISOString().split('T')[0] : content.date}
+          />
+        </div>
+      )}
     </div>
   );
 }
