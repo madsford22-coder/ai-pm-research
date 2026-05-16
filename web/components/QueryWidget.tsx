@@ -163,8 +163,10 @@ export default function QueryWidget({ date }: { date?: string }) {
         /* Sign-in form */
         <div className="px-5 py-5">
           <p className="text-sm text-[#44403c] dark:text-[#c8c4bc] mb-4">
-            Subscribers can query the full archive directly. Enter your email to verify your
-            subscription.
+            {date
+              ? "Ask deeper questions about this update. Verify your free subscription to get access."
+              : "Subscribers can query the full archive directly. Enter your email to verify your subscription."
+            }
           </p>
           <form onSubmit={handleVerify} className="flex gap-2">
             <input

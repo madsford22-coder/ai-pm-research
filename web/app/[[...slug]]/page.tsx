@@ -191,7 +191,7 @@ export default async function ContentPage({ params }: PageProps) {
         <TableOfContents html={content.html} />
       </div>
       {isDailyUpdate && content.date && (
-        <div className="mt-10">
+        <div className="mt-12 pt-10 border-t border-[#e7e3dd] dark:border-[#2e2b24]">
           <QueryWidget
             date={content.date instanceof Date ? content.date.toISOString().split('T')[0] : content.date}
           />
