@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 type AuthState = 'checking' | 'unauthenticated' | 'authenticated';
 type VerifyStatus = 'idle' | 'loading' | 'not_found' | 'not_activated' | 'error';
@@ -12,28 +14,23 @@ interface Message {
   loading: boolean;
 }
 
-function renderAnswer(text: string) {
-  const parts: React.ReactNode[] = [];
-  const linkRegex = /\[([^\]]+)\]\((\/[^)]*)\)/g;
-  let lastIndex = 0;
-  let match;
-  let key = 0;
-  while ((match = linkRegex.exec(text)) !== null) {
-    if (match.index > lastIndex) parts.push(text.slice(lastIndex, match.index));
-    parts.push(
-      <Link
-        key={key++}
-        href={match[2]}
-        className="underline text-[#5a7a3a] dark:text-[#8db870] hover:no-underline"
-      >
-        {match[1]}
-      </Link>
-    );
-    lastIndex = match.index + match[0].length;
-  }
-  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
-  return parts;
-}
+const markdownComponents: React.ComponentProps<typeof ReactMarkdown>['components'] = {
+  a: ({ href, children }) => {
+    if (href?.startsWith('/')) {
+      return (
+        <Link href={href} className="underline text-[#5a7a3a] dark:text-[#8db870] hover:no-underline">
+          {children}
+        </Link>
+      );
+    }
+    return <a href={href} target="_blank" rel="noopener noreferrer" className="underline text-[#5a7a3a] dark:text-[#8db870] hover:no-underline">{children}</a>;
+  },
+  strong: ({ children }) => <strong className="font-semibold text-[#1c1917] dark:text-[#f5f0ea]">{children}</strong>,
+  ul: ({ children }) => <ul className="list-disc pl-4 space-y-1 my-2">{children}</ul>,
+  ol: ({ children }) => <ol className="list-decimal pl-4 space-y-1 my-2">{children}</ol>,
+  li: ({ children }) => <li>{children}</li>,
+  p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+};
 
 export default function QueryWidget({ date }: { date?: string }) {
   const [authState, setAuthState] = useState<AuthState>('checking');
@@ -237,9 +234,11 @@ export default function QueryWidget({ date }: { date?: string }) {
                         Searching the archive…
                       </p>
                     ) : (
-                      <p className="text-sm text-[#44403c] dark:text-[#c8c4bc] leading-relaxed whitespace-pre-wrap">
-                        {renderAnswer(msg.answer)}
-                      </p>
+                      <div className="text-sm text-[#44403c] dark:text-[#c8c4bc] leading-relaxed">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                          {msg.answer}
+                        </ReactMarkdown>
+                      </div>
                     )}
                   </div>
                 </div>

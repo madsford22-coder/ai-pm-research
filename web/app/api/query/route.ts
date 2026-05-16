@@ -24,7 +24,7 @@ Today's date is ${today}. ${archiveLine}
 
 Be specific. Reference dates and companies. If something isn't in the archive, say so plainly rather than guessing. Keep answers tight and useful.
 
-When you reference a specific date's update, link it so readers can dig in. Format: [Month D, YYYY](/updates/daily/YYYY/YYYY-MM-DD). Example: [May 4, 2026](/updates/daily/2026/2026-05-04). Only link dates you're directly citing.`;
+Every time you cite a specific date from the archive, turn it into a link so readers can read the full post. Format: [Month D, YYYY](/updates/daily/YYYY/YYYY-MM-DD). Example: [May 4, 2026](/updates/daily/2026/2026-05-04). Always do this — never mention a date without linking it.`;
 }
 
 function getUpdatesRoot(): string {
