@@ -137,7 +137,8 @@ jobs:
                      -m "" \
                      -m "Co-Authored-By: GitHub Actions Bot <actions@github.com>"
 
-          # Push to main branch
+          # Pull any commits that landed while we were running, then push
+          git pull --rebase origin main
           git push origin main
 
           echo "Update committed and pushed successfully"
