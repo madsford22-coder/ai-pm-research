@@ -206,7 +206,7 @@ export default function Dashboard() {
       {/* Date Range Filter */}
       <div className="bg-white dark:bg-[#1e1c16] rounded-xl border border-[#e7e3dd] dark:border-[#2e2b24] p-3 sm:p-6 overflow-hidden">
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-end">
-          <div className="flex-1 grid grid-cols-2 gap-2 sm:gap-4 w-full min-w-0">
+          <div className="flex-1 grid grid-cols-2 gap-4 w-full min-w-0">
             <div className="min-w-0">
               <label htmlFor="start-date" className="block text-xs sm:text-sm font-medium text-[#44403c] dark:text-[#c8c4bc] mb-1 sm:mb-2">
                 From
