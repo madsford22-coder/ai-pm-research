@@ -143,6 +143,7 @@ export async function POST(request: NextRequest) {
   }
 
   const today = new Date().toISOString().split('T')[0];
+  console.log(`[query] ${today} context=${date ?? 'dashboard'} q=${JSON.stringify(question)}`);
   const archiveThrough = date ?? getMostRecentUpdateDate();
   const systemPrompt = buildSystemPrompt(today, archiveThrough);
 
