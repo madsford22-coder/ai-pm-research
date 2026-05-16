@@ -67,7 +67,7 @@ async function callClaude(systemPrompt, userPrompt, maxTokens = 8000, models = [
           model,
           max_tokens: maxTokens,
           messages: [{ role: 'user', content: userPrompt }],
-          system: systemPrompt,
+          system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
         });
         return { text: message.content[0].text, model, usage: message.usage };
       } catch (error) {
@@ -224,7 +224,11 @@ Quick Hits must contain the top 5 most PM-relevant items from the list below. Th
   userPrompt += `\n\n# Collected Research Data\n\n${collectedData}`;
 
   const result = await callClaude(systemPrompt, userPrompt);
-  console.log(`   Model: ${result.model} | Tokens: ${result.usage.input_tokens} in, ${result.usage.output_tokens} out`);
+  const u = result.usage;
+  const cacheRead = u.cache_read_input_tokens ?? 0;
+  const cacheWrite = u.cache_creation_input_tokens ?? 0;
+  const cacheSuffix = cacheRead > 0 ? ` | Cache hit: ${cacheRead} tokens saved` : cacheWrite > 0 ? ` | Cache write: ${cacheWrite} tokens` : '';
+  console.log(`   Model: ${result.model} | Tokens: ${u.input_tokens} in, ${u.output_tokens} out${cacheSuffix}`);
   return result.text;
 }
 
