@@ -29,9 +29,14 @@ export default function SubscribeForm() {
 
   if (status === 'success') {
     return (
-      <p className="text-xs text-[#5a7a3a] dark:text-[#8db870] font-medium">
-        ✓ You&apos;re subscribed!
-      </p>
+      <div className="space-y-1">
+        <p className="text-xs text-[#5a7a3a] dark:text-[#8db870] font-medium">
+          ✓ Almost there — check your inbox!
+        </p>
+        <p className="text-xs text-[#78716c] dark:text-[#a8a29e]">
+          Click the confirmation link in the email from Buttondown to activate your subscription. You won&apos;t receive updates until you confirm.
+        </p>
+      </div>
     );
   }
 
