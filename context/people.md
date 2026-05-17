@@ -343,16 +343,16 @@ This file defines whose public thinking and product commentary should be treated
 ---
 
 ## Jason Boehmig
-**Role:** Co-founder, Cursor
-**Why they matter:** Building AI coding assistant. Shares product decisions, user feedback, and how AI changes developer workflows.
+**Role:** CEO and co-founder, Ironclad
+**Why they matter:** Building AI-powered contract management — one of the clearest examples of AI transforming a non-technical enterprise workflow. Posts on AI in legal tech, product decisions for enterprise buyers, and what it looks like to ship AI to risk-averse customers.
 **Signal types to watch for:**
-- AI coding tool product decisions
-- Developer workflow insights
-- Product launches and features
-- User feedback patterns
+- AI product decisions for enterprise/legal buyers
+- How AI features get sold and adopted in risk-averse orgs
+- Contract and workflow automation product patterns
+- Product strategy for AI in professional services
 **Primary platforms:**
 - Twitter/X: @jasonboehmig
-- Cursor updates
+- Ironclad blog: https://ironcladapp.com/journal/
 
 ---
 
@@ -463,16 +463,15 @@ This file defines whose public thinking and product commentary should be treated
 ---
 
 ## Alex Graveley
-**Role:** Co-founder, Cursor
-**Why they matter:** Building AI coding assistant. Shares product decisions, technical tradeoffs, and how AI tools are built.
+**Role:** Creator of GitHub Copilot; software engineer
+**Why they matter:** Built the first mainstream AI coding assistant at GitHub. Offers an inside perspective on how AI coding tools were conceived, what product decisions shaped Copilot's design, and how developer tools evolve when AI is the core feature.
 **Signal types to watch for:**
-- AI tool product decisions
-- Technical tradeoffs
-- Product development process
-- Developer tool insights
+- AI coding tool design decisions and product philosophy
+- Developer workflow insights from the person who built the category
+- Retrospectives on what worked and didn't in AI developer tooling
+- Technical product tradeoffs in AI-assisted development
 **Primary platforms:**
 - Twitter/X: @alexgraveley
-- Cursor updates
 
 ---
 
@@ -491,18 +490,17 @@ This file defines whose public thinking and product commentary should be treated
 ---
 
 ## Emad Mostaque
-**Role:** CEO, Stability AI
-**Why they matter:** Building open-source AI models and tools. Shares product decisions, model releases, and developer tool strategy.
+**Role:** Former CEO, Stability AI; independent AI advocate
+**Why they matter:** Left Stability AI in early 2024. Now posts independently on open-source AI strategy, decentralized AI, and critiques of how large AI companies operate. Opinionated, sometimes contrarian, and worth tracking for unconventional takes on AI product and market dynamics.
 **Signal types to watch for:**
-- Model and product releases
-- Open-source product strategy
-- Developer tool decisions
-- Product positioning
+- Open-source and decentralized AI strategy
+- Critical takes on big AI company product decisions
+- Alternative models for AI development and distribution
+- Market dynamics from an outsider-with-inside-knowledge perspective
 **Primary platforms:**
 - Twitter/X: @EMostaque
-- Stability AI updates
 **Ignore unless:**
-- Pure research announcements
+- Pure speculation or personal drama without product substance
 
 ---
 
@@ -810,5 +808,146 @@ This file defines whose public thinking and product commentary should be treated
 - Twitter/X: @Thom_Wolf
 - Hugging Face blog: https://huggingface.co/blog
 - RSS Feed: https://huggingface.co/blog/feed.xml
+
+---
+
+## Ethan Mollick
+**Role:** Associate professor, Wharton; author of "Co-Intelligence"
+**Why they matter:** The most-read voice on practical AI adoption by non-technical practitioners. Writes from the perspective of someone actually using AI tools daily and studying how they change work — not building them. Fills the gap between technical AI coverage and how PMs, managers, and knowledge workers actually experience these products.
+**Signal types to watch for:**
+- How AI tools change real workflows for non-technical users
+- Adoption patterns and what actually sticks vs. what doesn't
+- Product implications of AI in education, management, and knowledge work
+- Grounded takes on capability claims based on hands-on use
+**Primary platforms:**
+- Substack: https://www.oneusefulthing.org
+- RSS Feed: https://www.oneusefulthing.org/feed
+- Twitter/X: @emollick
+
+---
+
+## Andrej Karpathy
+**Role:** Co-founder, Eureka Labs; former OpenAI research director; former Tesla AI director
+**Why they matter:** Bridging research and product better than almost anyone. Posts on what AI actually can and can't do, how to think about capability curves, and what it means to build educational products on AI. One of the most followed and trusted voices in the field — and one of the few who can explain frontier AI in terms that inform product decisions.
+**Signal types to watch for:**
+- Honest assessments of AI capability and limitations
+- How model capabilities translate (or don't) into product value
+- Educational AI product thinking from Eureka Labs
+- Takes on AI development direction that inform product roadmap assumptions
+**Primary platforms:**
+- Twitter/X: @karpathy
+- Blog: https://karpathy.github.io
+- YouTube: Andrej Karpathy (educational content)
+
+---
+
+## Mustafa Suleyman
+**Role:** CEO, Microsoft AI; co-founder, DeepMind and Inflection AI
+**Why they matter:** Running AI product strategy for one of the largest enterprise software companies in the world, with a background building frontier AI from the beginning. European-origin perspective on AI that's often more cautious and policy-aware than US counterparts. Represents enterprise AI deployment at scale.
+**Signal types to watch for:**
+- Enterprise AI product strategy at Microsoft scale
+- How AI features get integrated into existing products vs. built new
+- Policy and governance-aware product thinking
+- Copilot and Microsoft AI product direction
+**Primary platforms:**
+- Twitter/X: @mustafasuleyman
+- Book and interviews (The Coming Wave)
+**Ignore unless:**
+- Pure policy advocacy without product implications
+
+---
+
+## Benedict Evans
+**Role:** Independent technology analyst
+**Why they matter:** Long-form research on technology market dynamics, written from a European base. Often skeptical, always rigorous. Writes the kind of "here's what's actually happening in the market" analysis that cuts through both hype and panic. One of the few analysts who consistently gets the product and market dynamics right over a long time horizon.
+**Signal types to watch for:**
+- Market structure analysis for AI products
+- How AI fits (or doesn't) into existing technology adoption patterns
+- Critical takes on AI business model viability
+- European and global market perspective on AI product dynamics
+**Primary platforms:**
+- Newsletter: https://www.ben-evans.com
+- RSS Feed: https://www.ben-evans.com/benedictevans?format=rss
+- Twitter/X: @benedictevans
+
+---
+
+## Fei-Fei Li
+**Role:** Co-director, Stanford HAI; founder, WorldLabs; professor, Stanford
+**Why they matter:** One of the most credentialed voices in AI, with both deep research roots (ImageNet, computer vision) and real product experience (Google Cloud AI). Now building WorldLabs. Posts on responsible AI, AI in society, and what it means to build AI that's genuinely beneficial. Chinese-American — one of the most prominent women of color in AI leadership.
+**Signal types to watch for:**
+- Responsible AI product thinking from a founder/researcher perspective
+- What it looks like to build AI products with safety and equity as design constraints
+- AI in healthcare, education, and public-sector product applications
+- Signals on where spatial/visual AI is heading as a product category
+**Primary platforms:**
+- Twitter/X: @drfeifei
+- WorldLabs updates: https://worldlabs.ai
+**Ignore unless:**
+- Pure academic research without product implications
+
+---
+
+## Rumman Chowdhury
+**Role:** Founder, Humane Intelligence; former head of ML Ethics, Twitter/X; former Responsible AI lead, Accenture
+**Why they matter:** One of the most practically-grounded voices on responsible AI — not policy theory, but what it actually looks like to audit AI systems, surface harms, and build accountability into products. Pakistani-American. Bridges the gap between "ethics" as an abstract concern and "what product teams should actually do differently."
+**Signal types to watch for:**
+- Practical responsible AI practices for product teams
+- AI audit findings that reveal real product failure modes
+- Red-teaming and evaluation approaches that PMs should know about
+- Critical takes on how AI companies handle (or avoid) accountability
+**Primary platforms:**
+- Twitter/X: @ruchowdhury
+- Blog and essays (various)
+**Ignore unless:**
+- Pure policy advocacy without actionable product implications
+
+---
+
+## Cassie Kozyrkov
+**Role:** Former Chief Decision Scientist, Google; independent advisor
+**Why they matter:** Made AI and ML strategy accessible to product and business leaders during her time at Google — writes clearly on how to think about AI product decisions, what "AI strategy" actually means in practice, and how to avoid common traps. One of the clearest practical voices on decision intelligence applied to AI products.
+**Signal types to watch for:**
+- Frameworks for AI product decision-making
+- How to evaluate AI product investments and trade-offs
+- Practical AI strategy for product leaders (not data scientists)
+- Clear-headed takes on AI capability claims and what they mean for products
+**Primary platforms:**
+- Twitter/X: @quaesita
+- Blog: https://kozyrkov.medium.com
+- RSS Feed: https://kozyrkov.medium.com/feed
+
+---
+
+## Arvind Narayanan
+**Role:** Professor of computer science, Princeton; co-author of "AI Snake Oil"
+**Why they matter:** One of the most rigorous and evidence-based AI critics. The "AI Snake Oil" newsletter (co-written with Sayash Kapoor) specifically calls out product capability claims that don't hold up — exactly the kind of signal product teams need when evaluating tools and making roadmap assumptions. South Asian. Fills a different niche than Gary Marcus: less punditry, more structured evidence.
+**Signal types to watch for:**
+- Specific AI product claims that are overstated or misleading
+- Evidence-based analysis of AI benchmarks vs. real-world performance
+- Patterns in how AI companies market capabilities vs. what they deliver
+- Research that should change how product teams evaluate AI tools
+**Primary platforms:**
+- Newsletter: https://aisnakeoil.substack.com
+- RSS Feed: https://aisnakeoil.substack.com/feed
+- Twitter/X: @random_walker
+**Ignore unless:**
+- Pure academic CS research without product implications
+
+---
+
+## Joy Buolamwini
+**Role:** Researcher, MIT Media Lab; founder, Algorithmic Justice League
+**Why they matter:** Foundational work on AI bias — her research directly exposed facial recognition failures that led to real product changes and bans. Posts at the intersection of AI accountability and product design. Black American. Relevant to any PM building AI features that interact with people: hiring, content moderation, identity, medical tools.
+**Signal types to watch for:**
+- AI bias findings that affect product design decisions
+- Accountability and audit standards product teams should know about
+- Policy changes driven by AI harms that will affect product roadmaps
+- Cases where AI product failures had real human impact
+**Primary platforms:**
+- Twitter/X: @jovialjoy
+- Algorithmic Justice League: https://www.ajl.org
+**Ignore unless:**
+- Pure activism or policy advocacy without product-relevant findings
 
 ---
