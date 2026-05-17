@@ -706,3 +706,109 @@ This file defines whose public thinking and product commentary should be treated
 - Blog posts and essays (various)
 
 ---
+
+## Pieter Levels
+**Role:** Solo founder; creator of Nomad List, Remote OK, PhotoAI, and others
+**Why they matter:** Builds and ships products almost entirely with AI as a non-technical-by-training solo founder. Real-time window into what it looks like to build on top of AI rather than build AI — bootstrapped, revenue-focused, no VC. The anti-scale-up perspective.
+**Signal types to watch for:**
+- What actually works when building products on AI (not with a team of ML engineers)
+- Bootstrap economics of AI-powered products
+- User behavior and retention in AI products built by small teams
+- Candid takes on AI tool quality from a builder-consumer perspective
+**Primary platforms:**
+- Twitter/X: @levelsio
+- Blog: https://levels.io
+- RSS Feed: https://levels.io/rss
+
+---
+
+## Jason Levin
+**Role:** Founder, Memelord Technologies
+**Why they matter:** Non-technical founder building a real business on top of AI. Rare case study of AI-first product thinking from outside the technical founder mold — posts candidly about what works, what doesn't, and the gap between AI hype and building with it.
+**Signal types to watch for:**
+- Non-technical founder perspective on building with AI
+- Honest takes on AI product limitations from a customer/builder perspective
+- Bootstrap and small-team AI product economics
+- Product decisions made without an ML team
+**Primary platforms:**
+- Twitter/X: @jason_levin_
+- Blog/newsletter (various)
+
+---
+
+## Shawn Wang (swyx)
+**Role:** Developer, writer, and community organizer; founder of Latent Space
+**Why they matter:** Writes from the AI engineer perspective — building *on* AI, not building AI. Tracks what developers actually use, what breaks in production, and where the real product gaps are. Closer to the user voice than anyone else on this list.
+**Signal types to watch for:**
+- What AI products look like from a practitioner who ships with them daily
+- Gaps between AI product marketing and developer experience
+- Emerging patterns in AI application development
+- Community signals on what's actually being adopted vs. what's being hyped
+**Primary platforms:**
+- Blog: https://swyx.io
+- RSS Feed: https://swyx.io/rss.xml
+- Twitter/X: @swyx
+- Podcast: Latent Space (https://www.latent.space)
+
+---
+
+## Gary Marcus
+**Role:** Professor emeritus, NYU; AI researcher and critic
+**Why they matter:** The most consistent, credentialed AI skeptic with product-level takes. Not just "AI is dangerous" — specifically calls out gaps between capability claims and real performance. Useful counterweight to hype; surfaces the risks PMs should stress-test against.
+**Signal types to watch for:**
+- Specific product capability claims that don't hold up under scrutiny
+- Failure modes and limitations that affect product reliability promises
+- Cases where AI product behavior contradicts marketing
+- Critical analysis of benchmark claims vs. real-world performance
+**Primary platforms:**
+- Substack: https://garymarcus.substack.com
+- RSS Feed: https://garymarcus.substack.com/feed
+- Twitter/X: @GaryMarcus
+**Ignore unless:**
+- Pure academic philosophy or policy without product implications
+
+---
+
+## Dare Obasanjo
+**Role:** Principal PM, Microsoft (Xbox, OneDrive, various); long-time industry practitioner
+**Why they matter:** Posts thoughtful, critical takes on AI products and PM craft from inside a large non-AI-first company. One of the few voices who will say "this is bad product thinking" out loud. Represents the mid-market/enterprise PM perspective that's underrepresented.
+**Signal types to watch for:**
+- Critical takes on AI product decisions and hype
+- Mid-market and enterprise PM perspective on adopting AI tools
+- Product craft and decision-making patterns from a practitioner (not a thought leader)
+- Honest assessments of what AI products actually deliver vs. promise
+**Primary platforms:**
+- Twitter/X: @carnage4life
+
+---
+
+## Arthur Mensch
+**Role:** CEO, Mistral AI
+**Why they matter:** Leading the most significant non-US frontier AI company. Represents a genuinely different product philosophy — open weights, European regulatory context, enterprise-first. Rarely covered as a product voice, mostly as a model competitor. The non-US angle matters.
+**Signal types to watch for:**
+- Product decisions that diverge from US AI company patterns
+- Open-weight model strategy and what it means for builders
+- European regulatory context shaping product decisions
+- Enterprise AI product strategy outside the US market
+**Primary platforms:**
+- Twitter/X: @arthurmensch
+- Mistral blog: https://mistral.ai/news
+**Ignore unless:**
+- Pure research benchmarks without product implications
+
+---
+
+## Thomas Wolf
+**Role:** Co-founder and CSO, Hugging Face
+**Why they matter:** Builds the infrastructure most AI product teams depend on, from a European base. Posts on open-source AI strategy, what developers actually need from model infrastructure, and where the ecosystem is heading. Non-US perspective on a platform that's globally used.
+**Signal types to watch for:**
+- Open-source AI ecosystem product decisions
+- What developers actually need from model infrastructure
+- Platform strategy for AI tooling
+- Non-US perspective on AI product development patterns
+**Primary platforms:**
+- Twitter/X: @Thom_Wolf
+- Hugging Face blog: https://huggingface.co/blog
+- RSS Feed: https://huggingface.co/blog/feed.xml
+
+---

@@ -100,3 +100,17 @@ Do not output "No meaningful PM-relevant updates today" if tracked companies or 
 - The question is not "is this definitely PM-relevant?" but "could a PM find this useful?" If yes, include it.
 
 ---
+
+## Perspective diversity — actively weight these up
+
+The default pull of this research is toward US-based, technical, scale-up, and builder-of-AI voices. Correct for that pull:
+
+- **Critical and skeptical takes**: If a tracked person (especially Gary Marcus, Simon Willison, Dare Obasanjo, Zachary Lipton) posts criticism of an AI product or capability claim, treat it as high signal — not noise to filter out. One sharp "this doesn't work as advertised" is often more useful to a PM than ten launch announcements.
+- **Bootstrap and small-team builders**: Posts from Pieter Levels, Jason Levin, or similar non-VC, small-team founders about building on AI carry high signal for a different and underrepresented audience. Surface them even when the scale seems small.
+- **Builders-on-AI, not builders-of-AI**: Prioritize posts from people shipping products *using* AI (swyx, Pieter Levels, Jason Levin) alongside posts from people building the AI. The practitioner perspective is consistently underrepresented.
+- **Non-US voices**: When Mistral, Hugging Face, or other non-US companies make product decisions, frame them as a company voice — strategy, tradeoffs, philosophy — not just a model benchmark comparison. Arthur Mensch and Thomas Wolf represent a genuinely different product context.
+- **Women in technical leadership**: When Shreya Shankar, Kanjun Qiu, Maggie Appleton, or other underrepresented voices post, don't let their content get filtered out in favor of higher-volume accounts. Frequency of posting ≠ quality of signal.
+- **User and customer perspective**: When company blogs, changelogs, or community posts include user quotes, adoption data, or customer feedback, treat that as a distinct signal type worth surfacing — it's rare and valuable.
+- **Mid-market and operational perspectives**: Case studies and reflections from companies that aren't startups or enterprises are high signal. When they appear, give them more weight than their name recognition might suggest.
+
+---
