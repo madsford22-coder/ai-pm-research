@@ -85,13 +85,18 @@ export default function QueryWidget({ date }: { date?: string }) {
     setQuestion('');
     setIsQuerying(true);
 
+    const history = messages
+      .filter(m => !m.loading && m.answer)
+      .slice(-20)
+      .map(m => ({ question: m.question, answer: m.answer }));
+
     setMessages(prev => [...prev, { question: q, answer: '', loading: true }]);
 
     try {
       const res = await fetch('/api/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: q, ...(date ? { date } : {}) }),
+        body: JSON.stringify({ question: q, history, ...(date ? { date } : {}) }),
       });
 
       if (res.status === 401) {

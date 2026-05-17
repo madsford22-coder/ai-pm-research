@@ -113,6 +113,8 @@ function loadRecentUpdates(days = 30): string {
     .join('\n\n');
 }
 
+type HistoryItem = { question: string; answer: string };
+
 export async function POST(request: NextRequest) {
   const jwtSecret = process.env.JWT_SECRET;
   if (!jwtSecret) {
@@ -134,6 +136,13 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({}));
   const question = typeof body.question === 'string' ? body.question.trim() : '';
   const date = typeof body.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(body.date) ? body.date : null;
+  const history: HistoryItem[] = (Array.isArray(body.history) ? body.history : [])
+    .filter((h: unknown): h is HistoryItem =>
+      typeof h === 'object' && h !== null &&
+      typeof (h as HistoryItem).question === 'string' &&
+      typeof (h as HistoryItem).answer === 'string'
+    )
+    .slice(-20);
 
   if (!question) {
     return NextResponse.json({ error: 'invalid_question' }, { status: 400 });
@@ -143,7 +152,7 @@ export async function POST(request: NextRequest) {
   }
 
   const today = new Date().toISOString().split('T')[0];
-  console.log(`[query] ${today} context=${date ?? 'dashboard'} q=${JSON.stringify(question)}`);
+  console.log(`[query] ${today} context=${date ?? 'dashboard'} history=${history.length} q=${JSON.stringify(question)}`);
   const archiveThrough = date ?? getMostRecentUpdateDate();
   const systemPrompt = buildSystemPrompt(today, archiveThrough);
 
@@ -152,6 +161,36 @@ export async function POST(request: NextRequest) {
     ? `Research archive (${date} and the 13 preceding days):\n\n${context}`
     : `Research archive (last 30 days):\n\n${context}`;
   const encoder = new TextEncoder();
+
+  // Build multi-turn thread. Context sits in the first user message behind a
+  // cache breakpoint so it doesn't re-tokenize on every follow-up turn.
+  type ContentBlock = { type: 'text'; text: string; cache_control?: { type: 'ephemeral' } };
+  type MessageParam = { role: 'user' | 'assistant'; content: string | ContentBlock[] };
+  const messages: MessageParam[] = [];
+
+  if (history.length === 0) {
+    messages.push({
+      role: 'user',
+      content: [
+        { type: 'text', text: contextLabel, cache_control: { type: 'ephemeral' } },
+        { type: 'text', text: question },
+      ],
+    });
+  } else {
+    messages.push({
+      role: 'user',
+      content: [
+        { type: 'text', text: contextLabel, cache_control: { type: 'ephemeral' } },
+        { type: 'text', text: history[0].question },
+      ],
+    });
+    messages.push({ role: 'assistant', content: history[0].answer });
+    for (let i = 1; i < history.length; i++) {
+      messages.push({ role: 'user', content: history[i].question });
+      messages.push({ role: 'assistant', content: history[i].answer });
+    }
+    messages.push({ role: 'user', content: question });
+  }
 
   // claude-haiku-4-5 for speed/cost; upgrade to claude-sonnet-4-6 for deeper answers
   const stream = anthropic.messages.stream({
@@ -164,22 +203,7 @@ export async function POST(request: NextRequest) {
         cache_control: { type: 'ephemeral' },
       },
     ],
-    messages: [
-      {
-        role: 'user',
-        content: [
-          {
-            type: 'text',
-            text: contextLabel,
-            cache_control: { type: 'ephemeral' },
-          },
-          {
-            type: 'text',
-            text: question,
-          },
-        ],
-      },
-    ],
+    messages,
   });
 
   const readable = new ReadableStream({
