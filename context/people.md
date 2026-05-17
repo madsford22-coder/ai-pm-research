@@ -951,3 +951,20 @@ This file defines whose public thinking and product commentary should be treated
 - Pure activism or policy advocacy without product-relevant findings
 
 ---
+
+## Nathaniel Whittemore
+**Role:** Host, The AI Daily Brief podcast and newsletter
+**Why they matter:** Produces the most consistently useful daily synthesis of AI product news — #4 in US Technology podcasts. Whittemore has a strong product lens, good pattern recognition across companies, and flags launches and moves that don't always surface through individual company RSS feeds. Tracking him directly catches his analysis, not just the raw news.
+**Signal types to watch for:**
+- Episodes that identify cross-company patterns or trends in a given week
+- Analysis of product launches from tracked companies with added context
+- Market dynamic observations that inform competitive positioning
+- Emerging topics getting attention before they show up in company blogs
+**Primary platforms:**
+- Newsletter/podcast: https://aidailybrief.beehiiv.com
+- RSS Feed: https://aidailybrief.beehiiv.com/feed
+- Twitter/X: @nlw
+**Ignore unless:**
+- Pure news recap episodes without analysis or pattern identification
+
+---
