@@ -263,19 +263,83 @@ This file defines which companies and products matter for product management–f
 ---
 
 ## Runway
-**Category:** Consumer & productivity software
-**Why we track them:** Video and creative AI tooling. Their rapid iteration shows how creative workflows adapt to AI capabilities.
+**Category:** Video & creative AI
+**Why we track them:** Video generation market leader and the most product-mature company in the space. Their model releases, pricing, and API decisions set the baseline for the category.
 **What to watch for:**
-- Video generation model updates
+- Video generation model updates (Gen-3 and beyond)
 - New creative tools and features
 - Pricing changes
-- API launches
-- Workflow integrations
+- API launches and developer platform moves
+- Workflow integrations with creative tools
 **Ignore unless:**
-- Marketing campaigns
+- Marketing campaigns without product changes
 - Partnership announcements without product changes
 **Primary sources:**
 - https://runway.com/blog (feed_url: scrape)
+
+---
+
+## Pika
+**Category:** Video & creative AI
+**Why we track them:** Fast-growing consumer video generation product. Their rapid iteration on UX and pricing shows what's working for non-professional users trying to create video with AI.
+**What to watch for:**
+- Model quality updates and new capabilities
+- Feature launches (editing, styles, motion controls)
+- Pricing and plan changes
+- Mobile app updates
+- Adoption signals
+**Ignore unless:**
+- Marketing campaigns without product changes
+**Primary sources:**
+- https://pika.art/blog (feed_url: scrape)
+
+---
+
+## Luma AI
+**Category:** Video & creative AI
+**Why we track them:** Dream Machine is one of the most-used video generation products among creative professionals. Their product decisions — especially around quality, speed, and pricing — are closely watched signals for where the category is heading.
+**What to watch for:**
+- Dream Machine model updates and quality improvements
+- New generation features (camera control, character consistency)
+- Pricing and access changes
+- API or integration launches
+- Product comparisons that reveal competitive positioning
+**Ignore unless:**
+- Research-only announcements without product implications
+**Primary sources:**
+- https://lumalabs.ai/blog (feed_url: scrape)
+
+---
+
+## HeyGen
+**Category:** Video & creative AI
+**Why we track them:** Leading AI video platform for business use — avatars, translation, marketing content. Represents the enterprise/B2B angle of video AI that Runway and Pika don't cover. Their product decisions show how video AI gets applied in professional and commercial contexts.
+**What to watch for:**
+- Avatar and presenter feature updates
+- Video translation and localization capabilities
+- Enterprise features and integrations
+- Pricing changes
+- API and workflow integration launches
+**Ignore unless:**
+- Marketing campaigns without product changes
+**Primary sources:**
+- https://www.heygen.com/blog (feed_url: scrape)
+
+---
+
+## Synthesia
+**Category:** Video & creative AI
+**Why we track them:** Enterprise AI video platform — corporate training, L&D, internal comms. One of the clearest signals for how large organizations are actually adopting AI video. Their product decisions show what enterprise buyers need before they'll trust AI-generated video at scale.
+**What to watch for:**
+- Feature launches for enterprise use cases (custom avatars, branding, compliance)
+- Pricing and plan changes
+- Enterprise integrations (LMS, CMS, HR platforms)
+- Adoption and usage signals
+- Security and compliance features
+**Ignore unless:**
+- Marketing campaigns without product changes
+**Primary sources:**
+- https://www.synthesia.io/blog (feed_url: scrape)
 
 ---
 

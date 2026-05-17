@@ -241,6 +241,30 @@ Medium-term
 
 ---
 
+## Where is video + AI actually heading as a product category?
+
+**Why this matters to product:**
+Video generation is maturing fast but hasn't established the same clear product patterns that code generation or voice interfaces have. PMs need to understand which use cases are winning, who's paying, and what infrastructure constraints (latency, cost, storage) still limit what's buildable.
+
+**Signals to watch for:**
+- Runway, Pika, Luma AI, HeyGen, Synthesia product launches and pricing changes
+- Enterprise adoption signals — which verticals are buying AI video and why
+- Quality inflection points that unlock new use cases (character consistency, longer clips, real-time)
+- Creative professional workflows shifting toward AI video tools
+- Consumer vs. professional market divergence in what people actually want
+- Where video AI is being embedded in existing products vs. standing alone
+- Cost and latency milestones that change what's viable to build
+
+**Related companies / people:**
+- Runway, Pika, Luma AI (consumer/creative side)
+- HeyGen, Synthesia (enterprise side)
+- OpenAI (Sora), Google (Veo) — incumbent moves
+
+**Time horizon:**
+Short-term to Medium-term
+
+---
+
 ## How do AI products balance capability improvements with cost and latency?
 
 **Why this matters to product:**  
