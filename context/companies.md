@@ -472,6 +472,133 @@ This file defines which companies and products matter for product management–f
 
 ---
 
+## Apple
+**Category:** Consumer & AI platforms
+**Why we track them:** Privacy-first, on-device AI strategy that's fundamentally different from every other company on this list. Apple Intelligence, Writing Tools, and their approach to running models on-device set the terms for how a billion-user consumer platform handles AI — and creates real constraints and opportunities for anyone building iOS or macOS products.
+**What to watch for:**
+- Apple Intelligence feature launches and expansions
+- On-device model capabilities and what they unlock for third-party apps
+- Siri improvements and agentic capabilities
+- AI features in iOS, macOS, and core apps (Mail, Messages, Photos)
+- Developer APIs for on-device AI (Core ML, Create ML)
+- Privacy and data handling decisions that affect what AI features are possible
+**Ignore unless:**
+- Hardware launches without AI capability implications
+- Marketing without product changes
+**Primary sources:**
+- https://www.apple.com/newsroom/ (feed_url: https://www.apple.com/newsroom/rss-feed.rss)
+- https://developer.apple.com/news/releases/
+
+---
+
+## Amazon / AWS
+**Category:** Foundation models / AI platforms
+**Why we track them:** The enterprise AI infrastructure story. AWS Bedrock, Amazon Q, and Nova models are how a large chunk of enterprise AI gets built and deployed quietly — without the hype of OpenAI or Anthropic. Their pricing, model availability, and tooling decisions affect what enterprise PMs can actually ship.
+**What to watch for:**
+- AWS Bedrock model additions and pricing
+- Amazon Q (dev assistant and business assistant) feature launches
+- Nova model releases and capabilities
+- SageMaker and ML infrastructure updates with product implications
+- Enterprise AI feature launches in core AWS services
+**Ignore unless:**
+- Infrastructure-only announcements without product or developer implications
+- Pure cloud pricing changes unrelated to AI
+**Primary sources:**
+- https://aws.amazon.com/blogs/machine-learning/ (feed_url: https://aws.amazon.com/blogs/machine-learning/feed/)
+- https://aws.amazon.com/new/ (feed_url: https://aws.amazon.com/new/feed/)
+
+---
+
+## Salesforce
+**Category:** Enterprise software
+**Why we track them:** Agentforce is the most aggressive enterprise AI agent push from a major incumbent. Their approach to embedding AI agents into CRM workflows — and how enterprise buyers respond — is a live case study in what it takes to sell AI autonomy to large organizations.
+**What to watch for:**
+- Agentforce feature launches and capability expansions
+- Einstein AI feature updates across Sales, Service, and Marketing clouds
+- Pricing changes for AI features
+- Enterprise adoption signals and customer case studies
+- Integration patterns with other enterprise tools
+**Ignore unless:**
+- Generic CRM updates without AI implications
+- Marketing campaigns without product changes
+**Primary sources:**
+- https://www.salesforce.com/blog/ (feed_url: scrape)
+- https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm
+
+---
+
+## Adobe
+**Category:** Consumer & productivity software
+**Why we track them:** Firefly and AI in Creative Cloud show how a legacy creative platform embeds AI without destroying its core UX. Their approach — generative credits, Content Credentials, copyright handling — is the template for any PM adding AI to a creative workflow.
+**What to watch for:**
+- Firefly model updates and new generation capabilities
+- AI feature launches in Photoshop, Premiere, Acrobat, Express
+- Pricing changes for AI features (generative credits model)
+- Content Credentials and provenance tooling
+- API and third-party integration launches
+**Ignore unless:**
+- Marketing campaigns without product changes
+- Pure creative showcase without product implications
+**Primary sources:**
+- https://blog.adobe.com/ (feed_url: https://blog.adobe.com/en/feed)
+- https://helpx.adobe.com/creative-cloud/release-notes.html
+
+---
+
+## Figma
+**Category:** Developer & design tooling
+**Why we track them:** AI features in the tool most product teams use daily. Their decisions about what AI to embed in design workflows — and what not to — directly affect how PMs and designers work together. Also a live case study in how a design tool navigates the tension between AI assistance and creative ownership.
+**What to watch for:**
+- AI feature launches (design suggestions, auto-layout, content generation)
+- Figma Make and AI-assisted prototyping updates
+- Pricing changes for AI features
+- Dev Mode AI features and developer handoff improvements
+- FigJam AI updates
+**Ignore unless:**
+- Infrastructure or performance updates without feature implications
+- Marketing campaigns without product changes
+**Primary sources:**
+- https://www.figma.com/blog/ (feed_url: https://www.figma.com/blog/rss.xml)
+- https://www.figma.com/release-notes/
+
+---
+
+## ElevenLabs
+**Category:** Voice & audio AI
+**Why we track them:** The Midjourney of voice — the tool people actually use when they want AI audio that sounds real. Their product decisions on voice cloning, multilingual support, and API access define the state of the art for anyone building voice-first features.
+**What to watch for:**
+- New voice model releases and quality improvements
+- Voice cloning and custom voice features
+- Multilingual and localization capabilities
+- API pricing and access changes
+- Product launches beyond TTS (dubbing, sound effects, audio generation)
+- Enterprise features and integrations
+**Ignore unless:**
+- Marketing campaigns without product changes
+**Primary sources:**
+- https://elevenlabs.io/blog (feed_url: scrape)
+- https://elevenlabs.io/changelog
+
+---
+
+## Slack
+**Category:** Consumer & productivity software
+**Why we track them:** AI features inside the tool where most product teams already live. Slack's AI decisions — summaries, search, huddle transcripts, workflow automation — show how a communication platform embeds AI without disrupting the core experience. Also a signal for how Salesforce AI strategy (Agentforce) gets distributed into daily workflows.
+**What to watch for:**
+- Slack AI feature launches (summaries, search, channel recaps)
+- Workflow builder AI automation features
+- Integration with Salesforce AI (Agentforce in Slack)
+- Pricing changes for AI features
+- Enterprise policy and admin controls for AI
+**Ignore unless:**
+- General Slack platform updates without AI implications
+- Marketing campaigns
+**Primary sources:**
+- https://slack.com/blog (feed_url: scrape)
+- https://slack.com/release-notes/
+
+---
+
 ## The AI Daily Brief
 **Category:** Media / Signal aggregation
 **Why we track them:** Top-ranked daily AI podcast (#4 in US Technology). Nathaniel Whittemore surfaces product-relevant signals across the AI landscape daily — useful for catching launches and patterns that RSS feeds from tracked companies may miss.
