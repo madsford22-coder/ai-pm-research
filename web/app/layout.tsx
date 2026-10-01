@@ -6,6 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import Search from "@/components/Search";
 import ThemeToggle from "@/components/ThemeToggle";
 import Footer from "@/components/Footer";
+import VisitBeacon from "@/components/VisitBeacon";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -50,6 +51,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <div className="flex min-h-screen bg-[#faf8f5] dark:bg-[#18160f] overflow-x-hidden">
+          <VisitBeacon />
           <Sidebar />
           <main className="flex-1 lg:ml-64 min-w-0">
             <div className="sticky top-0 z-10 bg-[#faf8f5]/90 dark:bg-[#18160f]/90 backdrop-blur-xl border-b border-[#e7e3dd] dark:border-[#2e2b24] px-4 sm:px-6 lg:px-8 py-4 shadow-sm">
