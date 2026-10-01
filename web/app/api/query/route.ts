@@ -192,7 +192,7 @@ export async function POST(request: NextRequest) {
     messages.push({ role: 'user', content: question });
   }
 
-  // claude-haiku-4-5 for speed/cost; upgrade to claude-sonnet-4-6 for deeper answers
+  // claude-haiku-4-5 for speed/cost; upgrade to claude-sonnet-5 for deeper answers
   const stream = anthropic.messages.stream({
     model: 'claude-haiku-4-5',
     max_tokens: 1024,

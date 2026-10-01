@@ -43,7 +43,7 @@ After a major-fail retry, if QA still fails → Patch Agent adds missed items di
 **Step 3 — Executor**
 Validates frontmatter, saves the file, regenerates monthly summary.
 
-**Model fallback:** All Claude API calls try `claude-sonnet-4-6` first. On 429 rate limit errors, they retry with exponential backoff (up to 3x) before falling back to `claude-haiku-4-5-20251001`. Other errors fall back immediately.
+**Model fallback:** All Claude API calls try `claude-sonnet-5` first. On 429 rate limit errors, they retry with exponential backoff (up to 3x) before falling back to `claude-haiku-4-5-20251001`. Other errors fall back immediately.
 
 ### Why the QA agent exists
 

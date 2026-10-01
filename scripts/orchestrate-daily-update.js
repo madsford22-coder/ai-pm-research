@@ -14,7 +14,7 @@
  * - QA catches over-filtering and missed items before saving
  * - Retry loop sends QA feedback back to synthesizer (1 retry max)
  * - Patch mode adds missed Quick Hits directly when retry isn't enough
- * - Model fallback: sonnet-4-6 → haiku-4-5 on API/model errors
+ * - Model fallback: sonnet-5 → haiku-4-5 on API/model errors
  */
 
 const path = require('path');
@@ -46,7 +46,7 @@ const day = String(today.getDate()).padStart(2, '0');
 const dateStr = `${year}-${month}-${day}`;
 
 // ─── Models ──────────────────────────────────────────────────────────────────
-const SONNET = 'claude-sonnet-4-6';
+const SONNET = 'claude-sonnet-5';
 const HAIKU  = 'claude-haiku-4-5-20251001';
 
 let anthropic;
