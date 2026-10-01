@@ -84,16 +84,20 @@ This file defines which companies and products matter for product management–f
 
 ## Meta
 **Category:** Foundation models / AI platforms
-**Why we track them:** Open-source model strategy (Llama) and massive consumer reach. Their approach to open models influences developer tooling and startup strategies.
+**Why we track them:** Open-source model strategy (Llama) plus a real consumer AI product push. Muse is Meta's personal agent — the first Meta AI product that competes directly with ChatGPT and Instinct on daily task completion, not just chat. Their newsroom is where product launches actually land; the Llama research blog is not enough.
 **What to watch for:**
+- Muse product launches, pricing, connectors, autonomy, and security model (Secure VM, Sentinel)
+- Muse Spark / Muse Glimmer model releases and what they unlock in the agent
 - Llama model releases and licensing changes
-- AI features in consumer products (Instagram, WhatsApp, Facebook)
-- Ray-Ban Meta AI integration patterns
-- Developer tooling around Llama
+- AI features in consumer products (Instagram, WhatsApp, Facebook, WhatsApp access to Muse)
+- Muse on Ray-Ban Meta / AI glasses and other hardware distribution
+- Developer tooling around Llama, Muse API, and Muse Code
 **Ignore unless:**
-- VR/AR hardware launches (unless AI-focused)
+- VR/AR hardware launches with no AI or Muse capability implications
 - Internal research without product implications
+- Policy or CSR posts with no product change
 **Primary sources:**
+- https://about.fb.com/news/ (feed_url: https://about.fb.com/feed)
 - https://ai.meta.com/blog/ (feed_url: scrape)
 
 ---
@@ -599,6 +603,23 @@ This file defines which companies and products matter for product management–f
 
 ---
 
+## Instinct
+**Category:** Consumer & productivity software
+**Why we track them:** The breakout personal AI agent of 2026 and Meta Muse's main startup rival. Founded by Noah Shinn (Spear Street Technology). Users text or call it — no app — and it acts across email, calendar, shopping, and travel using the user's actual devices. Invite-only, growing fast, and forcing the category to answer how much autonomy, credential access, and take-rate users will accept.
+**What to watch for:**
+- Product changes: access model, channels (iMessage, WhatsApp, voice, email), connectors, what it will and won't do autonomously
+- Trust, privacy, and credential-delegation decisions (passwords, MFA, credit cards)
+- Pricing and business model (take rates vs. subscription vs. free)
+- User behavior: retention, slowdowns, unexpected actions, invite dynamics
+- Competitive moves against Muse and other personal agents
+**Ignore unless:**
+- Pure funding announcements with no product, pricing, or usage signal
+- Personality coverage of the founder with no product substance
+**Primary sources:**
+- https://instinct.com (feed_url: scrape)
+
+---
+
 ## The AI Daily Brief
 **Category:** Media / Signal aggregation
 **Why we track them:** Top-ranked daily AI podcast (#4 in US Technology). Nathaniel Whittemore surfaces product-relevant signals across the AI landscape daily — useful for catching launches and patterns that RSS feeds from tracked companies may miss.
@@ -612,5 +633,20 @@ This file defines which companies and products matter for product management–f
 - Episodes covering only topics already covered in depth that week
 **Primary sources:**
 - https://aidailybrief.beehiiv.com/ (feed_url: https://aidailybrief.beehiiv.com/feed)
+
+---
+
+## Invest Like the Best
+**Category:** Media / Signal aggregation
+**Why we track them:** Patrick O'Shaughnessy's long-form interviews with founders and operators. Guests often say things here they have not written down — product strategy, business model, trust, and compute constraints. The Instinct episode is a good example of the kind of primary-source founder conversation this feed catches before it shows up in company blogs.
+**What to watch for:**
+- Episodes with AI product founders, especially tracked companies (Instinct, OpenAI, Conviction, and similar)
+- Founder explanations of product decisions, pricing, distribution, and what users actually do
+- Cross-episode patterns on personal agents, take rates, and compute as a product constraint
+**Ignore unless:**
+- Pure public-markets / stock-picking episodes with no product or AI operating insight
+- Recap or clip packages that add nothing beyond an episode already covered
+**Primary sources:**
+- https://colossus.com/series/invest-like-the-best/ (feed_url: https://feeds.megaphone.fm/CLS2859450455)
 
 ---

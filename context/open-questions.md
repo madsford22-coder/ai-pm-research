@@ -65,6 +65,7 @@ Monetization strategy depends on willingness to pay. If users expect AI features
 - OpenAI, Anthropic (API pricing changes)
 - Notion, GitHub, Microsoft (subscription tier changes)
 - Character.AI, Midjourney (consumer monetization)
+- Meta Muse (free tier + $20 / $100 subscriptions) and Instinct (take-rate / keep-it-free thesis)
 
 **Time horizon:**  
 Short-term to Medium-term
@@ -84,8 +85,10 @@ Agentic workflows require user trust. Too much autonomy might cause errors users
 - Product positioning around agent capabilities (autonomous vs. assisted)
 
 **Related companies / people:**
+- Meta Muse vs. Instinct — the live consumer test of how much autonomy, credential access, and background action people will actually give an agent
 - LangChain, Mastra (agent framework developers)
 - OpenAI (Assistants API evolution)
+- Noah Shinn, Patrick O'Shaughnessy (Instinct product thinking)
 - Products building agentic workflows
 
 **Time horizon:**  

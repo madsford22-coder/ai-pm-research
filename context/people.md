@@ -968,3 +968,37 @@ This file defines whose public thinking and product commentary should be treated
 - Pure news recap episodes without analysis or pattern identification
 
 ---
+
+## Patrick O'Shaughnessy
+**Role:** Host, Invest Like the Best; Founder and CEO, Positive Sum; Founder, Colossus
+**Why they matter:** Long-form interviews where AI and product founders explain how the product actually works — distribution, trust, pricing, compute, and what users do with it. Catches primary-source conversations that never appear on company blogs. High signal when the guest is building a tracked product (Instinct, OpenAI, Conviction, and similar).
+**Signal types to watch for:**
+- Founder interviews that reveal product decisions, business model, or user behavior
+- Episodes on personal agents, AI product strategy, or how software interfaces are collapsing
+- Patrick's own posts highlighting specific product stats or takeaways from a conversation
+**Primary platforms:**
+- Twitter/X: @patrick_oshag
+- Podcast: https://colossus.com/series/invest-like-the-best/
+- RSS Feed: https://feeds.megaphone.fm/CLS2859450455
+**Ignore unless:**
+- Pure public-markets investing content with no product or AI operating insight
+- Promotional clips that add nothing beyond the episode itself
+
+---
+
+## Noah Shinn
+**Role:** Founder and CEO, Instinct (Spear Street Technology)
+**Why they matter:** Building the leading startup personal AI agent — text/call, no app, acts on the user's real devices. Instinct is the clearest product contrast to Meta's Muse: more autonomous, invite-only, credential-delegating, take-rate business model. Shinn rarely writes long-form; his posts and interviews are the main first-party source for how Instinct actually works.
+**Signal types to watch for:**
+- Product decisions on autonomy, access, channels, and what the agent is allowed to do
+- Trust, privacy, and credential-access choices (and user reaction)
+- Business model and pricing (take rates, free-forever claims, compute constraints)
+- Competitive positioning vs. Muse and other personal agents
+**Primary platforms:**
+- Twitter/X: @noahrshinn
+- Company: https://instinct.com
+**Ignore unless:**
+- Pure funding news with no product signal
+- Personal content unrelated to Instinct or agent product design
+
+---
