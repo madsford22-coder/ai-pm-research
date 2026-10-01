@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-card.png",
         width: 1200,
         height: 627,
         alt: "Madison's Morning Memo, a daily AI research digest built with Claude",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Madison's Morning Memo",
     description: "A daily AI research digest for product people, built with Claude. By Madison Ford.",
-    images: ["/og-image.png"],
+    images: ["/og-card.png"],
   },
   alternates: {
     types: {
