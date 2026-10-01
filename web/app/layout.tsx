@@ -10,8 +10,30 @@ import Footer from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://madisoncford.com"),
   title: "Madison's Morning Memo",
   description: "A daily PM research digest on applied AI — signals over noise, with a special eye on underrepresented voices in tech. By Madison Ford.",
+  openGraph: {
+    title: "Madison's Morning Memo",
+    description: "A daily AI research digest for product people, built with Claude. By Madison Ford.",
+    url: "https://madisoncford.com",
+    siteName: "Madison's Morning Memo",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 627,
+        alt: "Madison's Morning Memo, a daily AI research digest built with Claude",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Madison's Morning Memo",
+    description: "A daily AI research digest for product people, built with Claude. By Madison Ford.",
+    images: ["/og-image.png"],
+  },
   alternates: {
     types: {
       'application/rss+xml': '/rss.xml',
