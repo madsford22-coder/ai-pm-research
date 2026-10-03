@@ -1,7 +1,7 @@
 export type VisitKind = 'human' | 'bot' | 'preview' | 'script';
 
 const BOT_UA =
-  /googlebot|bingbot|slurp|duckduckbot|baiduspider|yandexbot|gptbot|chatgpt-user|claudebot|claude-web|anthropic-ai|ccbot|perplexitybot|bytespider|amazonbot|google-extended|applebot-extended|meta-externalagent|facebookbot|ahrefsbot|semrushbot|mj12bot|dotbot|petalbot|ia_archiver|archive\.org_bot|dataforseobot|screaming frog|rogerbot/i;
+  /googlebot|bingbot|slurp|duckduckbot|baiduspider|yandexbot|gptbot|chatgpt-user|oai-searchbot|claudebot|claude-user|claude-searchbot|claude-web|anthropic-ai|ccbot|perplexitybot|perplexity-user|bytespider|amazonbot|google-extended|applebot-extended|meta-externalagent|facebookbot|ahrefsbot|semrushbot|mj12bot|dotbot|petalbot|ia_archiver|archive\.org_bot|dataforseobot|screaming frog|rogerbot/i;
 
 const PREVIEW_UA =
   /slackbot|twitterbot|linkedinbot|whatsapp|telegrambot|discordbot|facebookexternalhit|iframely|embedly|pinterest|skypeuripreview|vkshare|applebot|google-inspectiontool/i;

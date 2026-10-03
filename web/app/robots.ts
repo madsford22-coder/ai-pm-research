@@ -1,14 +1,23 @@
 import type { MetadataRoute } from 'next';
 import { SITE_URL } from '@/lib/seo';
 
-const AI_CRAWLERS = [
+const PRIVATE_PATHS = ['/api/', '/traffic', '/updates/daily/new', '/reflections/new'];
+
+const LIVE_FETCH = [
+  'ChatGPT-User',
+  'OAI-SearchBot',
+  'Claude-User',
+  'Claude-SearchBot',
+  'Claude-Web',
+  'PerplexityBot',
+];
+
+const TRAINING_CRAWLERS = [
   'GPTBot',
   'Google-Extended',
   'CCBot',
   'anthropic-ai',
   'ClaudeBot',
-  'Claude-Web',
-  'PerplexityBot',
   'Bytespider',
   'Amazonbot',
   'Applebot-Extended',
@@ -22,14 +31,14 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/traffic', '/updates/daily/new', '/reflections/new'],
+        disallow: PRIVATE_PATHS,
       },
-      {
-        userAgent: 'ChatGPT-User',
+      ...LIVE_FETCH.map((userAgent) => ({
+        userAgent,
         allow: '/',
         disallow: ['/api/', '/traffic'],
-      },
-      ...AI_CRAWLERS.map((userAgent) => ({
+      })),
+      ...TRAINING_CRAWLERS.map((userAgent) => ({
         userAgent,
         disallow: '/',
       })),
