@@ -238,6 +238,24 @@ export function buildSearchIndex(): SearchIndexItem[] {
   return items.filter((item): item is SearchIndexItem => item !== null);
 }
 
+export function getDailyUpdates(): ContentMetadata[] {
+  return getAllContentMetadata()
+    .filter((item) => item.path.startsWith('updates/daily/') && !item.tags?.includes('monthly-summary'))
+    .map((item) => ({
+      ...item,
+      date: item.date instanceof Date
+        ? item.date.toISOString().split('T')[0]
+        : typeof item.date === 'string' && item.date.includes('T')
+          ? item.date.split('T')[0]
+          : item.date,
+    }))
+    .sort((a, b) => {
+      const dateA = a.date ? new Date(a.date).getTime() : 0;
+      const dateB = b.date ? new Date(b.date).getTime() : 0;
+      return dateB - dateA;
+    });
+}
+
 function slugToTitle(slug: string): string {
   let title = slug
     .split('/')

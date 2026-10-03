@@ -14,6 +14,12 @@ export default function Footer() {
           <p className="text-xs font-semibold uppercase tracking-widest text-[#78716c] dark:text-[#a8a29e] mb-3">Connect</p>
           <div className="space-y-2">
             <a
+              href="/archive"
+              className="flex items-center gap-2 text-sm text-[#78716c] dark:text-[#a8a29e] hover:text-[#5a7a3a] dark:hover:text-[#8db870] transition-colors"
+            >
+              Archive
+            </a>
+            <a
               href="/feedback"
               className="flex items-center gap-2 text-sm text-[#78716c] dark:text-[#a8a29e] hover:text-[#5a7a3a] dark:hover:text-[#8db870] transition-colors"
             >

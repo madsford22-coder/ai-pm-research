@@ -16,10 +16,10 @@ export const metadata: Metadata = {
     default: "Madison's Morning Memo",
     template: "%s · Madison's Morning Memo",
   },
-  description: "A daily PM research digest on applied AI — signals over noise, with a special eye on underrepresented voices in tech. By Madison Ford.",
+  description: "Madison's Morning Memo is a daily AI product newsletter for product managers and builders. Madison Ford distills products, agents, models, and UX every morning.",
   openGraph: {
     title: "Madison's Morning Memo",
-    description: "A daily AI research digest for product people, built with Claude. By Madison Ford.",
+    description: "Daily AI product updates for PMs and builders, by Madison Ford.",
     url: "https://madisoncford.com",
     siteName: "Madison's Morning Memo",
     type: "website",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Madison's Morning Memo",
-    description: "A daily AI research digest for product people, built with Claude. By Madison Ford.",
+    description: "Daily AI product updates for PMs and builders, by Madison Ford.",
     images: ["/og-card.png"],
   },
   verification: {

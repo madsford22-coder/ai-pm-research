@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { getContentByPath, getAllContentPaths, getAllContentMetadata } from '@/lib/content/loader';
+import { getContentByPath, getAllContentPaths, getAllContentMetadata, getDailyUpdates } from '@/lib/content/loader';
 import { notFound } from 'next/navigation';
 import TableOfContents from '@/components/TableOfContents';
 import DateNavigator from '@/components/DateNavigator';
@@ -15,7 +15,12 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   if (!slug || slug.length === 0) {
-    return { alternates: { canonical: SITE_URL } };
+    return {
+      title: { absolute: SITE_NAME },
+      description:
+        "Madison's Morning Memo is a daily AI product newsletter for product managers and builders. Madison Ford distills products, agents, models, and UX every morning.",
+      alternates: { canonical: SITE_URL },
+    };
   }
 
   const content = await getContentByPath(`${slug.join('/')}.md`);
@@ -111,10 +116,39 @@ export default async function ContentPage({ params }: PageProps) {
   // Handle root route - show dashboard
   if (!slug || slug.length === 0) {
     const Dashboard = (await import('@/components/Dashboard')).default;
+    const updates = getDailyUpdates();
     return (
-      <Suspense>
-        <Dashboard />
-      </Suspense>
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@graph': [
+                {
+                  '@type': 'WebSite',
+                  name: SITE_NAME,
+                  url: SITE_URL,
+                  description:
+                    'Daily AI product updates for product managers and builders, published by Madison Ford.',
+                  author: { '@id': `${SITE_URL}#madison` },
+                },
+                {
+                  '@type': 'Person',
+                  '@id': `${SITE_URL}#madison`,
+                  name: 'Madison Ford',
+                  jobTitle: 'Senior Product Manager',
+                  url: SITE_URL,
+                  sameAs: ['https://www.linkedin.com/in/madison-ford-31897872/'],
+                },
+              ],
+            }),
+          }}
+        />
+        <Suspense>
+          <Dashboard initialUpdates={updates} />
+        </Suspense>
+      </>
     );
   }
   

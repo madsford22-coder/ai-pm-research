@@ -408,12 +408,20 @@ export default function Sidebar() {
               <SubscribeForm />
             </div>
             <div className="mb-3">
-              <a
-                href="/feedback"
-                className="text-xs text-[#78716c] dark:text-[#a8a29e] hover:text-[#5a7a3a] dark:hover:text-[#8db870] transition-colors"
-              >
-                Share feedback →
-              </a>
+              <div className="flex items-center gap-3">
+                <a
+                  href="/archive"
+                  className="text-xs text-[#78716c] dark:text-[#a8a29e] hover:text-[#5a7a3a] dark:hover:text-[#8db870] transition-colors"
+                >
+                  Archive
+                </a>
+                <a
+                  href="/feedback"
+                  className="text-xs text-[#78716c] dark:text-[#a8a29e] hover:text-[#5a7a3a] dark:hover:text-[#8db870] transition-colors"
+                >
+                  Feedback
+                </a>
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <a

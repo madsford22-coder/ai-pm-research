@@ -7,11 +7,11 @@ import Image from 'next/image';
 import { ContentMetadata } from '@/lib/content/types';
 import QueryWidget from '@/components/QueryWidget';
 
-export default function Dashboard() {
+export default function Dashboard({ initialUpdates = [] }: { initialUpdates?: ContentMetadata[] }) {
   const searchParams = useSearchParams();
-  const [allUpdates, setAllUpdates] = useState<ContentMetadata[]>([]);
-  const [filteredUpdates, setFilteredUpdates] = useState<ContentMetadata[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [allUpdates, setAllUpdates] = useState<ContentMetadata[]>(initialUpdates);
+  const [filteredUpdates, setFilteredUpdates] = useState<ContentMetadata[]>(() => initialUpdates.slice(0, 20));
+  const [loading, setLoading] = useState(initialUpdates.length === 0);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
@@ -24,10 +24,11 @@ export default function Dashboard() {
   }, [searchParams]);
 
   useEffect(() => {
+    if (initialUpdates.length > 0) return;
+
     fetch('/api/content/metadata')
       .then((res) => res.json())
       .then((data: ContentMetadata[]) => {
-        // Filter for daily updates by path pattern and sort by date (newest first)
         const updates = data
           .filter((item) => item.path.startsWith('updates/daily/') && !item.tags?.includes('monthly-summary'))
           .sort((a, b) => {
@@ -37,14 +38,14 @@ export default function Dashboard() {
           });
 
         setAllUpdates(updates);
-        setFilteredUpdates(updates.slice(0, 20)); // Show 20 most recent by default
+        setFilteredUpdates(updates.slice(0, 20));
         setLoading(false);
       })
       .catch((err) => {
         console.error('Failed to load recent updates:', err);
         setLoading(false);
       });
-  }, []);
+  }, [initialUpdates.length]);
 
   // Filter updates when date range changes
   useEffect(() => {
@@ -137,25 +138,29 @@ export default function Dashboard() {
               <p className="text-xs font-medium tracking-widest uppercase text-[#78716c] dark:text-[#a8a29e] mb-2">
                 Madison&apos;s Morning Memo
               </p>
-              <h1 className="text-2xl sm:text-3xl font-semibold text-[#1c1917] dark:text-[#f5f0ea] leading-snug mb-4">
-                Your daily signal from the AI world, no noise required.
+              <h1 className="text-2xl sm:text-3xl font-semibold text-[#1c1917] dark:text-[#f5f0ea] leading-snug mb-3">
+                Daily AI product updates for PMs and builders.
               </h1>
+              <p className="text-[15px] leading-relaxed text-[#44403c] dark:text-[#c8c4bc] mb-4">
+                The important developments in AI products, agents, models, and UX — distilled every morning
+                by a Senior Product Manager who builds AI products.
+              </p>
               <div className="space-y-3 text-[15px] leading-relaxed text-[#44403c] dark:text-[#c8c4bc]">
                 <p>
-                  Hi, I&apos;m Madison. I&apos;m a Senior PM at Rocket Money, where I build AI products
+                  Hi, I&apos;m Madison Ford. I&apos;m a Senior PM at Rocket Money, where I build AI products
                   that help millions of people manage their finances. It&apos;s work that feels personal:
                   I grew up on financial aid and know firsthand what it means to stretch a dollar.
                 </p>
                 <p>
                   I&apos;m also deeply curious about where AI is going, but I&apos;m not on social media
                   and I don&apos;t want to be. I wanted a way to stay informed without the endless scroll,
-                  something intentional and actually useful. So I built this.
+                  something intentional and actually useful. So I built this daily AI briefing for product people.
                 </p>
                 <p>
-                  Every morning it pulls signals from the companies and people shaping applied AI and
-                  distills it into something you can read over coffee. I pay special attention to voices
-                  that don&apos;t always make the front page: underrepresented voices in tech, builders outside the spotlight.
-                  This is my quiet corner of the internet. I hope it becomes useful to you too.
+                  Every morning Madison&apos;s Morning Memo pulls signals from the companies and people shaping
+                  applied AI and distills it into something you can read over coffee. I pay special attention
+                  to voices that don&apos;t always make the front page: underrepresented voices in tech, builders
+                  outside the spotlight. This is my quiet corner of the internet. I hope it becomes useful to you too.
                 </p>
               </div>
             </div>
@@ -197,6 +202,15 @@ export default function Dashboard() {
               </Link>
             )}
           </div>
+          <p className="mt-4 text-sm text-[#78716c] dark:text-[#a8a29e]">
+            Know a PM who&apos;d like this?{' '}
+            <a
+              href="mailto:?subject=Madison's Morning Memo&body=Daily AI product updates for PMs: https://madisoncford.com"
+              className="text-[#5a7a3a] dark:text-[#8db870] hover:underline"
+            >
+              Forward it.
+            </a>
+          </p>
         </div>
       </div>
 
@@ -260,10 +274,10 @@ export default function Dashboard() {
               {startDate || endDate ? 'Filtered Updates' : 'Latest Updates'}
             </h2>
             <Link
-              href="/"
+              href="/archive"
               className="inline-flex items-center gap-1 text-[#5a7a3a] dark:text-[#8db870] hover:text-[#4a6830] dark:hover:text-[#a3cc83] font-medium text-sm transition-colors group"
             >
-              View all
+              Archive
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
