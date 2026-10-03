@@ -1,4 +1,5 @@
 import { getAllContentMetadata } from '@/lib/content/loader';
+import { SITE_NAME, SITE_URL } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,15 +18,15 @@ export async function GET() {
     })
     .slice(0, 20); // Last 20 updates
 
-  const siteUrl = process.env.SITE_URL || 'https://ai-pm-research.netlify.app';
+  const siteUrl = process.env.SITE_URL || SITE_URL;
   const buildDate = new Date().toUTCString();
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>AI PM Research - Daily Updates</title>
+    <title>${SITE_NAME}</title>
     <link>${siteUrl}</link>
-    <description>Daily research updates on AI product management, companies, and industry trends</description>
+    <description>A daily PM research digest on applied AI — signals over noise, with a special eye on underrepresented voices in tech.</description>
     <language>en</language>
     <lastBuildDate>${buildDate}</lastBuildDate>
     <atom:link href="${siteUrl}/rss.xml" rel="self" type="application/rss+xml"/>

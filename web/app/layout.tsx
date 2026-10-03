@@ -12,7 +12,10 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://madisoncford.com"),
-  title: "Madison's Morning Memo",
+  title: {
+    default: "Madison's Morning Memo",
+    template: "%s · Madison's Morning Memo",
+  },
   description: "A daily PM research digest on applied AI — signals over noise, with a special eye on underrepresented voices in tech. By Madison Ford.",
   openGraph: {
     title: "Madison's Morning Memo",
@@ -36,6 +39,7 @@ export const metadata: Metadata = {
     images: ["/og-card.png"],
   },
   alternates: {
+    canonical: "/",
     types: {
       'application/rss+xml': '/rss.xml',
     },

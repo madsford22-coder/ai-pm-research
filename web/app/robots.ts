@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { SITE_URL } from '@/lib/seo';
 
 const AI_CRAWLERS = [
   'GPTBot',
@@ -22,13 +23,14 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/traffic'],
+        disallow: ['/api/', '/traffic', '/updates/daily/new', '/reflections/new'],
       },
       ...AI_CRAWLERS.map((userAgent) => ({
         userAgent,
         disallow: '/',
       })),
     ],
-    host: 'https://madisoncford.com',
+    host: SITE_URL,
+    sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }

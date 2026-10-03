@@ -1,13 +1,53 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { getContentByPath, getAllContentPaths, getAllContentMetadata } from '@/lib/content/loader';
 import { notFound } from 'next/navigation';
 import TableOfContents from '@/components/TableOfContents';
 import DateNavigator from '@/components/DateNavigator';
 import QueryWidget from '@/components/QueryWidget';
+import { SITE_NAME, SITE_URL, absoluteUrl, descriptionFromMarkdown, formatSeoTitle } from '@/lib/seo';
 
 interface PageProps {
   params: Promise<{ slug?: string[] }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  if (!slug || slug.length === 0) {
+    return { alternates: { canonical: SITE_URL } };
+  }
+
+  const content = await getContentByPath(`${slug.join('/')}.md`);
+  if (!content) return {};
+
+  const title = formatSeoTitle(content.title);
+  const description = descriptionFromMarkdown(content.content, content.summary);
+  const url = absoluteUrl(content.url);
+  const published = content.date
+    ? (content.date instanceof Date
+        ? content.date.toISOString()
+        : `${content.date.includes('T') ? content.date : `${content.date}T00:00:00Z`}`)
+    : undefined;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title,
+      description,
+      url,
+      type: 'article',
+      siteName: SITE_NAME,
+      publishedTime: published,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+  };
 }
 
 export async function generateStaticParams() {
@@ -104,25 +144,35 @@ export default async function ContentPage({ params }: PageProps) {
       .reverse());
   }
 
-  // Format title properly (remove any markdown formatting, fix capitalization)
-  const formatTitle = (title: string) => {
-    let formatted = title
-      .replace(/^#+\s+/, '') // Remove markdown headers
-      .trim();
-    
-    // Ensure "AI" is always capitalized correctly
-    formatted = formatted.replace(/\bAi\b/gi, 'AI');
-    formatted = formatted.replace(/\bai\b/gi, 'AI');
-    // Ensure "PMs" is always capitalized correctly
-    formatted = formatted.replace(/\bPms\b/g, 'PMs');
-    
-    return formatted;
-  };
-
-  const formattedTitle = formatTitle(content.title);
+  const formattedTitle = formatSeoTitle(content.title);
+  const description = descriptionFromMarkdown(content.content, content.summary);
+  const canonical = absoluteUrl(content.url);
+  const published = content.date
+    ? (content.date instanceof Date
+        ? content.date.toISOString()
+        : `${content.date.includes('T') ? content.date : `${content.date}T00:00:00Z`}`)
+    : undefined;
 
   return (
     <div className="space-y-6 sm:space-y-8 animate-fade-in">
+      {isDailyUpdate && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Article',
+              headline: formattedTitle,
+              description,
+              datePublished: published,
+              url: canonical,
+              author: { '@type': 'Person', name: 'Madison Ford', url: SITE_URL },
+              publisher: { '@type': 'Person', name: 'Madison Ford', url: SITE_URL },
+              mainEntityOfPage: canonical,
+            }),
+          }}
+        />
+      )}
       <Link
         href="/"
         className="lg:hidden inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
