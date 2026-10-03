@@ -38,6 +38,9 @@ export const metadata: Metadata = {
     description: "A daily AI research digest for product people, built with Claude. By Madison Ford.",
     images: ["/og-card.png"],
   },
+  verification: {
+    google: "VG9-eubeZA-I1tFBr-6RfrwkAr5gHeSMyaJSh0l_Svo",
+  },
   alternates: {
     canonical: "/",
     types: {
