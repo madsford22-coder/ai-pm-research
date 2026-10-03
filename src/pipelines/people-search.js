@@ -108,12 +108,16 @@ Rules:
     let attempt = 0;
     while (true) {
       try {
-        const response = await anthropic.messages.create({
+        const request = {
           model,
           max_tokens: 1024,
           tools: [{ type: 'web_search_20250305', name: 'web_search' }],
           messages: [{ role: 'user', content: userPrompt }],
-        });
+        };
+        if (model.startsWith('claude-sonnet-5')) {
+          request.thinking = { type: 'disabled' };
+        }
+        const response = await anthropic.messages.create(request);
 
         // Extract text from all text-type content blocks
         let text = response.content

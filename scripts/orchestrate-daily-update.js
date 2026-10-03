@@ -55,7 +55,16 @@ let anthropic;
 const MAX_429_RETRIES = 3;
 const RETRY_BASE_DELAY_MS = 20000; // 20s, doubles each retry
 
-async function callClaude(systemPrompt, userPrompt, maxTokens = 8000, models = [SONNET, HAIKU]) {
+function extractText(content) {
+  if (!Array.isArray(content)) return '';
+  return content
+    .filter((block) => block && block.type === 'text' && typeof block.text === 'string')
+    .map((block) => block.text)
+    .join('\n')
+    .trim();
+}
+
+async function callClaude(systemPrompt, userPrompt, maxTokens = 16000, models = [SONNET, HAIKU]) {
   for (let i = 0; i < models.length; i++) {
     const model = models[i];
     if (i > 0) console.log(`   🔄 Falling back to model: ${model}`);
@@ -63,13 +72,23 @@ async function callClaude(systemPrompt, userPrompt, maxTokens = 8000, models = [
     let attempt = 0;
     while (true) {
       try {
-        const message = await anthropic.messages.create({
+        const request = {
           model,
           max_tokens: maxTokens,
           messages: [{ role: 'user', content: userPrompt }],
           system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
-        });
-        return { text: message.content[0].text, model, usage: message.usage };
+        };
+        // Sonnet 5 thinks by default; those tokens share max_tokens with the
+        // digest and ate the whole 8k budget (no text block → crash).
+        if (model.startsWith('claude-sonnet-5')) {
+          request.thinking = { type: 'disabled' };
+        }
+        const message = await anthropic.messages.create(request);
+        const text = extractText(message.content);
+        if (!text) {
+          throw new Error(`Empty text response (stop_reason=${message.stop_reason || 'unknown'})`);
+        }
+        return { text, model, usage: message.usage };
       } catch (error) {
         const is429 = error.status === 429 || error.message?.includes('rate_limit');
         if (is429 && attempt < MAX_429_RETRIES) {
@@ -93,6 +112,10 @@ async function callClaude(systemPrompt, userPrompt, maxTokens = 8000, models = [
 
 // ─── Content validation & cleaning ───────────────────────────────────────────
 function validateAndCleanContent(content) {
+  if (typeof content !== 'string') {
+    return { valid: false, error: 'Empty synthesizer output', content: '' };
+  }
+
   // Unwrap markdown fences if model wrapped content
   const fenceMatch = content.match(/```(?:markdown)?\s*\n(---[\s\S]*?)\n```/);
   if (fenceMatch) {
@@ -246,6 +269,15 @@ Quick Hits must contain the top 5 most PM-relevant items from the list below. Th
 // 3. Draft has no items at all (no ### headers and no Quick Hits bullets)
 function runQA(rawData, draft) {
   const issues = [];
+
+  if (typeof draft !== 'string' || !draft.trim()) {
+    return {
+      pass: false,
+      severity: 'major',
+      issues: [{ type: 'format_error', description: 'Synthesizer returned empty output', item_title: '', item_url: '' }],
+      feedback_for_synthesizer: 'Your previous response was empty. Output raw markdown only. The very first characters must be exactly: ---',
+    };
+  }
 
   // Check 1: frontmatter present
   if (!draft.trimStart().startsWith('---')) {
