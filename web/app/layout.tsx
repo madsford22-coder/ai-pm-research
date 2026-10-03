@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     default: "Madison's Morning Memo",
     template: "%s · Madison's Morning Memo",
   },
-  description: "Madison's Morning Memo is a daily AI product newsletter for product managers and builders. Madison Ford distills products, agents, models, and UX every morning.",
+  description: "Daily AI product news and analysis for product managers building with AI. Madison's Morning Memo is a daily AI product management newsletter by Madison Ford.",
   openGraph: {
     title: "Madison's Morning Memo",
     description: "Daily AI product updates for PMs and builders, by Madison Ford.",

@@ -7,6 +7,8 @@ import TableOfContents from '@/components/TableOfContents';
 import DateNavigator from '@/components/DateNavigator';
 import QueryWidget from '@/components/QueryWidget';
 import { SITE_NAME, SITE_URL, absoluteUrl, descriptionFromMarkdown, formatSeoTitle } from '@/lib/seo';
+import HomeHero from '@/components/HomeHero';
+import HomeMemos from '@/components/HomeMemos';
 
 interface PageProps {
   params: Promise<{ slug?: string[] }>;
@@ -18,7 +20,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {
       title: { absolute: SITE_NAME },
       description:
-        "Madison's Morning Memo is a daily AI product newsletter for product managers and builders. Madison Ford distills products, agents, models, and UX every morning.",
+        "Daily AI product news and analysis for product managers building with AI. Madison's Morning Memo is a daily AI product management newsletter by Madison Ford.",
       alternates: { canonical: SITE_URL },
     };
   }
@@ -117,8 +119,9 @@ export default async function ContentPage({ params }: PageProps) {
   if (!slug || slug.length === 0) {
     const Dashboard = (await import('@/components/Dashboard')).default;
     const updates = getDailyUpdates();
+    const latest = updates.slice(0, 20);
     return (
-      <>
+      <div className="space-y-4 sm:space-y-8 max-w-4xl mx-auto">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -130,7 +133,7 @@ export default async function ContentPage({ params }: PageProps) {
                   name: SITE_NAME,
                   url: SITE_URL,
                   description:
-                    'Daily AI product updates for product managers and builders, published by Madison Ford.',
+                    'Daily AI product news and analysis for product managers building with AI.',
                   author: { '@id': `${SITE_URL}#madison` },
                 },
                 {
@@ -145,10 +148,12 @@ export default async function ContentPage({ params }: PageProps) {
             }),
           }}
         />
+        <HomeHero latestUrl={updates[0]?.url} />
+        <HomeMemos updates={latest} />
         <Suspense>
           <Dashboard initialUpdates={updates} />
         </Suspense>
-      </>
+      </div>
     );
   }
   
