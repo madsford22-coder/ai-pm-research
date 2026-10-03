@@ -632,7 +632,7 @@ This file defines which companies and products matter for product management–f
 - Speculative or hype-driven episodes
 - Episodes covering only topics already covered in depth that week
 **Primary sources:**
-- https://aidailybrief.beehiiv.com/ (feed_url: https://aidailybrief.beehiiv.com/feed)
+- https://aidailybrief.beehiiv.com/ (feed_url: https://anchor.fm/s/f7cac464/podcast/rss)
 
 ---
 

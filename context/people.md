@@ -962,7 +962,7 @@ This file defines whose public thinking and product commentary should be treated
 - Emerging topics getting attention before they show up in company blogs
 **Primary platforms:**
 - Newsletter/podcast: https://aidailybrief.beehiiv.com
-- RSS Feed: https://aidailybrief.beehiiv.com/feed
+- RSS Feed: https://anchor.fm/s/f7cac464/podcast/rss
 - Twitter/X: @nlw
 **Ignore unless:**
 - Pure news recap episodes without analysis or pattern identification
