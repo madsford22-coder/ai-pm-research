@@ -3,7 +3,6 @@ import { SITE_URL } from '@/lib/seo';
 
 const AI_CRAWLERS = [
   'GPTBot',
-  'ChatGPT-User',
   'Google-Extended',
   'CCBot',
   'anthropic-ai',
@@ -24,6 +23,11 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: '*',
         allow: '/',
         disallow: ['/api/', '/traffic', '/updates/daily/new', '/reflections/new'],
+      },
+      {
+        userAgent: 'ChatGPT-User',
+        allow: '/',
+        disallow: ['/api/', '/traffic'],
       },
       ...AI_CRAWLERS.map((userAgent) => ({
         userAgent,
