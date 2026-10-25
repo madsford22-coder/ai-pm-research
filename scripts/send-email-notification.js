@@ -78,40 +78,96 @@ function parseFrontmatterTitle(fileContent) {
   return match ? match[1].trim() : null;
 }
 
-function parseShortVersion(fileContent) {
-  const match = fileContent.match(/## (?:The Short Version|One-Line Summary)[^\n]*\n\n([\s\S]*?)(?=\n---\n|\n## |$)/);
-  return match ? match[1].trim() : null;
+const STORY_END = /^## (?:Quick Hits|The Thread|Sit With This)\b/m;
+
+// Body of "## The Short Version" up to the next heading (any level) or rule.
+function getShortVersionBlock(fileContent) {
+  const m = fileContent.match(/^## (?:The Short Version|One-Line Summary)[^\n]*\n([\s\S]*?)(?=^#{2,3} |^---\s*$|(?![\s\S]))/m);
+  return m ? m[1] : null;
 }
 
-function parseItems(fileContent) {
-  const items = [];
-  const sectionMatch = fileContent.match(/## Items\n\n([\s\S]*?)(?=\n## Quick Hits|\n## The Thread|\n## Sit With This|$)/) ||
-    fileContent.match(/## (?:The Short Version|One-Line Summary)[^\n]*\n\n[^\n]+\n\n([\s\S]*?)(?=\n## Quick Hits|\n## The Thread|$)/);
-  if (!sectionMatch) return items;
+function parseShortVersion(fileContent) {
+  const block = getShortVersionBlock(fileContent);
+  if (!block) return null;
+  // Only the first paragraph: the summary, never the stories that follow it.
+  const para = block.trim().split(/\n\s*\n/)[0];
+  return para ? para.replace(/\s*\n\s*/g, ' ').trim() : null;
+}
 
-  const itemTexts = sectionMatch[1].split(/\n### /).filter(t => t.trim());
-  for (const itemText of itemTexts) {
-    const lines = itemText.split('\n');
+// Stories live between the short version and Quick Hits / The Thread.
+// They have used "## Items" + "### Title" with **tl;dr:**, and more recently
+// bare "### Title" or "## Title" sections with **What happened:**.
+function parseItems(fileContent) {
+  const svIdx = fileContent.search(/^## (?:The Short Version|One-Line Summary)/m);
+  if (svIdx === -1) return [];
+  const rest = fileContent.slice(svIdx).replace(/^[^\n]*\n/, '');
+  const endIdx = rest.search(STORY_END);
+  const region = endIdx === -1 ? rest : rest.slice(0, endIdx);
+
+  const items = [];
+  const sections = region.split(/^#{2,3} /m).slice(1);
+  for (const section of sections) {
+    const lines = section.split('\n');
     const title = lines[0].trim();
-    const tldrMatch = itemText.match(/\*\*tl;dr:\*\* (.+)/);
-    if (title && tldrMatch) {
-      items.push({ title, tldr: tldrMatch[1].trim() });
+    if (!title || /^Items$/i.test(title)) continue;
+    const body = lines.slice(1).join('\n');
+
+    let summary = null;
+    const tldr = body.match(/\*\*tl;dr:\*\*\s*([^\n]+)/i);
+    const what = body.match(/\*\*What happened:\*\*\s*([\s\S]*?)(?=\n\s*\n|\n\*\*|$)/i);
+    if (tldr) summary = tldr[1];
+    else if (what) summary = what[1];
+    else {
+      const para = body.split(/\n\s*\n/).map(p => p.trim())
+        .find(p => p && !/^\*\*(Source|Credibility)/i.test(p) && !/^[-*]\s/.test(p) && p !== '---');
+      summary = para || null;
     }
+    if (summary) items.push({ title, tldr: firstSentences(summary.replace(/\s*\n\s*/g, ' ').trim(), 2) });
   }
   return items;
 }
 
+// "- **Name**: description (2026-10-21): https://url" -> { name, text, url }
 function parseQuickHits(fileContent) {
-  const match = fileContent.match(/## Quick Hits\n\n([\s\S]*?)(?=\n## |\n---\n|$)/);
+  const match = fileContent.match(/^## Quick Hits[^\n]*\n([\s\S]*?)(?=^## |^---\s*$|(?![\s\S]))/m);
   if (!match) return [];
   return match[1]
     .split('\n')
-    .filter(l => l.trim().startsWith('-'))
+    .filter(l => /^\s*[-*]\s/.test(l))
     .map(l => {
-      const boldMatch = l.match(/\*\*([^*]+)\*\*/);
-      return boldMatch ? boldMatch[1].trim() : null;
+      let line = l.replace(/^\s*[-*]\s+/, '').trim();
+      let url = null;
+      const urlMatch = line.match(/:?\s*(https?:\/\/\S+)\s*$/);
+      if (urlMatch) { url = urlMatch[1]; line = line.slice(0, urlMatch.index).trim(); }
+      const linkMatch = !url && line.match(/\[([^\]]+)\]\((https?:[^)]+)\)/);
+      if (linkMatch) { url = linkMatch[2]; line = line.replace(linkMatch[0], linkMatch[1]); }
+      line = line.replace(/\s*\(\d{4}-\d{2}-\d{2}\)\s*$/, '').replace(/[:\s]+$/, '');
+      const nameMatch = line.match(/^\*\*([^*]+)\*\*:?\s*(.*)$/);
+      const name = nameMatch ? nameMatch[1].trim() : null;
+      const text = stripMarkdown(nameMatch ? nameMatch[2] : line);
+      if (!name && !text) return null;
+      return { name, text, url };
     })
     .filter(Boolean);
+}
+
+// Keep previews short: the first N sentences of a paragraph.
+function firstSentences(text, n) {
+  const parts = text.match(/[^.!?]+(?:[.!?]+["')\]]*|$)(?:\s+|$)/g);
+  if (!parts || parts.length <= n) return text;
+  return parts.slice(0, n).join('').trim();
+}
+
+// Turn inline markdown into plain text so nothing like ** or ### leaks into email.
+function stripMarkdown(str) {
+  return String(str || '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/(\*\*|__)(.+?)\1/g, '$2')
+    .replace(/(^|[^*\w])[*_]([^*_\n]+)[*_](?=[^*\w]|$)/g, '$1$2')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function formatDate(dateStr) {
@@ -130,8 +186,8 @@ function generatePreviewEmail({ date, title, shortVersion, items, quickHits, rea
       ${previewItems.map(item => `
       <tr>
         <td style="padding:20px 0; border-bottom:1px solid #f0f0f0;">
-          <p style="margin:0 0 8px; font-size:15px; font-weight:bold; color:#1a1a1a; line-height:1.4;">${escapeHtml(item.title)}</p>
-          <p style="margin:0; font-size:14px; line-height:1.6; color:#444;">${escapeHtml(item.tldr)}</p>
+          <p style="margin:0 0 8px; font-size:15px; font-weight:bold; color:#1a1a1a; line-height:1.4;">${escapeHtml(stripMarkdown(item.title))}</p>
+          <p style="margin:0; font-size:14px; line-height:1.6; color:#444;">${escapeHtml(stripMarkdown(item.tldr))}</p>
         </td>
       </tr>`).join('')}
     </table>` : '';
@@ -140,7 +196,12 @@ function generatePreviewEmail({ date, title, shortVersion, items, quickHits, rea
     <div style="background:#f9f9f9; border-radius:6px; padding:20px 24px; margin:0 0 32px;">
       <p style="margin:0 0 12px; font-size:11px; font-weight:bold; letter-spacing:0.08em; text-transform:uppercase; color:#888;">Also today</p>
       <ul style="margin:0; padding-left:18px;">
-        ${quickHits.map(h => `<li style="font-size:13px; line-height:1.7; color:#555;">${escapeHtml(h)}</li>`).join('')}
+        ${quickHits.map(h => {
+          const label = h.name ? `<strong style="color:#1a1a1a;">${escapeHtml(h.name)}</strong>${h.text ? ': ' : ''}` : '';
+          const text = escapeHtml(h.text || '');
+          const body = h.url ? `${label}<a href="${escapeHtml(h.url)}" style="color:#555; text-decoration:underline;">${text || 'Link'}</a>` : `${label}${text}`;
+          return `<li style="font-size:13px; line-height:1.7; color:#555; margin:0 0 6px;">${body}</li>`;
+        }).join('')}
       </ul>
     </div>` : '';
 
@@ -165,7 +226,7 @@ function generatePreviewEmail({ date, title, shortVersion, items, quickHits, rea
 
     <h1 style="font-size:24px; line-height:1.35; margin:0 0 20px; font-weight:700;">${escapeHtml(title || 'Daily PM Research Update')}</h1>
 
-    ${shortVersion ? `<p style="font-size:16px; line-height:1.75; color:#222; margin:0 0 32px; border-left:3px solid #1a1a1a; padding-left:16px;">${escapeHtml(shortVersion)}</p>` : ''}
+    ${shortVersion ? `<p style="font-size:16px; line-height:1.75; color:#222; margin:0 0 32px; border-left:3px solid #1a1a1a; padding-left:16px;">${escapeHtml(stripMarkdown(shortVersion))}</p>` : ''}
 
     ${itemsHtml ? `<hr style="border:none; border-top:1px solid #ebebeb; margin:0 0 32px;">` : ''}
     ${itemsHtml}
@@ -333,4 +394,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { buildEmailFromFile, generatePreviewEmail, generateFailureEmail };
+module.exports = { parseShortVersion, parseItems, parseQuickHits, stripMarkdown, buildEmailFromFile, generatePreviewEmail, generateFailureEmail };
